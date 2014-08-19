@@ -20,8 +20,8 @@
 
 #include "L1Trigger/L1TMuon/interface/GeometryTranslator.h"
 
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTriggerPrimitive.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTriggerPrimitiveFwd.h"
 
 #include "L1Trigger/L1TMuon/interface/SubsystemCollectorFactory.h"
 

@@ -9,13 +9,13 @@
 // Author: L. Gray (FNAL)
 //
 
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonInternalTrackFwd.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonInternalTrack.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonInternalTrackFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonInternalTrack.h"
 
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTriggerPrimitiveFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTriggerPrimitive.h"
 
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonRegionalTracksFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonRegionalTracksFwd.h"
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
 
 #include "DataFormats/MuonDetId/interface/RPCDetId.h"

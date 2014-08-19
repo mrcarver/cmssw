@@ -42,8 +42,8 @@
 #include <TFile.h>
 #include "L1Trigger/L1TMuon/interface/GeometryTranslator.h"
 
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonInternalTrack.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonInternalTrackFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonInternalTrack.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonInternalTrackFwd.h"
 
 #include "TFile.h"
 #include "TH1.h"

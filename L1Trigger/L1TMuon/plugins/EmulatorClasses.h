@@ -2,7 +2,7 @@
 #define __EmulatorClasses_
 
 #include "PhiMemoryImage.h"
-#include "L1TriggerDPGUpgrade/DataFormats/src/classes.h"
+#include "DataFormats/L1TMuon/src/classes.h"
 
 typedef std::vector<std::vector<PhiMemoryImage>> ImageCollector;
 typedef std::vector<std::vector<int>> Code;
