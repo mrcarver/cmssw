@@ -6,7 +6,7 @@
 #include "DataFormats/MuonDetId/interface/RPCDetId.h"
 #include "DataFormats/MuonDetId/interface/DTChamberId.h"
 
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/helpers.h"
+#include "L1Trigger/L1TMuon/interface/helpers.h"
 
 namespace {
   // DT TF relative segment address explanation

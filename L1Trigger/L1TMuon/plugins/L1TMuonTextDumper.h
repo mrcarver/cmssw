@@ -20,7 +20,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/SubsystemCollectorFactory.h"
+#include "L1Trigger/L1TMuon/interface/SubsystemCollectorFactory.h"
 
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -34,7 +34,7 @@
 #include <TH2.h>
 #include <TH1F.h>
 #include <TFile.h>
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/GeometryTranslator.h"
+#include "L1Trigger/L1TMuon/interface/GeometryTranslator.h"
 
 #include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
 #include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"

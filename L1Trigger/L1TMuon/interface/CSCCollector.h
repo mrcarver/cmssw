@@ -9,7 +9,7 @@
 // Author: L. Gray (FNAL)
 //
 #include <vector>
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/SubsystemCollector.h"
+#include "L1Trigger/L1TMuon/interface/SubsystemCollector.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 namespace L1TMuon {

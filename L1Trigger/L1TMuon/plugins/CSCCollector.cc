@@ -1,4 +1,4 @@
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/CSCCollector.h"
+#include "L1Trigger/L1TMuon/interface/CSCCollector.h"
 #include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 
@@ -30,5 +30,5 @@ extractPrimitives(const edm::Event& ev,
   }    
 }
 
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/SubsystemCollectorFactory.h"
+#include "L1Trigger/L1TMuon/interface/SubsystemCollectorFactory.h"
 DEFINE_EDM_PLUGIN( SubsystemCollectorFactory, CSCCollector, "CSCCollector");

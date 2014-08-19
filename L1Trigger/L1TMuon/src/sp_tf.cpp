@@ -7,7 +7,7 @@
 // Timestamp : Fri Feb  1 08:50:45 2013			     //
 ///////////////////////////////////////////////////////////////
 
-#include "L1TriggerDPGUpgrade/L1TMuon/src/core_gen_summer_2013/sp_tf.h"
+#include "L1Trigger/L1TMuon/src/core_gen_summer_2013/sp_tf.h"
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 
 #include "math.h"

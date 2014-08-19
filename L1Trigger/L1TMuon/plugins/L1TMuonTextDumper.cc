@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////
 
 
-#include "L1TriggerDPGUpgrade/L1TMuon/plugins/L1TMuonTextDumper.h"
+#include "L1Trigger/L1TMuon/plugins/L1TMuonTextDumper.h"
 #include "L1Trigger/CSCCommonTrigger/interface/CSCPatternLUT.h"
 #include "L1Trigger/CSCTrackFinder/test/src/RefTrack.h"
 

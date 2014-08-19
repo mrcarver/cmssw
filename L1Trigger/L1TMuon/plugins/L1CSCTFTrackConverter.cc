@@ -26,7 +26,7 @@
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/helpers.h"
+#include "L1Trigger/L1TMuon/interface/helpers.h"
 
 using namespace L1TMuon;
 

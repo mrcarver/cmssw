@@ -1,4 +1,4 @@
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTrackSeed.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTrackSeed.h"
 
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackCand.h"
 #include "DataFormats/L1CSCTrackFinder/interface/L1Track.h"

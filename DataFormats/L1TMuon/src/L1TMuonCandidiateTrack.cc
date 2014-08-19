@@ -1,4 +1,4 @@
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonCandidateTrack.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonCandidateTrack.h"
 
 using namespace L1TMuon;
 

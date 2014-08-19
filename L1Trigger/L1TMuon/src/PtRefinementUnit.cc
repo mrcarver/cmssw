@@ -1,4 +1,4 @@
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/PtRefinementUnit.h"
+#include "L1Trigger/L1TMuon/interface/PtRefinementUnit.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 using namespace L1TMuon;

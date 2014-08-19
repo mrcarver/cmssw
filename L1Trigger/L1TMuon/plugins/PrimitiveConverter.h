@@ -9,13 +9,13 @@
 
 #include "EmulatorClasses.h"
 
-#include "L1TriggerDPGUpgrade/L1TMuon/test/trial.h"
-#include "L1TriggerDPGUpgrade/L1TMuon/test/trial2.h"
-#include "L1TriggerDPGUpgrade/L1TMuon/test/trial3.h"
-#include "L1TriggerDPGUpgrade/L1TMuon/test/ThInit.h"
-#include "L1TriggerDPGUpgrade/L1TMuon/test/ThDisp.h"
-#include "L1TriggerDPGUpgrade/L1TMuon/test/PhInit.h"
-#include "L1TriggerDPGUpgrade/L1TMuon/test/PhDisp.h"
+#include "L1Trigger/L1TMuon/test/trial.h"
+#include "L1Trigger/L1TMuon/test/trial2.h"
+#include "L1Trigger/L1TMuon/test/trial3.h"
+#include "L1Trigger/L1TMuon/test/ThInit.h"
+#include "L1Trigger/L1TMuon/test/ThDisp.h"
+#include "L1Trigger/L1TMuon/test/PhInit.h"
+#include "L1Trigger/L1TMuon/test/PhDisp.h"
 
 /*
 int Thinit[51] = {7,9,7,46,49,46,98,98,98,6,7,6,9,7,9,49,46,49,98,98,98,7,6,7,6,5,6,53,55,53,55,

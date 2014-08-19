@@ -18,12 +18,12 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/GeometryTranslator.h"
+#include "L1Trigger/L1TMuon/interface/GeometryTranslator.h"
 
 #include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
 #include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
 
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/SubsystemCollectorFactory.h"
+#include "L1Trigger/L1TMuon/interface/SubsystemCollectorFactory.h"
 
 using namespace L1TMuon;
 

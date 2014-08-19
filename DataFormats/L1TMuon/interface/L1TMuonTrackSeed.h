@@ -13,10 +13,10 @@
 
 #include <iostream>
 
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTriggerPrimitiveFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonTriggerPrimitive.h"
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonRegionalTracksFwd.h"
+#include "DataFormats/L1TMuon/interface/L1TMuonRegionalTracksFwd.h"
 #include "DataFormats/Common/interface/RefToBase.h"
 
 class L1MuDTTrackCand;

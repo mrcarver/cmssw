@@ -1,4 +1,4 @@
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/GeometryTranslator.h"
+#include "L1Trigger/L1TMuon/interface/GeometryTranslator.h"
 #include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
 
 // event setup stuff / geometries

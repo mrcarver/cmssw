@@ -1,4 +1,4 @@
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/PtRefinementUnitFactory.h"
+#include "L1Trigger/L1TMuon/interface/PtRefinementUnitFactory.h"
 
 using namespace L1TMuon;
 

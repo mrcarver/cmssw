@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include "L1TriggerDPGUpgrade/L1TMuon/interface/PtRefinementUnit.h"
+#include "L1Trigger/L1TMuon/interface/PtRefinementUnit.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 
