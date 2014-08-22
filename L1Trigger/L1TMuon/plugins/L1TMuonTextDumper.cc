@@ -640,7 +640,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 	else if(FourBest[0].AHits[2].TP()->detId<CSCDetId>().endcap()){
 		ecap = FourBest[0].AHits[2].TP()->detId<CSCDetId>().endcap();
 		std::cout<<"\n3\n";}
-	else{/*if(FourBest[0].AHits[3].TP()->detId<CSCDetId>().endcap())//need ender here
+	else{//if(FourBest[0].AHits[3].TP()->detId<CSCDetId>().endcap())//need ender here
 		ecap = FourBest[0].AHits[3].TP()->detId<CSCDetId>().endcap();
 		std::cout<<"\n4\n";}
 		
