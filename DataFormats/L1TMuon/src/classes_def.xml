@@ -20,8 +20,8 @@
   <class name="L1TMuon::TriggerPrimitiveList"/>
   <class name="L1TMuon::TriggerPrimitiveStationMap"/>
 
-  <class name="L1TMuon::InternalTrack" ClassVersion="11">
-   <version ClassVersion="11" checksum="2985826856"/>
+  <class name="L1TMuon::InternalTrack" ClassVersion="13">
+   <version ClassVersion="13" checksum="4037012963"/>
   </class>
   <class name="edm::Wrapper<L1TMuon::InternalTrack>"/>
   <class name="L1TMuon::InternalTrackCollection"/>

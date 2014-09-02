@@ -26,6 +26,7 @@
 #include "Matching.h"
 #include "Deltas.h"
 #include "BestTracks.h"
+#include "PtAssignment.h"
 
 
 using namespace L1TMuon;
@@ -332,7 +333,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
  ////////////////////////////////////
  
  
- BTrack FourBest[4];
+ BTrack FourBest[4];//ok
  std::vector<BTrack> PTemp[12] = PTracks;
  int windex[4] = {-1,-1,-1,-1};
  
@@ -378,20 +379,58 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 		tempTrack.theta = FourBest[fbest].theta;
 		tempTrack.rank = FourBest[fbest].winner.Rank();
 		tempTrack.deltas = FourBest[fbest].deltas;
+		std::vector<int> ps, ts;
 		
 		for(std::vector<ConvertedHit>::iterator A = FourBest[fbest].AHits.begin();A != FourBest[fbest].AHits.end();A++){
 		
 			if(A->Phi() != -999){
 			
 				tempTrack.addStub(A->TP());
+				ps.push_back(A->Phi());
+				ts.push_back(A->Theta());
 				//std::cout<<"Q: "<<A->Quality()<<", keywire: "<<A->Wire()<<", strip: "<<A->Strip()<<std::endl;
 			}
 			
 		}
+		tempTrack.phis = ps;
+		tempTrack.thetas = ts;
 		
+		std::cout<<"\n\nTrack "<<fbest<<": ";
+		CalculatePt(tempTrack);
+		tempTrack.pt = 0;
 		FoundTracks->push_back(tempTrack);
+		std::cout<<"\n\n";
 	}
   }
+  
+  //std::cout<<FoundTracks->size()<<std::endl;
+  	
+	//float fuck = CalculatePt(FoundTracks);
+	
+	
+	/*
+	std::cout<<"Num Tracks = "<<FoundTracks->size()<<std::endl; 
+	int n=1;
+	for(std::vector<L1TMuon::InternalTrack>::iterator i=FoundTracks->begin();i != FoundTracks->end();i++){
+	
+		const TriggerPrimitiveStationMap stubs = i->getStubs();
+		
+		//const TriggerPrimitiveRef ref = (stubs.find(8)->second)[0];
+
+		
+		std::cout<<"\n\nTrack "<<n<<" has hits in stations ";//
+		for(unsigned int s=8;s<12;s++){
+			if((stubs.find(s)->second).size()){
+				std::cout<<(stubs.find(s)->second)[0]->detId<CSCDetId>().station()<<" ";
+				//std::cout<<s-7<<" ";
+			}
+		}
+			
+		std::cout<<"\n\n";
+		n++;
+	}*/
+	
+  //}
   
   ///////////////////////////////////////////////
   //// Below here is working additions to make //

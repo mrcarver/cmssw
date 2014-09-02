@@ -11,11 +11,11 @@ process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonTriggerPrimitiveProducer_cfi')
-process.load('L1TriggerDPGUpgrade.L1TMuon.L1CSCTFTrackConverter_cfi')
-process.load('L1TriggerDPGUpgrade.L1TMuon.L1DTTFTrackConverter_cfi')
-process.load('L1TriggerDPGUpgrade.L1TMuon.L1RPCTFTrackConverter_cfi')
-process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonSimpleDeltaEtaHitMatcher_cfi')
+process.load('L1Trigger.L1TMuon.L1TMuonTriggerPrimitiveProducer_cfi')
+process.load('L1Trigger.L1TMuon.L1CSCTFTrackConverter_cfi')
+process.load('L1Trigger.L1TMuon.L1DTTFTrackConverter_cfi')
+process.load('L1Trigger.L1TMuon.L1RPCTFTrackConverter_cfi')
+#process.load('L1Trigger.L1TMuon.L1TMuonSimpleDeltaEtaHitMatcher_cfi')
 
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:mc', '')
@@ -26,13 +26,10 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 #infile = ['file:unganged2.root']
-infile = ['file:pm13poseta.root']
+infile = ['file:MuGun_test.root']
 #['file:SingleMuFlatPt_5GeVto200GeV_GEN_SIM_DIGI_L1.root']
 #['file:SingleMuFlatPt_minusEta_1GeVto200GeV_GEN_SIM_DIGI_L1.root']
-
-
-
-infile.append('file:pm13negeta.root')
+#infile.append('file:MuGun_test.root')
 
 
 #infile.append('file:SingleMuFlatPt_plusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
@@ -46,8 +43,8 @@ process.source = cms.Source(
 process.L1TMuonSeq = cms.Sequence( process.L1TMuonTriggerPrimitives +
                                    process.L1CSCTFTrackConverter    +
                                    process.L1DTTFTrackConverter     +
-                                   process.L1RPCTFTrackConverters   +
-                                   process.L1TMuonSimpleDeltaEtaHitMatcher )
+                                   process.L1RPCTFTrackConverters   )#+ 
+                                   #process.L1TMuonSimpleDeltaEtaHitMatcher )
 
 process.L1TMuonPath = cms.Path(process.L1TMuonSeq)
 
@@ -68,7 +65,7 @@ process.FEVTDEBUGoutput = cms.OutputModule(
     splitLevel = cms.untracked.int32(0),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
     outputCommands = outCommands,
-    fileName = cms.untracked.string('PosNegMuon.root'),
+    fileName = cms.untracked.string('L1TMuon_Out.root'),
     dataset = cms.untracked.PSet(
         filterName = cms.untracked.string(''),
         dataTier = cms.untracked.string('')

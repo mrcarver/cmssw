@@ -93,8 +93,8 @@ process.DiagMaker = cms.EDAnalyzer(
     testVar = cms.untracked.bool(False)
 )
 
-infile = 'file:L1TMuon2.root'
-fileOutName = "test.root"
+infile = 'file:L1TMuon_Out.root'
+fileOutName = "Histos.root"
 
 process.source = cms.Source(
     'PoolSource',
@@ -110,6 +110,22 @@ process.TFileService = cms.Service("TFileService",
 	fileOutName
 ))
 
+
+outCommands = cms.untracked.vstring('keep *')
+#outCommands.append('keep *_genParticles_*_*')
+
+process.FEVTDEBUGoutput = cms.OutputModule(
+    "PoolOutputModule",
+    splitLevel = cms.untracked.int32(0),
+    eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
+    outputCommands = outCommands,
+    fileName = cms.untracked.string('Emulator_Out.root'),
+    dataset = cms.untracked.PSet(
+        filterName = cms.untracked.string(''),
+        dataTier = cms.untracked.string('')
+    )
+)
+
 #process.L1TMuonSequence = cms.Sequence(process.L1TMuonVerilogBasedMatcher * process.DiagMaker)
 #process.L1TMuonSequence = cms.Sequence(process.L1TMuonVerilogBasedMatcher)
 process.L1TMuonSequence = cms.Sequence(process.L1TMuonText)
@@ -117,5 +133,7 @@ process.L1TMuonSequence = cms.Sequence(process.L1TMuonText)
 
 process.L1TMuonPath = cms.Path(process.L1TMuonSequence)
 
-process.schedule = cms.Schedule(process.L1TMuonPath)
+process.outPath = cms.EndPath(process.FEVTDEBUGoutput)
+
+process.schedule = cms.Schedule(process.L1TMuonPath,process.outPath)
 

@@ -5,5 +5,7 @@
   <use name="CommonTools/UtilAlgos"/>
   <use name="DataFormats/HepMCCandidate"/>
   <use name="DataFormats/ParticleFlowReco"/>
+  <use name="root"/>
   <flags EDM_PLUGIN="1"/>
+  <flags LDFLAGS="-lXMLIO"/>
 </library>

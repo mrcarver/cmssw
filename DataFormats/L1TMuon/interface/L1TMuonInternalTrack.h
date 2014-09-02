@@ -70,8 +70,10 @@ namespace L1TMuon{
    // {
         int phi;
         int theta;
-	int rank;
-	std::vector< std::vector<int> > deltas;
+		int rank;
+		std::vector< std::vector<int> > deltas;
+		std::vector<int> phis, thetas;
+		float pt;
    // } ;
     ////////////////////////
     
