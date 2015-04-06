@@ -193,7 +193,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		//for theta, select delta to best station, use dtmpi as index
 		if(dtmp[0] != -999){
 		
-			if(dtmpi[0] < 2)
+			if(dtmpi[0] == 1 || dtmpi[0] == 3)
 				id = 1;
 			
 			
@@ -223,7 +223,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		
 		if(dtmp[1] != -999){
 		
-			if(dtmpi[1] < 2)
+			if(dtmpi[1] == 1 || dtmpi[1] == 3)
 				id = 1;
 			
 			
@@ -243,7 +243,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		phi = phmatch[zone][winner][3].Phi();
 		if(dtmp[2] != -999){
 		
-			if(dtmpi[2] < 2)
+			if(dtmpi[2] == 1 || dtmpi[2] == 3)
 				id = 1;
 			
 			
