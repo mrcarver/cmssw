@@ -87,14 +87,7 @@ public:
   	-1.,   0.0,   1.5,   2.0,   2.5,   3.0,   3.5,   4.0,
     4.5,   5.0,   6.0,   7.0,   8.0,  10.0,  12.0,  14.0,  
     16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  45.0, 
-    50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 1.E6 };
-    
-   
-   TH1F* striph, *eff, *eff2, *trigprimsize, *trigprimsize2, *st_cont, *st_cont2, *sector1, *sector2, *secdiff;
-   TH1F* MissVsEta, *MissVsPhi, *MissVsPt, *ME42test1, *ME42test2, *ME1gangnedtest, *ME11gangnedtest;
-   
-   TH1F* st12errors, *detectorineff;
-  
+    50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 1.E6 };  
 
 private:
   bool _dogen;

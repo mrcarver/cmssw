@@ -14,6 +14,9 @@
 #include "L1Trigger/CSCCommonTrigger/interface/CSCPatternLUT.h"
 #include "L1Trigger/CSCTrackFinder/test/src/RefTrack.h"
 
+#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidate.h"
+#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidateFwd.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -42,7 +45,8 @@ L1TMuonUpgradedTrackFinder::L1TMuonUpgradedTrackFinder(const PSet& p) {
     
     LUTparam = p.getParameter<edm::ParameterSet>("lutParam");
     
-    produces<L1TMuon::InternalTrackCollection> ("DataITC").setBranchAlias("DataITC");
+    //produces<L1TMuon::InternalTrackCollection> ("DataITC").setBranchAlias("DataITC");
+	produces<l1t::L1TRegionalMuonCandidateCollection >("EMUTF");
 }
 
 
@@ -58,6 +62,7 @@ void L1TMuonUpgradedTrackFinder::produce(edm::Event& ev,
   
   
   std::auto_ptr<L1TMuon::InternalTrackCollection> FoundTracks (new L1TMuon::InternalTrackCollection);
+  std::auto_ptr<l1t::L1TRegionalMuonCandidateCollection > OutputCands (new l1t::L1TRegionalMuonCandidateCollection);
   
   std::vector<BTrack> PTracks[12];
  
@@ -213,7 +218,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
  //////////   sectors     ///////////
  ////////////////////////////////////
  
- for(int i1=0;i1<36;i1++){
+ /*for(int i1=0;i1<36;i1++){
  
  	for(int i2=i1+1;i2<36;i2++){
 		
@@ -260,7 +265,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 		
 		}
  	}
- }
+ }*/
  
  
  ////////////////////////////////////
@@ -272,8 +277,6 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
  BTrack FourBest[4];//ok
  std::vector<BTrack> PTemp[12] = PTracks;
  int windex[4] = {-1,-1,-1,-1};
- 
- 
  
  for(int i=0;i<4;i++){
  
@@ -302,7 +305,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 
   //bool epir = false;
   
-  for(int fbest=0;fbest<4;fbest++){
+  for(int fbest=0;fbest<3;fbest++){
   
   	if(FourBest[fbest].phi){
 	
@@ -332,17 +335,31 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 		tempTrack.thetas = ts;
 		
 		std::cout<<"\n\nTrack "<<fbest<<": ";
-		//CalculatePt(tempTrack);
-		tempTrack.pt = CalculatePt(tempTrack);
+		float xmlpt = CalculatePt(tempTrack);
+		tempTrack.pt = xmlpt;
 		std::cout<<"XML pT = "<<tempTrack.pt<<"\n";
 		FoundTracks->push_back(tempTrack);
 		std::cout<<"\n\n";
+		
+		
+		l1t::L1TRegionalMuonCandidate outCand;
+		outCand.setHwPt(xmlpt);
+		outCand.setHwEta(FourBest[fbest].theta);
+  		outCand.setHwPhi(FourBest[fbest].phi);
+  		outCand.setHwSign(1);
+  		outCand.setHwQual(FourBest[fbest].winner.Rank());
+  		outCand.setHwTrackAddress(FourBest[fbest].phi);
+  		outCand.setLink(FourBest[fbest].phi);
+		OutputCands->push_back(outCand);
+		
+		
 	}
   }
   
  
  //  std::cout<<"Begin Put function\n\n";
-ev.put( FoundTracks, "DataITC");
+//ev.put( FoundTracks, "DataITC");
+ev.put( OutputCands, "EMUTF");
   std::cout<<"End Upgraded Track Finder Prducer:::::::::::::::::::::::::::\n:::::::::::::::::::::::::::::::::::::::::::::::::\n\n";
 
 }//analyzer
@@ -356,7 +373,7 @@ void L1TMuonUpgradedTrackFinder::beginJob()
 	////// Declaration ////////
 	///////////////////////////
 	
-	TFileDirectory dir = histofile->mkdir("1");//
+	//TFileDirectory dir = histofile->mkdir("1");//
 
 	
 	///////////////////////////
@@ -365,7 +382,7 @@ void L1TMuonUpgradedTrackFinder::beginJob()
 	///////////////////////////
 	
 	
-	write = fopen ("zone0.txt","w");
+	//write = fopen ("zone0.txt","w");
 
 	
 	
@@ -374,7 +391,7 @@ void L1TMuonUpgradedTrackFinder::beginJob()
 void L1TMuonUpgradedTrackFinder::endJob()
 {
 
-	fclose (write);
+	//fclose (write);
 	
 	
 	
