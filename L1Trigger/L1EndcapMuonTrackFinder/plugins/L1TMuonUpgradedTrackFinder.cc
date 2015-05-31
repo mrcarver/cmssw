@@ -14,8 +14,7 @@
 #include "L1Trigger/CSCCommonTrigger/interface/CSCPatternLUT.h"
 #include "L1Trigger/CSCTrackFinder/test/src/RefTrack.h"
 
-#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidate.h"
-#include "DataFormats/L1TMuon/interface/L1TRegionalMuonCandidateFwd.h"
+#include "MakeRegionalCand.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,7 +52,7 @@ L1TMuonUpgradedTrackFinder::L1TMuonUpgradedTrackFinder(const PSet& p) {
 void L1TMuonUpgradedTrackFinder::produce(edm::Event& ev, 
 			       const edm::EventSetup& es) {
 				   
-  bool verbose = false;
+  //bool verbose = false;
 			       
  		
   std::cout<<"Start Upgraded Track Finder Producer::::: event = "<<ev.id().event()<<"\n\n";
@@ -73,7 +72,7 @@ void L1TMuonUpgradedTrackFinder::produce(edm::Event& ev,
   ////////// Get Generated Muons ///////////////
   //////////////////////////////////////////////
   
-  edm::Handle<std::vector<reco::GenParticle>> GenMuons;
+  /*edm::Handle<std::vector<reco::GenParticle>> GenMuons;
   std::vector<reco::GenParticle>::const_iterator GI;
   ev.getByLabel("genParticles",GenMuons);
   reco::GenParticle GeneratorMuon;
@@ -86,7 +85,7 @@ void L1TMuonUpgradedTrackFinder::produce(edm::Event& ev,
 	
 	std::cout<<"Gen Particle Info::::\nPt = "<<pt<<", phi = "<<phi<<", eta = "<<eta<<", mass = "<<mass<<" and charge = "<<charge<<"\n\n";
 		
-  }
+  }*/
   
   
   //////////////////////////////////////////////
@@ -130,7 +129,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
  
   
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-////////////////////////////////print values for input into Alex's emulator code/////////////////////////////////////////////////////
+////////////////////////////////print values for input into Alex's firmware code/////////////////////////////////////////////////////
 	//for(std::vector<ConvertedHit>::iterator h = ConvHits.begin();h != ConvHits.end();h++){
 	
 		//if((h->Id()) > 9){h->SetId(h->Id() - 9);h->SetStrip(h->Strip() + 128);}	
@@ -341,16 +340,12 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 		FoundTracks->push_back(tempTrack);
 		std::cout<<"\n\n";
 		
+		l1t::L1TRegionalMuonCandidate outCand = MakeRegionalCand(xmlpt,FourBest[fbest].phi,FourBest[fbest].theta,
+														         1,FourBest[fbest].winner.Rank(),1,1);
 		
-		l1t::L1TRegionalMuonCandidate outCand;
-		outCand.setHwPt(xmlpt);
-		outCand.setHwEta(FourBest[fbest].theta);
-  		outCand.setHwPhi(FourBest[fbest].phi);
-  		outCand.setHwSign(1);
-  		outCand.setHwQual(FourBest[fbest].winner.Rank());
-  		outCand.setHwTrackAddress(FourBest[fbest].phi);
-  		outCand.setLink(FourBest[fbest].phi);
+		
 		OutputCands->push_back(outCand);
+		
 		
 		
 	}
