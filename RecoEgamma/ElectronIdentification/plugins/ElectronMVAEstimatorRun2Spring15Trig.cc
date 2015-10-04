@@ -1,4 +1,4 @@
-#include "RecoEgamma/ElectronIdentification/interface/ElectronMVAEstimatorRun2Spring15NonTrig.h"
+#include "RecoEgamma/ElectronIdentification/interface/ElectronMVAEstimatorRun2Spring15Trig.h"
 
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
@@ -10,7 +10,7 @@
 #include "TMath.h"
 #include "TMVA/MethodBDT.h"
 
-ElectronMVAEstimatorRun2Spring15NonTrig::ElectronMVAEstimatorRun2Spring15NonTrig(const edm::ParameterSet& conf):
+ElectronMVAEstimatorRun2Spring15Trig::ElectronMVAEstimatorRun2Spring15Trig(const edm::ParameterSet& conf):
   AnyMVAEstimatorRun2Base(conf),
   _tag(conf.getParameter<std::string>("mvaTag")),
   _MethodName("BDTG method"),
@@ -39,12 +39,12 @@ ElectronMVAEstimatorRun2Spring15NonTrig::ElectronMVAEstimatorRun2Spring15NonTrig
 
 }
 
-ElectronMVAEstimatorRun2Spring15NonTrig::
-~ElectronMVAEstimatorRun2Spring15NonTrig(){
+ElectronMVAEstimatorRun2Spring15Trig::
+~ElectronMVAEstimatorRun2Spring15Trig(){
 }
 
 
-void ElectronMVAEstimatorRun2Spring15NonTrig::setConsumes(edm::ConsumesCollector&& cc) const {
+void ElectronMVAEstimatorRun2Spring15Trig::setConsumes(edm::ConsumesCollector&& cc) const {
 
   // All tokens for event content needed by this MVA
 
@@ -58,7 +58,7 @@ void ElectronMVAEstimatorRun2Spring15NonTrig::setConsumes(edm::ConsumesCollector
 
 }
 
-float ElectronMVAEstimatorRun2Spring15NonTrig::
+float ElectronMVAEstimatorRun2Spring15Trig::
 mvaValue( const edm::Ptr<reco::Candidate>& particle, const edm::Event& iEvent) const {
   
   const int iCategory = findCategory( particle );
@@ -86,7 +86,7 @@ mvaValue( const edm::Ptr<reco::Candidate>& particle, const edm::Event& iEvent) c
 	      << " EoP " << vars[15]
 	      << " IoEmIoP " << vars[17]
 	      << " eleEoPout " << vars[16]
-	      << " eta " << vars[24]
+	      << " eta " << vars[22]
 	      << " pt " << vars[21] << std::endl;
     std::cout << " ### MVA " << result << std::endl;
   }
@@ -94,7 +94,7 @@ mvaValue( const edm::Ptr<reco::Candidate>& particle, const edm::Event& iEvent) c
   return result;
 }
 
-int ElectronMVAEstimatorRun2Spring15NonTrig::findCategory( const edm::Ptr<reco::Candidate>& particle) const {
+int ElectronMVAEstimatorRun2Spring15Trig::findCategory( const edm::Ptr<reco::Candidate>& particle) const {
   
   // Try to cast the particle into a reco particle.
   // This should work for both reco and pat.
@@ -104,50 +104,39 @@ int ElectronMVAEstimatorRun2Spring15NonTrig::findCategory( const edm::Ptr<reco::
       << " given particle is expected to be reco::GsfElectron or pat::Electron," << std::endl
       << " but appears to be neither" << std::endl;
 
-  float pt = eleRecoPtr->pt();
   float eta = eleRecoPtr->superCluster()->eta();
 
   //
   // Determine the category
   //
   int  iCategory = UNDEFINED;
-  const float ptSplit = 10;   // we have above and below 10 GeV categories
   const float ebSplit = 0.800;// barrel is split into two regions
   const float ebeeSplit = 1.479; // division between barrel and endcap
 
-  if (pt < ptSplit && std::abs(eta) < ebSplit)  
-    iCategory = CAT_EB1_PT5to10;
+  if (std::abs(eta) < ebSplit)  
+    iCategory = CAT_EB1;
 
-  if (pt < ptSplit && std::abs(eta) >= ebSplit && std::abs(eta) < ebeeSplit)
-    iCategory = CAT_EB2_PT5to10;
+  if (std::abs(eta) >= ebSplit && std::abs(eta) < ebeeSplit)
+    iCategory = CAT_EB2;
 
-  if (pt < ptSplit && std::abs(eta) >= ebeeSplit) 
-    iCategory = CAT_EE_PT5to10;
-
-  if (pt >= ptSplit && std::abs(eta) < ebSplit) 
-    iCategory = CAT_EB1_PT10plus;
-
-  if (pt >= ptSplit && std::abs(eta) >= ebSplit && std::abs(eta) < ebeeSplit)
-    iCategory = CAT_EB2_PT10plus;
-
-  if (pt >= ptSplit && std::abs(eta) >= ebeeSplit) 
-    iCategory = CAT_EE_PT10plus;
+  if (std::abs(eta) >= ebeeSplit) 
+    iCategory = CAT_EE;
   
   return iCategory;
 }
 
-bool ElectronMVAEstimatorRun2Spring15NonTrig::
+bool ElectronMVAEstimatorRun2Spring15Trig::
 isEndcapCategory(int category ) const {
 
   bool isEndcap = false;
-  if( category == CAT_EE_PT5to10 || category == CAT_EE_PT10plus )
+  if( category == CAT_EE )
     isEndcap = true;
 
   return isEndcap;
 }
 
 
-std::unique_ptr<const GBRForest> ElectronMVAEstimatorRun2Spring15NonTrig::
+std::unique_ptr<const GBRForest> ElectronMVAEstimatorRun2Spring15Trig::
 createSingleReader(const int iCategory, const edm::FileInPath &weightFile){
 
   //
@@ -193,17 +182,7 @@ createSingleReader(const int iCategory, const edm::FileInPath &weightFile){
   tmpTMVAReader.AddVariable("ele_deltaetaseed",    &_allMVAVars.detacalo);
   
   // Spectator variables  
-  tmpTMVAReader.AddSpectator("ele_pT",             &_allMVAVars.pt);
-  tmpTMVAReader.AddSpectator("ele_isbarrel",       &_allMVAVars.isBarrel);
-  tmpTMVAReader.AddSpectator("ele_isendcap",       &_allMVAVars.isEndcap);
-  tmpTMVAReader.AddSpectator("scl_eta",            &_allMVAVars.SCeta);
-
-  tmpTMVAReader.AddSpectator("ele_eClass",                 &_allMVAVars.eClass);
-  tmpTMVAReader.AddSpectator("ele_pfRelIso",               &_allMVAVars.pfRelIso);
-  tmpTMVAReader.AddSpectator("ele_expected_inner_hits",    &_allMVAVars.expectedInnerHits);
-  tmpTMVAReader.AddSpectator("ele_vtxconv",                &_allMVAVars.vtxconv);
-  tmpTMVAReader.AddSpectator("mc_event_weight",            &_allMVAVars.mcEventWeight);
-  tmpTMVAReader.AddSpectator("mc_ele_CBmatching_category", &_allMVAVars.mcCBmatchingCategory);
+  // .... none ...
 
   //
   // Book the method and set up the weights file
@@ -214,7 +193,7 @@ createSingleReader(const int iCategory, const edm::FileInPath &weightFile){
 }
 
 // A function that should work on both pat and reco objects
-std::vector<float> ElectronMVAEstimatorRun2Spring15NonTrig::
+std::vector<float> ElectronMVAEstimatorRun2Spring15Trig::
 fillMVAVariables(const edm::Ptr<reco::Candidate>& particle,
                  const edm::Event& iEvent ) const {
 
@@ -316,22 +295,7 @@ fillMVAVariables(const edm::Ptr<reco::Candidate>& particle,
   // Spectator variables  
   allMVAVars.pt              = eleRecoPtr->pt();
   float scEta = superCluster->eta();
-  constexpr float ebeeSplit = 1.479;
-  allMVAVars.isBarrel        = ( std::abs(scEta) < ebeeSplit );
-  allMVAVars.isEndcap        = ( std::abs(scEta) >= ebeeSplit );
   allMVAVars.SCeta           = scEta;
-  // The spectator variables below were examined for training, but
-  // are not necessary for evaluating the discriminator, so they are
-  // given dummy values (the specator variables above are also unimportant).
-  // They are introduced only to match the definition of the discriminator 
-  // in the weights file.
-  constexpr unsigned nines = 999;
-  allMVAVars.eClass               = nines;
-  allMVAVars.pfRelIso             = nines;
-  allMVAVars.expectedInnerHits    = nines;
-  allMVAVars.vtxconv              = nines;
-  allMVAVars.mcEventWeight        = nines;
-  allMVAVars.mcCBmatchingCategory = nines;
 
   constrainMVAVariables(allMVAVars);
 
@@ -365,15 +329,7 @@ fillMVAVariables(const edm::Ptr<reco::Candidate>& particle,
                                        allMVAVars.detacalo,                                       
                                        // Spectator variables  
                                        allMVAVars.pt,
-                                       allMVAVars.isBarrel,
-                                       allMVAVars.isEndcap,
-                                       allMVAVars.SCeta,                                       
-                                       allMVAVars.eClass,
-                                       allMVAVars.pfRelIso,
-                                       allMVAVars.expectedInnerHits,
-                                       allMVAVars.vtxconv,
-                                       allMVAVars.mcEventWeight,
-                                       allMVAVars.mcCBmatchingCategory)
+                                       allMVAVars.SCeta)
                       );
   } else {
     vars = std::move( packMVAVariables(allMVAVars.see,
@@ -401,21 +357,13 @@ fillMVAVariables(const edm::Ptr<reco::Candidate>& particle,
                                        allMVAVars.detacalo,                                       
                                        // Spectator variables  
                                        allMVAVars.pt,
-                                       allMVAVars.isBarrel,
-                                       allMVAVars.isEndcap,
-                                       allMVAVars.SCeta,                                       
-                                       allMVAVars.eClass,
-                                       allMVAVars.pfRelIso,
-                                       allMVAVars.expectedInnerHits,
-                                       allMVAVars.vtxconv,
-                                       allMVAVars.mcEventWeight,
-                                       allMVAVars.mcCBmatchingCategory)
+                                       allMVAVars.SCeta)
                       );
   }
   return vars;
 }
 
-void ElectronMVAEstimatorRun2Spring15NonTrig::constrainMVAVariables(AllVariables& allMVAVars) const {
+void ElectronMVAEstimatorRun2Spring15Trig::constrainMVAVariables(AllVariables& allMVAVars) const {
 
   // Check that variables do not have crazy values
 
