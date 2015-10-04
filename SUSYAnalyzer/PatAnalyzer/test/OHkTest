@@ -1,0 +1,97 @@
+[arg 1] :  SSSync_Interactive.py
+13-Mar-2015 12:20:19 EDT  Initiating request to open file file:///cms/data/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root
+13-Mar-2015 12:20:19 EDT  Successfully opened file file:///cms/data/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root
+Begin processing the 1st record. Run 1, Event 82384507, LumiSection 823846 at 13-Mar-2015 12:20:25.293 EDT
+Begin processing the 10001st record. Run 1, Event 83545108, LumiSection 835452 at 13-Mar-2015 12:21:05.376 EDT
+Begin processing the 20001st record. Run 1, Event 84211164, LumiSection 842112 at 13-Mar-2015 12:21:33.149 EDT
+Begin processing the 30001st record. Run 1, Event 94802738, LumiSection 948028 at 13-Mar-2015 12:22:02.082 EDT
+Begin processing the 40001st record. Run 1, Event 85774320, LumiSection 857744 at 13-Mar-2015 12:22:30.490 EDT
+13-Mar-2015 12:22:59 EDT  Closed file file:///cms/data/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00C90EFC-3074-E411-A845-002590DB9262.root
+13-Mar-2015 12:22:59 EDT  Initiating request to open file file:///cms/data/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0EA5C14E-BC76-E411-8BBA-0025907DC9D0.root
+13-Mar-2015 12:22:59 EDT  Successfully opened file file:///cms/data/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0EA5C14E-BC76-E411-8BBA-0025907DC9D0.root
+Begin processing the 50001st record. Run 1, Event 15656677, LumiSection 156567 at 13-Mar-2015 12:23:00.775 EDT
+[WARNING]: No candidate primary vertices passed the quality cuts, so skipping event
+Begin processing the 60001st record. Run 1, Event 17159176, LumiSection 171592 at 13-Mar-2015 12:23:30.384 EDT
+Begin processing the 70001st record. Run 1, Event 22548433, LumiSection 225485 at 13-Mar-2015 12:23:57.882 EDT
+Begin processing the 80001st record. Run 1, Event 68125341, LumiSection 681254 at 13-Mar-2015 12:24:28.067 EDT
+Begin processing the 90001st record. Run 1, Event 22327541, LumiSection 223276 at 13-Mar-2015 12:24:57.613 EDT
+13-Mar-2015 12:25:26 EDT  Closed file file:///cms/data/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/0EA5C14E-BC76-E411-8BBA-0025907DC9D0.root
+99975
+0
+
+TrigReport ---------- Event  Summary ------------
+TrigReport Events total = 99975 passed = 99975 failed = 0
+
+TrigReport ---------- Path   Summary ------------
+TrigReport  Trig Bit#        Run     Passed     Failed      Error Name
+TrigReport     1    0      99975      99975          0          0 p
+
+TrigReport -------End-Path   Summary ------------
+TrigReport  Trig Bit#        Run     Passed     Failed      Error Name
+
+TrigReport ---------- Modules in Path: p ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0      99975      99975          0          0 goodOfflinePrimaryVertices
+TrigReport     1    1      99975      99975          0          0 SyncExercise
+
+TrigReport ---------- Module Summary ------------
+TrigReport    Visited        Run     Passed     Failed      Error Name
+TrigReport      99975      99975      99975          0          0 goodOfflinePrimaryVertices
+TrigReport      99975      99975      99975          0          0 SyncExercise
+TrigReport      99975      99975      99975          0          0 TriggerResults
+
+TimeReport ---------- Event  Summary ---[sec]----
+TimeReport CPU/event = 0.002480 Real/event = 0.002817
+
+TimeReport ---------- Path   Summary ---[sec]----
+TimeReport             per event          per path-run 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport   0.002373   0.002686   0.002373   0.002686 p
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event          per path-run 
+
+TimeReport -------End-Path   Summary ---[sec]----
+TimeReport             per event       per endpath-run 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event       per endpath-run 
+
+TimeReport ---------- Modules in Path: p ---[sec]----
+TimeReport             per event      per module-visit 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport   0.000015   0.000015   0.000015   0.000015 goodOfflinePrimaryVertices
+TimeReport   0.000420   0.000436   0.000420   0.000436 SyncExercise
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event      per module-visit 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event      per module-visit 
+
+TimeReport ---------- Module Summary ---[sec]----
+TimeReport             per event        per module-run      per module-visit 
+TimeReport        CPU       Real        CPU       Real        CPU       Real Name
+TimeReport   0.000016   0.000016   0.000016   0.000016   0.000016   0.000016 TriggerResults
+TimeReport   0.000015   0.000015   0.000015   0.000015   0.000015   0.000015 goodOfflinePrimaryVertices
+TimeReport   0.000420   0.000436   0.000420   0.000436   0.000420   0.000436 SyncExercise
+TimeReport        CPU       Real        CPU       Real        CPU       Real Name
+TimeReport             per event        per module-run      per module-visit 
+
+T---Report end!
+
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                             2        2
+    2 fileAction           -s file_open                              4        4
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostProcessEvent PostEndRun       
+    2 fileAction           pre-events       pre-events       PostProcessEvent
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                  6                   6
