@@ -124,12 +124,17 @@ private:
     edm::InputTag IT_METFilters;
 	//edm::InputTag electronsCollection_;
 	edm::InputTag MVAidCollection_;
+	edm::InputTag id_;
+	
+	edm::ValueMap<bool>  idDecisionMapToken_; //a bool true=passed ID, false = failed ID
+    edm::ValueMap<unsigned> firstIdCutFailedMapToken_; //the number of the first cut failed in the order they are defined in the PSet starting at zero (ie if you et,dEtaIn,dPhiIn,hadem cuts defined and it passed et,dEtaIn but failed dPhiIn, this number would be 2, in the case of no cuts failed it is #cuts
+    std::string idMD5NameToken_; //the md5sum of the ID you are using (E/gamma might ask you for this to verify you are running the right ID) 
 	
 	bool doFR;
 	
 	HLTConfigProvider hltConfig_;
 	
-	EGammaMvaEleEstimatorCSA14* myMVATrig;
+	//EGammaMvaEleEstimatorCSA14* myMVATrig;
     
     edm::Service<TFileService> fs;
     FILE *outfile;
@@ -140,6 +145,29 @@ private:
     TTree* outputTree;
     
     string _corrLevel;
+	
+	enum decay {
+        W_L,  // 0
+        W_T_L, // 1
+        W_B_L, // 2
+        W_B_D_L, //3
+        W_B_D_T_L, // 4
+        W_B_T_L, // 5
+        W_D_L, // 6
+        W_D_T_L, //7
+        B_L, // 8
+        B_D_L, //9
+        B_D_T_L, //10
+        B_T_L,  // 11
+        D_L, //12
+        D_T_L, //13
+        B_Baryon, // 14
+        C_Baryon, //15
+        pi_0, //16
+        photon_, //17
+        F_L, //18
+        N_U_L_L // 19
+    };
     
     
     double _relIsoCutE;

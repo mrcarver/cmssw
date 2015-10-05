@@ -215,7 +215,7 @@ std::vector<const pat::Electron* > tools::MVALooseElectronSelector(const std::ve
                                                               double v_electron_d0,
                                                               bool bool_electron_chargeConsistency,
                                                               edm::Handle< std::vector<reco::Conversion> > &theConversions,
-                                                              reco::BeamSpot::Point BS, EGammaMvaEleEstimatorCSA14* myMVATrig){
+                                                              reco::BeamSpot::Point BS){//, EGammaMvaEleEstimatorCSA14* myMVATrig){
 	
 	std::vector<const pat::Electron* > vElectrons;
 	for( std::vector<pat::Electron>::const_iterator el = thePatElectrons.begin() ; el != thePatElectrons.end() ; el++ ) {
@@ -240,8 +240,8 @@ std::vector<const pat::Electron* > tools::MVALooseElectronSelector(const std::ve
 	else
 		mvaThresh = -0.70;//-0.55;
 		
-	double mvaVal = myMVATrig->mvaValue(*el,false);
-	if(mvaVal < mvaThresh) continue;
+	//double mvaVal = myMVATrig->mvaValue(*el,false);
+	if(1.0 < mvaThresh) continue;
 	
 	vElectrons.push_back(&*el );
 

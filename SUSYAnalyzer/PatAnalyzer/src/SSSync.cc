@@ -67,15 +67,26 @@ _regression(false)
     //IT_METFilters       = iConfig.getParameter<edm::InputTag>("METFilter");
 	
 	MVAidCollection_      = iConfig.getParameter<edm::InputTag>("MVAId");
-	std::vector<std::string> myManualCatWeigths;
+	
+	id_      = iConfig.getParameter<edm::InputTag>("id");
 	
 	
-	myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml");
-	myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml");
-	myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml");
-	myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml");
-	myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml");
-	myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml");
+	consumes<edm::ValueMap<bool> >(id_);
+    consumes<edm::ValueMap<unsigned> >(id_);
+	//consumes<edm::ValueMap<float> >(id_);
+	consumes<edm::ValueMap<float> >(MVAidCollection_);
+    consumes<std::string>(id_);
+	
+	
+	/*std::vector<std::string> myManualCatWeigths;
+	
+	
+	myManualCatWeigths.push_back("SUSYAnalyzer/PatAnalyzer/PHYS14Files/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml");
+	myManualCatWeigths.push_back("SUSYAnalyzer/PatAnalyzer/PHYS14Files/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml");
+	myManualCatWeigths.push_back("SUSYAnalyzer/PatAnalyzer/PHYS14Files/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml");
+	myManualCatWeigths.push_back("SUSYAnalyzer/PatAnalyzer/PHYS14Files/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml");
+	myManualCatWeigths.push_back("SUSYAnalyzer/PatAnalyzer/PHYS14Files/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml");
+	myManualCatWeigths.push_back("SUSYAnalyzer/PatAnalyzer/PHYS14Files/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml");
 	
 	
 	//myManualCatWeigths.push_back("EgammaAnalysis/ElectronTools/data/CSA14/TrigIDMVA_50ns_EB_BDT.weights.xml");
@@ -94,7 +105,7 @@ _regression(false)
 						  //EGammaMvaEleEstimatorCSA14::kTrig,
                           true,
                           myManualCatWeigthsTrig);
-    
+    */
     //outfile = fopen("FakeSync.txt", "w");
 }
 
@@ -126,106 +137,7 @@ void SSSync::beginJob()
 	const char* pres[2] = {"","_Prescaled"};
 	
 	float pbs[6] = {10.0,15.0,25.0,35.0,50.0,70.0};
-	
-	for(int i=0;i<2;i++){
-		for(int j=0;j<2;j++){
-			//Histos for total numbers like Giuseppe's plots
-			for(int k=0;k<3;k++){
-	
-				TotalNumbers[i][j][k] = fs->make<TH1F>(Form("Total%s%s%s",flav[i],iso[j],types[k]),Form("Total # %ss %s %s",flav[i],iso[j],types[k]),5,0,5);
-				TotalNumbers[i][j][k]->GetXaxis()->SetBinLabel(1,ControlTrigNames[i][j][0]);
-				TotalNumbers[i][j][k]->GetXaxis()->SetBinLabel(2,ControlTrigNames[i][j][1]);
-				TotalNumbers[i][j][k]->GetXaxis()->SetBinLabel(3,ControlTrigNames[i][j][2]);
-				TotalNumbers[i][j][k]->GetXaxis()->SetBinLabel(4,ControlTrigNames[i][j][3]);
-				TotalNumbers[i][j][k]->GetXaxis()->SetBinLabel(5,ControlTrigNames[i][j][4]);
-				
-				
-				if(!i && !j){
-					TotalBtag[k] = fs->make<TH1F>(Form("TotalBtag%s",types[k]),Form("Total numbers %s",types[k]),2,0,2);
-					TotalBtag[k]->GetXaxis()->SetBinLabel(1,BControlTrigNames[1]);
-					TotalBtag[k]->GetXaxis()->SetBinLabel(2,BControlTrigNames[0]);
-				}
-			
-			}
-			
-			//Histos for purity like Santiago's
-			for(int k=0;k<5;k++){
-				
-				SPurity[i][j][k] = fs->make<TH1F>(ControlTrigNames[i][j][k],ControlTrigNames[i][j][k],5,0,5);
-				ControlPtDist[i][j][k][0] = fs->make<TH1F>(ControlTrigNames[i][j][k]+"_PtDist",ControlTrigNames[i][j][k],5,pbs);
-				ControlPtDistTight[i][j][k][0] = fs->make<TH1F>(ControlTrigNames[i][j][k]+"_PtDist_Tight",ControlTrigNames[i][j][k],5,pbs);
-				
-				ControlPtDist[i][j][k][1] = fs->make<TH1F>(ControlTrigNames[i][j][k]+"_PtDist_Prescaled",ControlTrigNames[i][j][k],5,pbs);
-				ControlPtDistTight[i][j][k][1] = fs->make<TH1F>(ControlTrigNames[i][j][k]+"_PtDist_Tight_Prescaled",ControlTrigNames[i][j][k],5,pbs);
-				
-				for(int mt=0;mt<2;mt++){
-				
-					ControlMTDist[i][j][k][mt][0] = fs->make<TH1F>(ControlTrigNames[i][j][k]+"MTDist"+MTcut[mt],ControlTrigNames[i][j][k],15,0,150);
-					ControlMTDist[i][j][k][mt][1] = fs->make<TH1F>(ControlTrigNames[i][j][k]+"MTDist"+MTcut[mt]+"_Prescaled",ControlTrigNames[i][j][k],15,0,150);
-				}
-			}
-		}
-	}
-	
-	SPurityB[0] = fs->make<TH1F>("EleBtagPurity","EleBtagPurity",5,0,5);
-	SPurityB[1] = fs->make<TH1F>("MuBtagPurity","MuBtagPurity",5,0,5);
-	
-	SPurityB_Mod[0] = fs->make<TH1F>("EleBtagPurity_Mod","EleBtagPurity",5,0,5);
-	SPurityB_Mod[1] = fs->make<TH1F>("MuBtagPurity_Mod","MuBtagPurity",5,0,5);
-	
 
-	
-	
-	BControlPtDist[0][0][0] = fs->make<TH1F>("EleBtag_PtDist","EleBtag_PtDist",5,pbs);
-	BControlPtDist[0][1][0] = fs->make<TH1F>("EleBtag_PtDist_Mod","EleBtag_PtDist_Mod",5,pbs);
-	
-	BControlPtDist[1][0][0] = fs->make<TH1F>("MuBtag_PtDist","MuBtag_PtDist",5,pbs);
-	BControlPtDist[1][1][0] = fs->make<TH1F>("MuBtag_PtDist_Mod","MuBtag_PtDist_Mod",5,pbs);
-
-	BControlPtDistTight[0][0][0] = fs->make<TH1F>("EleBtag_PtDist_Tight","EleBtag_PtDist",5,pbs);
-	BControlPtDistTight[0][1][0] = fs->make<TH1F>("EleBtag_PtDist_Mod_Tight","EleBtag_PtDist_Mod",5,pbs);
-	
-	BControlPtDistTight[1][0][0] = fs->make<TH1F>("MuBtag_PtDist_Tight","MuBtag_PtDist",5,pbs);
-	BControlPtDistTight[1][1][0] = fs->make<TH1F>("MuBtag_PtDist_Mod_Tight","MuBtag_PtDist_Mod",5,pbs);
-	
-	BControlMTDist[0][0][0][0] = fs->make<TH1F>("EleBtag_Mt","EleBtag_Mt",15,0,150);
-	BControlMTDist[0][0][1][0] = fs->make<TH1F>("EleBtag_Mt_Inverted","EleBtag_Mt_Inverted",15,0,150);
-	
-	BControlMTDist[0][1][0][0] = fs->make<TH1F>("EleBtag_Mt_Mod","EleBtag_Mt",15,0,150);
-	BControlMTDist[0][1][1][0] = fs->make<TH1F>("EleBtag_Mt_Inverted_Mod","EleBtag_Mt_Inverted",15,0,150);
-	
-	BControlMTDist[1][0][0][0] = fs->make<TH1F>("MuBtag_Mt","MuBtag_Mt",15,0,150);
-	BControlMTDist[1][0][1][0] = fs->make<TH1F>("MuBtag_Mt_Inverted","MuBtag_Mt_Inverted",15,0,150);
-	
-	BControlMTDist[1][1][0][0] = fs->make<TH1F>("MuBtag_Mt_Mod","MuBtag_Mt",15,0,150);
-	BControlMTDist[1][1][1][0] = fs->make<TH1F>("MuBtag_Mt_Inverted_Mod","MuBtag_Mt_Inverted",15,0,150);
-	
-	
-	
-	BControlPtDist[0][0][1] = fs->make<TH1F>("EleBtag_PtDist_Prescaled","EleBtag_PtDist",5,pbs);
-	BControlPtDist[0][1][1] = fs->make<TH1F>("EleBtag_PtDist_Mod_Prescaled","EleBtag_PtDist_Mod",5,pbs);
-	
-	BControlPtDist[1][0][1] = fs->make<TH1F>("MuBtag_PtDist_Prescaled","MuBtag_PtDist",5,pbs);
-	BControlPtDist[1][1][1] = fs->make<TH1F>("MuBtag_PtDist_Mod_Prescaled","MuBtag_PtDist_Mod",5,pbs);
-
-	BControlPtDistTight[0][0][1] = fs->make<TH1F>("EleBtag_PtDist_Tight_Prescaled","EleBtag_PtDist",5,pbs);
-	BControlPtDistTight[0][1][1] = fs->make<TH1F>("EleBtag_PtDist_Mod_Tight_Prescaled","EleBtag_PtDist_Mod",5,pbs);
-	
-	BControlPtDistTight[1][0][1] = fs->make<TH1F>("MuBtag_PtDist_Tight_Prescaled","MuBtag_PtDist",5,pbs);
-	BControlPtDistTight[1][1][1] = fs->make<TH1F>("MuBtag_PtDist_Mod_Tight_Prescaled","MuBtag_PtDist_Mod",5,pbs);
-	
-	BControlMTDist[0][0][0][1] = fs->make<TH1F>("EleBtag_Mt_Prescaled","EleBtag_Mt",15,0,150);
-	BControlMTDist[0][0][1][1] = fs->make<TH1F>("EleBtag_Mt_Inverted_Prescaled","EleBtag_Mt_Inverted",15,0,150);
-	
-	BControlMTDist[0][1][0][1] = fs->make<TH1F>("EleBtag_Mt_Mod_Prescaled","EleBtag_Mt",15,0,150);
-	BControlMTDist[0][1][1][1] = fs->make<TH1F>("EleBtag_Mt_Inverted_Mod_Prescaled","EleBtag_Mt_Inverted",15,0,150);
-	
-	BControlMTDist[1][0][0][1] = fs->make<TH1F>("MuBtag_Mt_Prescaled","MuBtag_Mt",15,0,150);
-	BControlMTDist[1][0][1][1] = fs->make<TH1F>("MuBtag_Mt_Inverted_Prescaled","MuBtag_Mt_Inverted",15,0,150);
-	
-	BControlMTDist[1][1][0][1] = fs->make<TH1F>("MuBtag_Mt_Mod_Prescaled","MuBtag_Mt",15,0,150);
-	BControlMTDist[1][1][1][1] = fs->make<TH1F>("MuBtag_Mt_Inverted_Mod_Prescaled","MuBtag_Mt_Inverted",15,0,150);
-	
 	
 
 	std::cout<<"treeb\n";
@@ -460,7 +372,7 @@ void SSSync::beginJob()
     _nEventsTotalCounted = 0;
 	
 	
-	
+	std::cout<<"begin end\n";
     
 }
 
@@ -495,6 +407,9 @@ void SSSync::beginRun(const edm::Run& iRun, edm::EventSetup const& iSetup)
 void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetup)
 {
 
+	
+	//std::cout<<"ana1\n";
+
 	bool debug = false;
 
 	if(debug) std::cout<<"0";
@@ -518,15 +433,15 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	
 	 //size_t filterIndex = triggerSummary->filterIndex( triggerFilterEle_ );
 	// trigger::TriggerObjectCollection triggerObjects = triggerSummary->getObjects();
-	 /*if( !(filterIndex >= triggerSummary->sizeFilters()) ){
-	     const trigger::Keys& keys = triggerSummary->filterKeys( filterIndex );
-	     for( size_t j = 0; j < keys.size(); ++j ){
-	         trigger::TriggerObject foundObject = triggerObjects[keys[j]];
-	         if(fabs(foundObject.id()) == 11){ //It's an electron
+	 //if( !(filterIndex >= triggerSummary->sizeFilters()) ){
+	//     const trigger::Keys& keys = triggerSummary->filterKeys( filterIndex );
+	//     for( size_t j = 0; j < keys.size(); ++j ){
+	//         trigger::TriggerObject foundObject = triggerObjects[keys[j]];
+	//         if(fabs(foundObject.id()) == 11){ //It's an electron
 
-	}
-	}
-	}    */     
+	//}
+	//}
+	//}       
 	
 	//std::cout<<"trigresults size = "<<trigResults->size()<<"\n";//
 	//unsigned int tsize = trigResults->size();
@@ -648,11 +563,11 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		if(to->hasFilterLabel("hltSingleEle10CaloIdMTrackIdMDphiFilter"))
 			EBeles.push_back(obj);
 			
-		/*if(_BControlTrigs[1]){
-		std::vector<std::string> st = to->filterLabels();
-		for(std::vector<std::string>::iterator sti = st.begin();sti != st.end();sti++)
-			std::cout<<*sti<<"\n";
-		}*/
+		//if(_BControlTrigs[1]){
+		//std::vector<std::string> st = to->filterLabels();
+		//for(std::vector<std::string>::iterator sti = st.begin();sti != st.end();sti++)
+		///	std::cout<<*sti<<"\n";
+		//}
 	}
 	
 	
@@ -842,33 +757,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
     _eventNb = iEvent.id().event();
     _lumiBlock = iEvent.luminosityBlock();
 	
-	int ControlPrescales[2][2][5][8] = {{{{10000,10000,10000,10000,10000,10000,10000,10000},{10000,10000,10000,10000,10000,10000,10000,10000},{10000,10000,10000,10000,10000,10000,10000,10000},{1,1,1,1,1,2000,2000},{1,1,1,1,1,2000,2000}},
-										 {{10000,10000,10000,10000,10000,10000,10000,10000},{10000,10000,10000,10000,10000,10000,10000,10000},{1,1,1,1,1,4000,4000},{1,1,1,1,1,4000,4000},{1,1,1,1,1,1,1,1}}},
-										{{{400,400,400,2000,2000,4000,4000,2000},{1000,1000,1000,1000,1000,1000,1000,1000},{210,210,210,420,420,840,840,420},{28,28,28,112,112,224,224,112},{1,1,1,1,1,1,1,1}},
-										 {{230,230,230,1150,1150,2300,2300,1150},{1000,1000,1000,1000,1000,1000,1000,1000},{80,80,80,320,320,640,640,320},{21,21,21,84,84,168,168,84},{1,1,1,1,1,1,1,1}}}};
-	int BControlPrescales[2][8] = {{80,80,80,80,80,80,80,80},{20,10,10,20,20,45,45,45}};
-	unsigned int RunNumber[8] = {251244,251251,251252,251561,251562,251643,251721,251883};
-	int runIndex = 0;//	
-	for(unsigned int rn=0;rn<8;rn++){
-		if(_runNb == RunNumber[rn])
-			runIndex = rn;
-	}
-	/*switch(_runNb){
-	
-		case RunNumber[0]: runIndex = 0;break;
-		case RunNumber[1]: runIndex = 1;break;
-		case RunNumber[2]: runIndex = 2;break;
-		case RunNumber[3]: runIndex = 3;break;
-		case RunNumber[4]: runIndex = 4;break;
-		case RunNumber[5]: runIndex = 5;break;
-		case RunNumber[6]: runIndex = 6;break;
-		case RunNumber[7]: runIndex = 7;break;
-		default: runIndex = 0;
-	
-	
-	}*/
-	
-		
+
    if(debug) std::cout<<"1.4";
 	
 	
@@ -881,28 +770,13 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
     BeamSpot::Point  BS= theBeamSpot->position();
     //==================================
     
-	
+	/*
 	//=========== L1 Particles =============
 	edm::Handle<std::vector<l1extra::L1EtMissParticle>> L1HTContainer;
 	iEvent.getByLabel("l1extraParticles","MHT",L1HTContainer);
 	
-	if(_eventNb == 110365493) std::cout<<"1\n";
-	
-	
-	_L1HT = L1HTContainer->begin()->etTotal();
-	
-	if(_eventNb == 110365493) std::cout<<"2\n";
-	
 	edm::Handle<std::vector<l1extra::L1MuonParticle>> L1MuContainer;
 	iEvent.getByLabel("l1extraParticles","",L1MuContainer);
-	
-	if(_eventNb == 110365493) std::cout<<"3\n";
-	
-	_nL1Mus = 0;
-	if(_nL1Mus > 40)
-		_nL1Mus = 40;
-		
-	if(_eventNb == 110365493) std::cout<<"4\n";
 		
 	for(std::vector<l1extra::L1MuonParticle>::const_iterator nm = L1MuContainer->begin();nm != L1MuContainer->end();nm++){
 	
@@ -919,8 +793,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		_nL1Mus++;
 	}
 	//======================================
-   if(_eventNb == 110365493)  std::cout<<"5\n";
-   
+   */
    if(debug) std::cout<<"1.5";
     
     Vertex::Point PV = theVertices->begin()->position();
@@ -970,7 +843,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
    
     //============ Rho ============
     edm::Handle<double> rhoJets;
-    iEvent.getByLabel(edm::InputTag("fixedGridRhoFastjetAll","") , rhoJets);//kt6PFJets
+    iEvent.getByLabel(edm::InputTag("fixedGridRhoFastjetCentralNeutral","") , rhoJets);//kt6PFJets////fixedGridRhoFastjetAll
     double myRhoJets = *rhoJets;
 	_rho = myRhoJets;
     //==================================
@@ -980,13 +853,18 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
     //ESHandle<TransientTrackBuilder> theTTBuilder;
     //iEventSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theTTBuilder);//
     //==================================
-	if(_eventNb == 110365493)  std::cout<<"7\n";
-	
 	
 	//============Packed PF Cands for MiniIso=========
 	edm::Handle<pat::PackedCandidateCollection> pfcands;
     iEvent.getByLabel("packedPFCandidates", pfcands);
 	//================================================
+	
+	
+	//============= MVA Electron ID =================
+	edm::Handle<edm::ValueMap<float> > valuesMap;
+    iEvent.getByLabel(MVAidCollection_,valuesMap);
+	//===============================================
+	
 	
 	_weight = 1;
 	if(Sample=="ElectronsMC"){//============Individual Event Weight=============
@@ -1012,55 +890,24 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		_nEventsTotalCounted++;
     	_hCounter->Fill(0);
 	}
-	
-if(_eventNb == 110365493)  std::cout<<"8\n";
-    
-    enum decay {
-        W_L,  // 0
-        W_T_L, // 1
-        W_B_L, // 2
-        W_B_D_L, //3
-        W_B_D_T_L, // 4
-        W_B_T_L, // 5
-        W_D_L, // 6
-        W_D_T_L, //7
-        B_L, // 8
-        B_D_L, //9
-        B_D_T_L, //10
-        B_T_L,  // 11
-        D_L, //12
-        D_T_L, //13
-        B_Baryon, // 14
-        C_Baryon, //15
-        pi_0, //16
-        photon_, //17
-        F_L, //18
-        N_U_L_L // 19
-    };
-    
-   
 
-    //std::vector<const pat::Muon* > sMu = SSSyncMuonSelector( *thePatMuons, _minPt0, PV, _looseD0Mu);
     
-   // std::vector<const pat::Electron* > sEl = SSSyncElectronSelector( *thePatElectrons, _minPt0, PV, _looseD0E, _chargeConsistency, theConversions, BS);
-	
+
 	std::vector<const pat::Muon* > sMu = MVALooseMuonSelector( *thePatMuons, _minPt0, PV, _looseD0Mu);
-    
-    std::vector<const pat::Electron* > sEl = MVALooseElectronSelector( *thePatElectrons, _minPt0, PV, _looseD0E, _chargeConsistency, theConversions, BS, myMVATrig);
+  
+    std::vector<const pat::Electron* > sEl = MVALooseElectronSelector( *thePatElectrons, _minPt0, PV, _looseD0E, _chargeConsistency, theConversions, BS);//, myMVATrig);
+	
+	//for(auto ele=thePatElectrons->begin();ele!=thePatElectrons->end();++ele){
+   //   const edm::Ptr<pat::Electron> elePtr(thePatElectrons,ele-thePatElectrons->begin()); //value map is keyed of edm::Ptrs so we need to make one
+	//  float value = (*valuesMap)[elePtr];
+	//  std::cout<<"MVA output = "<<value<<"\n";
+   // }
 
     
     std::vector<const pat::Jet* > SelectedJetsAll = JetSelectorAll(*thePatJets, 5., 2.4);
     
     std::vector<const pat::Jet* > SelectedJets = JetSelector(*thePatJets, _jetPtCut, _jetEtaCut);//_jetEtaCut
-	
-	/*for(std::vector<pat::Electron>::const_iterator pei = thePatElectrons->begin();pei != thePatElectrons->end();pei++){
-	
-	
-		float mvaVal = myMVATrig->mvaValue(*pei,false);
-		std::cout<<"mvaVal = "<<mvaVal<<"\n";
-	
-	}*/
-	
+
 	if(debug) std::cout<<"2";
 
 	int NumEleFO = 0, NumMuFO = 0, NumTightEle = 0, NumTightMu = 0, NumLooseEle = 0, NumLooseMu = 0, FOIndex[2] = {-1,-1}, NumFO[2] = {0,0};
@@ -1068,9 +915,9 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
 
 	std::vector<TLorentzVector> LooseLep[2], FOLep[2];
 
-    if (sEl.size() + sMu.size() < 2 && !doFR) return;
+    if (sEl.size() + sMu.size() < 2 && !doFR) return;//two lepton selection
 	
-	if(sEl.size() + sMu.size() < 1 ) return;
+	if(sEl.size() + sMu.size() < 1 ) return;//FR selection
     
     HT = 0.;
     std::vector< const pat::Jet* > Bjets;
@@ -1079,11 +926,12 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
     
     int n_bJetsAll30 = 0;
     
-    if(_eventNb == 110365493)  std::cout<<"9\n";
+	
     _n_Jets = 0;
     _n_bJets = 0;
    // std::cout<<"before jets\n";
    if(debug) std::cout<<"3";
+ 
     for(unsigned int i = 0 ; i < SelectedJetsAll.size() ;i++ ){
         
         //double uncPt = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Pt();
@@ -1091,13 +939,12 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
         double uncPhi = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Phi();
         
         //double corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
-        
+            
         _jetEtaAll[i] = uncEta;
         _jetPhiAll[i] = uncPhi;
         _jetPtAll[i] = SelectedJetsAll[i]->pt();
-        //_jetPtAll[i] = SelectedJetsAll[i]->pt();
         
-        ((TLorentzVector *)_jetAllP4->At(i))->SetPtEtaPhiM( _jetPtAll[i], _jetEtaAll[i], _jetPhiAll[i], 0 );
+        //((TLorentzVector *)_jetAllP4->At(i))->SetPtEtaPhiM( _jetPtAll[i], _jetEtaAll[i], _jetPhiAll[i], 0 );
         
         _csvAll[i] = SelectedJetsAll[i]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         
@@ -1105,7 +952,6 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
             _bTaggedAll[i] = true;
             _n_bJetsAll++;
             if (_jetPtAll[i] > _jetPtCut) {
-                //bIndex[n_bJetsAll30] = i;
                 n_bJetsAll30++;
             }
         } else _bTaggedAll[i] = false;
@@ -1114,11 +960,11 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
     }
     _n_JetsAll = SelectedJetsAll.size();
 	
-    
+  
     int _sameSign[2][2] = {{0, 0}, {0, 0}};
-    //std::cout<<"before mu\n";
     int leptonCounter = 0;
-	if(_eventNb == 110365493)  std::cout<<"10\n";
+	
+	
     for(unsigned int i = 0 ; i < sMu.size() ;i++ ){
         
         
@@ -1258,48 +1104,6 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
                 _closeIndex[leptonCounter] = k;
             }
         }
-		
-		
-		
-		
-		if(_istightMVANoIsoSIP[leptonCounter] && ((TLorentzVector*)_leptonP4->At(leptonCounter))->Pt() > 10 && _3dIPsig[leptonCounter] < 4  
-					&& _ipPV[leptonCounter] < 0.05 && fabs(_ipZPV[leptonCounter]) < 0.1){
-					
-			float relCut = 6.7;
-			float ratioCut = 0.68;
-			float isoCut = 0.14;
-			
-			bool RatioRel = false, IsoCut = false;
-			
-			if(_closeJetAngAll[leptonCounter] > 0.4)
-				RatioRel = true;
-			else if( ( (((TLorentzVector*)_leptonP4->At(leptonCounter))->Pt())/_closeJetPtAll[leptonCounter] > ratioCut || _ptRelAll[leptonCounter] > relCut ) && _closeJetAngAll[leptonCounter] < 0.4 )
-				RatioRel = true;
-				
-			if( _miniIsolation[leptonCounter] < isoCut )
-				IsoCut = true;
-				
-			if(RatioRel && IsoCut)
-				NumTightMu++;
-				
-			if(_miniIsolation[leptonCounter] < 0.4){
-				NumMuFO++;
-				NumFO[1]++;
-				//FOIndex[1] = leptonCounter;
-				
-				FOLep[1].push_back(*((TLorentzVector *)_leptonP4->At(leptonCounter)));
-				FOI[1].push_back(leptonCounter);
-				
-			}
-					
-		}
-		
-		if(_miniIsolation[i] < 0.4  && _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){
-			NumLooseMu++;
-			FOIndex[1] = leptonCounter;
-			LooseLep[1].push_back(*((TLorentzVector *)_leptonP4->At(leptonCounter)));
-		}
-		
        
         
         leptonCounter++;
@@ -1368,7 +1172,15 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
 			_inheritance[leptonCounter][j] = moms[j]->pdgId();
 		}
 		
-		float mvaVal = myMVATrig->mvaValue(*iE,false);
+		float value = -10.0;
+		float mvaVal = -10.0;//myMVATrig->mvaValue(*iE,false);//
+		for(auto ele=thePatElectrons->begin();ele!=thePatElectrons->end();++ele){
+		const edm::Ptr<pat::Electron> elePtr(thePatElectrons,ele-thePatElectrons->begin()); //value map is keyed of edm::Ptrs so we need to make one
+			if(iE->gsfTrack() == ele->gsfTrack())
+				mvaVal = (*valuesMap)[elePtr];
+		}
+		
+		
 		
 		MvaHist->Fill(mvaVal);
 		double mvaThresh = 1.0, LmvaThresh = 1.0;
@@ -1467,66 +1279,6 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
             }
         }
 		
-		if(_istightMVANoIsoSIP_LMVA[leptonCounter] && ((TLorentzVector*)_leptonP4->At(leptonCounter))->Pt() > 10 && _3dIPsig[leptonCounter] < 4  
-					&& _ipPV[leptonCounter] < 0.05 && fabs(_ipZPV[leptonCounter]) < 0.1){
-					
-			float relCut = 7.0;
-			float ratioCut = 0.7;
-			float isoCut = 0.1;
-			
-			
-			bool RatioRel = false, IsoCut = false;
-			
-			if(_closeJetAngAll[leptonCounter] > 0.4)
-				RatioRel = true;
-			else if( ( (((TLorentzVector*)_leptonP4->At(leptonCounter))->Pt())/_closeJetPtAll[leptonCounter] > ratioCut || _ptRelAll[leptonCounter] > relCut ) && _closeJetAngAll[leptonCounter] < 0.4 )
-				RatioRel = true;
-				
-			if( _miniIsolation[leptonCounter] < isoCut )
-				IsoCut = true;
-				
-			if(RatioRel && IsoCut && _istightMVANoIsoSIP)
-				NumTightEle++;
-				
-			if(_miniIsolation[leptonCounter] < 0.4){
-				NumEleFO++;
-				NumFO[0]++;
-				//FOIndex[0] = leptonCounter;
-				FOLep[0].push_back(*((TLorentzVector *)_leptonP4->At(leptonCounter)));
-				FOI[0].push_back(leptonCounter);
-			}
-					
-		}
-		
-		
-		
-		if(_miniIsolation[i] < 0.4  && _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){
-		
-			bool mvaT = false;
-						   
-			if(fabs(iE->eta()) < 0.8){
-				if(_MVAVal[leptonCounter] > -0.11)
-					mvaT = true;
-			}
-			else if(fabs(iE->eta()) < 1.479){
-				if(_MVAVal[leptonCounter] > -0.35)
-					mvaT = true;
-			}
-			else{
-				if(_MVAVal[leptonCounter] > -0.55)
-					mvaT = true;
-			}
-			
-			if(mvaT){
-				NumLooseEle++;
-				FOIndex[0] = leptonCounter;
-				LooseLep[0].push_back(*((TLorentzVector *)_leptonP4->At(leptonCounter)));
-				//FOI[0].push_back(leptonCounter);
-			}
-		
-		
-		}
-		
       
         leptonCounter++;
         
@@ -1536,31 +1288,7 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
 	
 	int LepFromThisEvent[2][3] = {{NumEle,NumEleFO,NumTightEle},{NumMu,NumMuFO,NumTightMu}};
 	
-	
-	for(int i=0;i<2;i++){
-		for(int j=0;j<2;j++){
-			//Histos for total numbers like Giuseppe's plots
-			for(int k=0;k<3;k++){
 
-				for(int b=0;b<5;b++){
-					if(_ControlTrigs[i][j][b])
-						TotalNumbers[i][j][k]->SetBinContent(b+1,(TotalNumbers[i][j][k]->GetBinContent(b+1)+LepFromThisEvent[i][k]));
-				}
-				
-				if(!i && !j){
-			
-					if(_BControlTrigs[0])
-						TotalBtag[k]->SetBinContent(2,(TotalBtag[k]->GetBinContent(2) + LepFromThisEvent[1][k]));
-						
-					if(_BControlTrigs[1])
-						TotalBtag[k]->SetBinContent(1,(TotalBtag[k]->GetBinContent(1) + LepFromThisEvent[0][k]));
-				}
-			
-			}
-		}
-	}
-    
-	
 	
 	if(debug) std::cout<<"5\n";
 	
@@ -1610,501 +1338,15 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
 	if( doFR && leptonCounter < 1) return;	
 		
 
-	if(debug) std::cout<<"5.2\n";
 
-	Counter->Fill(5);
 	
-	FOCounterE->Fill(NumLooseEle);
-	FOCounterM->Fill(NumLooseMu);
-	
-	if(NumEleFO)
-		Counter->Fill(6);
-	
-	if(NumMuFO)
-		Counter->Fill(7);
-
-	if(debug) std::cout<<"5.3\n";
-	TLorentzVector lep;	
-	int lepf = 0;
-	if(NumLooseEle ){
-		if(debug) std::cout<<"5.4\n";
-		//lep.SetPtEtaPhiM(((TLorentzVector *)_leptonP4->At(FOIndex[0]))->Pt(),((TLorentzVector *)_leptonP4->At(FOIndex[0]))->Eta(),((TLorentzVector *)_leptonP4->At(FOIndex[0]))->Phi(),0);
-		lep.SetPtEtaPhiM(((TLorentzVector *)_leptonP4->At(leptonCounter-1))->Pt(),((TLorentzVector *)_leptonP4->At(leptonCounter-1))->Eta(),((TLorentzVector *)_leptonP4->At(leptonCounter-1))->Phi(),0);
-		if(leptonCounter != FOIndex[0])
-			Counter->Fill(3);
-	}
-	else{
-		if(debug) std::cout<<"5.5\n";
-		//lep.SetPtEtaPhiM(((TLorentzVector *)_leptonP4->At(FOIndex[1]))->Pt(),((TLorentzVector *)_leptonP4->At(FOIndex[1]))->Eta(),((TLorentzVector *)_leptonP4->At(FOIndex[1]))->Phi(),0);
-		lep.SetPtEtaPhiM(((TLorentzVector *)_leptonP4->At(leptonCounter-1))->Pt(),((TLorentzVector *)_leptonP4->At(leptonCounter-1))->Eta(),((TLorentzVector *)_leptonP4->At(leptonCounter-1))->Phi(),0);
-		lepf = 1;
-		if(leptonCounter != FOIndex[1])
-			Counter->Fill(4);
-	}
-	if(debug) std::cout<<"6";
-	
-	if(lepf)
-		Counter->Fill(8);
-	else
-		Counter->Fill(9);
-	
-	
-	
-	
-	/*bool awayJet = false, bJet = false;//second purity cut
-	for(int i=0;i<_n_Jets;i++){
-		
-		TLorentzVector jt;
-		jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
-		
-		//if(lep.DeltaR(jt) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-		//if(((TLorentzVector *)_leptonP4->At(leptonCounter-1))->DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-		if(((TLorentzVector *)_leptonP4->At(leptonCounter-1))->DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-			awayJet = true;
-			
-			if(_csv[i] > 0.814)
-				bJet = true;
-			
-		}
-		
-	}*/
 	if(debug) std::cout<<"7";//
 	
 	float IsoCutFO[2] = {0.1,0.14};
 	float RelCutFO[2] = {7.0,6.7};
 	float RatCutFO[2] = {0.7,0.68};
 	
-	if(FOLep[0].size() + FOLep[1].size() == 1)
-	{
 	
-	for(int i=0;i<2;i++){
-		for(int j=0;j<2;j++){
-			
-			//Histos for purity like Santiago's
-			for(int k=0;k<5;k++){
-			
-			if(debug) std::cout<<"7.1\n";
-			
-			//if(_ControlTrigs[i][j][k] && lepf == i){// 1 lepton	of proper flavor
-			//if(_ControlTrigs[i][j][k] && _flavors[leptonCounter-1] == i){// 1 lepton
-			if(_ControlTrigs[i][j][k] && FOLep[i].size()){// 1 lepton
-					
-					//SPurity[i][j][k]->SetBinContent(2,( SPurity[i][j][k]->GetBinContent(2) + 1 ));
-					SPurity[i][j][k]->Fill(1);
-					
-					if(debug) std::cout<<"7.2\n";
-					bool awayJet = false, bJet = false;//second purity cut
-					for(int a=0;a<_n_Jets;a++){
-		
-						TLorentzVector jt;
-						if(debug) std::cout<<"7.2.0.0\n";
-						jt.SetPtEtaPhiM(_jetPt[a],_jetEta[a],_jetPhi[a],0);
-						if(debug) std::cout<<"7.2.0.1\n";
-						if(FOLep[i][0].DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-							
-							if(debug) std::cout<<"7.2.2\n";
-							
-							awayJet = true;
-			
-							if(_csv[a] > 0.814)
-								bJet = true;
-			
-						}
-		
-					}
-					
-					if(debug) std::cout<<"7.3\n";
-			
-					if(awayJet && bJet){
-						//SPurity[i][j][k]->SetBinContent(3,( SPurity[i][j][k]->GetBinContent(3) + 1 ));
-						SPurity[i][j][k]->Fill(2);
-						
-						if(debug) std::cout<<"7.3.1\n";
-						if(_met < 20){
-							//SPurity[i][j][k]->SetBinContent(4,( SPurity[i][j][k]->GetBinContent(4) + 1 ));
-							SPurity[i][j][k]->Fill(3);
-						
-							ControlMTDist[i][j][k][0][0]->Fill(MT_calc(FOLep[i][0], _met, _met_phi));
-							ControlMTDist[i][j][k][0][1]->Fill(MT_calc(FOLep[i][0], _met, _met_phi),_weight*ControlPrescales[i][j][k][runIndex]);
-						
-							if(debug) std::cout<<"7.3.2\n";
-							//if(MT_calc(lep, _met, _met_phi) < 20){
-							//if(_mt[leptonCounter-1] < 20){
-							if(MT_calc(FOLep[i][0], _met, _met_phi) < 20){
-							
-								float CorrectedPt = FOLep[i][0].Pt();
-								float pTrel = _ptRelAll[FOI[i][0]];
-								float pTratio = FOLep[i][0].Pt()/_closeJetPtAll[FOI[i][0]];
-							
-								if(pTrel > RelCutFO[i])
-									CorrectedPt = FOLep[i][0].Pt()*(1 + TMath::Max(0.0,_miniIsolation[FOI[i][0]]));
-								else 
-									CorrectedPt = TMath::Max(FOLep[i][0].Pt(),_closeJetPtAll[FOI[i][0]]*RatCutFO[i]);
-							
-							
-								if(debug) std::cout<<"7.3.3\n";
-								//SPurity[i][j][k]->SetBinContent(5,( SPurity[i][j][k]->GetBinContent(5) + 1 ));
-								SPurity[i][j][k]->Fill(4);
-								if(debug) std::cout<<"7.3.4\n";
-								ControlPtDist[i][j][k][0]->Fill(CorrectedPt);
-								ControlPtDist[i][j][k][1]->Fill(FOLep[i][0].Pt(),_weight*ControlPrescales[i][j][k][runIndex]);
-							
-								if(_miniIsolation[FOI[i][0]] < IsoCutFO[i] && (pTrel > RelCutFO[i] || pTratio > RatCutFO[i])){
-									ControlPtDistTight[i][j][k][0]->Fill(CorrectedPt);
-									ControlPtDistTight[i][j][k][1]->Fill(FOLep[i][0].Pt(),_weight*ControlPrescales[i][j][k][runIndex]);
-								}
-							
-							}
-						}
-						else{
-							ControlMTDist[i][j][k][1][0]->Fill(MT_calc(FOLep[i][0], _met, _met_phi));
-							ControlMTDist[i][j][k][1][1]->Fill(MT_calc(FOLep[i][0], _met, _met_phi),_weight*ControlPrescales[i][j][k][runIndex]);
-						
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	}
-	
-	if(debug) std::cout<<"7.5\n";
-	
-	
-	
-	if(_BControlTrigs[0] && FOLep[1].size() == 1 && !FOLep[0].size()){//muons
-	//if(_BControlTrigs[0] && _flavors[leptonCounter-1] == 1){	
-
-		if(debug) std::cout<<"7.5.1\n";
-		bool awayJet = false, bJet = false;//second purity cut
-		for(int a=0;a<_n_Jets;a++){
-		
-			TLorentzVector jt;
-			jt.SetPtEtaPhiM(_jetPt[a],_jetEta[a],_jetPhi[a],0);
-			if(FOLep[1][0].DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-				
-				if(debug) std::cout<<"7.5.2\n";
-				
-				awayJet = true;
-		
-				if(_csv[a] > 0.814)
-					bJet = true;
-		
-			}
-		
-		}
-		
-		
-		if(debug) std::cout<<"7.5.3\n";
-		SPurityB[1]->Fill(1);
-			
-		if(awayJet && bJet){
-			SPurityB[1]->Fill(2);
-			if(_met < 20){
-				SPurityB[1]->Fill(3);
-				
-				if(debug) std::cout<<"7.5.4\n";
-				BControlMTDist[1][0][0][0]->Fill(MT_calc(FOLep[1][0], _met, _met_phi));
-				BControlMTDist[1][0][0][1]->Fill(MT_calc(FOLep[1][0], _met, _met_phi),_weight*BControlPrescales[1][runIndex]);
-			
-				if(MT_calc(FOLep[1][0], _met, _met_phi) < 20){
-				//if(_mt[leptonCounter-1] < 20){
-					//SPurityB[1]->SetBinContent(5,( SPurityB[1]->GetBinContent(5) + 1 ));
-					
-					if(debug) std::cout<<"7.5.5\n";
-					float CorrectedPt = FOLep[1][0].Pt();
-					float pTrel = _ptRelAll[FOI[1][0]];
-					float pTratio = FOLep[1][0].Pt()/_closeJetPtAll[FOI[1][0]];
-					if(debug) std::cout<<"7.5.6\n";
-					if(pTrel > RelCutFO[1])
-						CorrectedPt = FOLep[1][0].Pt()*(1 + TMath::Max(0.0,_miniIsolation[FOI[1][0]]));
-					else 
-						CorrectedPt = TMath::Max(FOLep[1][0].Pt(),_closeJetPtAll[FOI[1][0]]*RatCutFO[1]);
-					
-					if(debug) std::cout<<"7.5.7\n";
-					SPurityB[1]->Fill(4);
-					BControlPtDist[1][0][0]->Fill(CorrectedPt);
-					BControlPtDist[1][0][1]->Fill(FOLep[1][0].Pt(),_weight*BControlPrescales[1][runIndex]);
-					
-					if(_miniIsolation[FOI[1][0]] < 0.14  && (pTrel > RelCutFO[1] || pTratio > RatCutFO[1])){
-						BControlPtDistTight[1][0][0]->Fill(CorrectedPt);
-						BControlPtDistTight[1][0][1]->Fill(FOLep[1][0].Pt(),_weight*BControlPrescales[1][runIndex]);
-					}
-					if(debug) std::cout<<"7.5.8\n";
-					
-				}
-			}
-			else{
-				if(debug) std::cout<<"7.5.9\n";
-				BControlMTDist[1][0][1][0]->Fill(MT_calc(FOLep[1][0], _met, _met_phi));
-				BControlMTDist[1][0][1][1]->Fill(MT_calc(FOLep[1][0], _met, _met_phi),_weight*BControlPrescales[1][runIndex]);
-			}
-		}
-	}
-	
-	
-	if(debug) std::cout<<"7.6\n";
-	
-	if(_BControlTrigs[0] && FOLep[1].size() && !FOLep[0].size()){//muons, here we need to match to trigger object 
-
-		if(debug) std::cout<<"7.6.1.00\n";
-		int fom = -1;
-		float dr = 9999;
-		
-		if(debug) std::cout<<"7.6.1.0 MBmuon.size() = "<<MBmuon.size()<<"\n";
-		for(unsigned int co=0;co<MBmuon.size();co++){//get closest FO muon to trigger object
-			for(unsigned int fo=0;fo<FOLep[1].size();fo++){
-				if(debug) std::cout<<"7.6.1.1\n";
-				if(FOLep[1][fo].DeltaR(  MBmuon[co]  ) < dr){
-					dr  = FOLep[1][fo].DeltaR(  MBmuon[co] );
-					fom = fo;
-				}
-				
-			}
-		}
-		if(debug) std::cout<<"7.6.1.2\n";
-		
-		bool awayJet = false, bJet = false, mod = true;//second purity cut
-		for(int a=0;a<_n_Jets;a++){
-		
-			TLorentzVector jt;
-			jt.SetPtEtaPhiM(_jetPt[a],_jetEta[a],_jetPhi[a],0);
-			if(FOLep[1][fom].DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-				
-				if(debug) std::cout<<"7.6.2\n";
-				
-				awayJet = true;
-		
-				if(_csv[a] > 0.814)
-					bJet = true;
-					
-				for(unsigned int fo=0;fo<FOLep[1].size();fo++){//reject event if extra muons unless in a bjet?
-					
-					if((int)fo == fom) continue;
-					
-					mod = false;
-		
-					if(FOLep[1][fo].DeltaR(  jt  ) < 0.4 && bJet)
-						mod = true;
-					
-				}
-		
-			}
-		
-		}
-		
-		if(debug) std::cout<<"7.6.1\n";
-		if(fom >= 0 && dr < 0.4 && mod){ ///require main FO matched to trigger object and any others be inside bjet
-		
-	
-			SPurityB_Mod[1]->Fill(1);
-			
-			if(awayJet && bJet){
-				SPurityB_Mod[1]->Fill(2);
-				if(_met < 20){
-					SPurityB_Mod[1]->Fill(3);
-					
-					BControlMTDist[1][1][0][0]->Fill(MT_calc(FOLep[1][fom], _met, _met_phi));
-					BControlMTDist[1][1][0][1]->Fill(MT_calc(FOLep[1][fom], _met, _met_phi),_weight*BControlPrescales[1][runIndex]);
-			
-					if(MT_calc(FOLep[1][fom], _met, _met_phi) < 20){
-						//SPurityB_Mod[1]->SetBinContent(5,( SPurityB[1]->GetBinContent(5) + 1 ));
-						
-						
-						float CorrectedPt = FOLep[1][fom].Pt();
-						float pTrel = _ptRelAll[FOI[1][fom]];
-						float pTratio = FOLep[1][fom].Pt()/_closeJetPtAll[FOI[1][fom]];
-					
-						if(pTrel > RelCutFO[1])
-							CorrectedPt = FOLep[1][fom].Pt()*(1 + TMath::Max(0.0,_miniIsolation[FOI[1][fom]]));
-						else 
-							CorrectedPt = TMath::Max(FOLep[1][fom].Pt(),_closeJetPtAll[FOI[1][fom]]*RatCutFO[1]);
-						
-						
-						SPurityB_Mod[1]->Fill(4);
-						BControlPtDist[1][1][0]->Fill(CorrectedPt);
-						BControlPtDist[1][1][1]->Fill(FOLep[1][fom].Pt(),_weight*BControlPrescales[1][runIndex]);
-						
-						if(_miniIsolation[FOI[1][fom]] < 0.14 && (pTrel > RelCutFO[1] || pTratio > RatCutFO[1])){
-							BControlPtDistTight[1][1][0]->Fill(CorrectedPt);
-							BControlPtDistTight[1][1][1]->Fill(FOLep[1][fom].Pt(),_weight*BControlPrescales[1][runIndex]);
-						}
-					
-						
-					}
-				}
-				else{
-					BControlMTDist[1][1][1][0]->Fill(MT_calc(FOLep[1][fom], _met, _met_phi));
-					BControlMTDist[1][1][1][1]->Fill(MT_calc(FOLep[1][fom], _met, _met_phi),_weight*BControlPrescales[1][runIndex]);
-				}
-			}
-		}
-	}
-	
-	if(debug) std::cout<<"7.7\n";
-	
-	
-	
-	if(debug) std::cout<<"7.2\n";
-	
-	if(_BControlTrigs[1] && FOLep[0].size() == 1 && !FOLep[1].size()){//electrons
-	//if(_BControlTrigs[1] && _flavors[leptonCounter-1] == 0){
-		
-		bool awayJet = false, bJet = false;//second purity cut
-		for(int a=0;a<_n_Jets;a++){
-		
-			TLorentzVector jt;
-			jt.SetPtEtaPhiM(_jetPt[a],_jetEta[a],_jetPhi[a],0);
-			if(FOLep[0][0].DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-				
-				if(debug) std::cout<<"7.5.2.a\n";
-				
-				awayJet = true;
-		
-				if(_csv[a] > 0.814)
-					bJet = true;
-		
-			}
-		
-		}
-		
-		
-		if(debug) std::cout<<"7.5.2.a.1\n";
-		SPurityB[0]->Fill(1);
-		if(awayJet  && bJet){
-			SPurityB[0]->Fill(2);
-			if(_met < 20){
-				SPurityB[0]->Fill(3);
-				
-				if(debug) std::cout<<"7.5.2.a.2\n";
-				BControlMTDist[0][0][0][0]->Fill(MT_calc(FOLep[0][0], _met, _met_phi));
-				BControlMTDist[0][0][0][1]->Fill(MT_calc(FOLep[0][0], _met, _met_phi),_weight*BControlPrescales[0][runIndex]);
-			
-				if(debug) std::cout<<"7.5.2.a.2.1\n";
-			
-				if(MT_calc(FOLep[0][0], _met, _met_phi) < 20){
-				//if(_mt[leptonCounter-1] < 20){
-					//SPurityB[0]->SetBinContent(5,( SPurityB[0]->GetBinContent(5) + 1 ));
-					
-					if(debug) std::cout<<"7.5.2.a.2.2 ----- FOLep[0][0].Pt() = "<<FOLep[0][0].Pt()<<"\n";
-					float CorrectedPt = FOLep[0][0].Pt();
-					if(debug) std::cout<<"7.5.2.a.2.2.1\n";
-					if(debug) std::cout<<"FOI[0][0] = "<<FOI[0][0]<<"\n";
-					float pTrel = _ptRelAll[FOI[0][0]];
-					if(debug) std::cout<<"7.5.2.a.2.2.2 ----- FOLEP[0][0].Pt() = "<<FOLep[0][0].Pt()<<"\n";
-					float pTratio = FOLep[0][0].Pt()/_closeJetPtAll[FOI[0][0]];
-					if(debug) std::cout<<"7.5.2.a.2.3\n";
-					
-					if(pTrel > RelCutFO[0]){
-						if(debug) std::cout<<"7.5.2.a.2.4\n";
-						CorrectedPt = FOLep[0][0].Pt()*(1 + TMath::Max(0.0,_miniIsolation[FOI[0][0]]));
-					}
-					else{
-						if(debug) std::cout<<"7.5.2.a.2.5\n";
-						CorrectedPt = TMath::Max(FOLep[0][0].Pt(),_closeJetPtAll[FOI[0][0]]*RatCutFO[0]);
-					}
-					
-					if(debug) std::cout<<"7.5.2.a.3\n";
-					
-					SPurityB[0]->Fill(4);
-					BControlPtDist[0][0][0]->Fill(CorrectedPt);
-					BControlPtDist[0][0][1]->Fill(FOLep[0][0].Pt(),_weight*BControlPrescales[0][runIndex]);
-					
-					if(_miniIsolation[FOI[0][0]] < 0.1 && (pTrel > RelCutFO[0] || pTratio > RatCutFO[0])){
-						BControlPtDistTight[0][0][0]->Fill(CorrectedPt);
-						BControlPtDistTight[0][0][1]->Fill(FOLep[0][0].Pt(),_weight*BControlPrescales[0][runIndex]);
-					}
-				}
-			}
-			else{
-				if(debug) std::cout<<"7.5.2.a.4\n";
-				BControlMTDist[0][0][1][0]->Fill(MT_calc(FOLep[0][0], _met, _met_phi));
-				BControlMTDist[0][0][1][1]->Fill(MT_calc(FOLep[0][0], _met, _met_phi),_weight*BControlPrescales[0][runIndex]);
-			}
-		}
-	
-	}
-	
-	if(_BControlTrigs[1] && FOLep[0].size() == 1 ){//electrons
-	//if(_BControlTrigs[1] && _flavors[leptonCounter-1] == 0){
-		
-		bool awayJet = false, bJet = false, mod = true;//second purity cut
-		for(int a=0;a<_n_Jets;a++){
-		
-			TLorentzVector jt;
-			jt.SetPtEtaPhiM(_jetPt[a],_jetEta[a],_jetPhi[a],0);//
-			if(FOLep[0][0].DeltaR( jt ) > 1 && jt.Pt() > 40 && fabs(jt.Eta()) < 2.4){
-				
-				if(debug) std::cout<<"7.5.2.b\n";
-				
-				awayJet = true;
-		
-				if(_csv[a] > 0.814)
-					bJet = true;
-					
-				for(unsigned int fo=0;fo<FOLep[1].size();fo++){//reject event if extra muons unless in a bjet
-					
-					mod = false;
-					if(FOLep[1][fo].DeltaR(  jt  ) < 0.4 && bJet)
-						mod = true;
-					
-				}
-		
-			}
-		
-		}
-		
-		
-		if(mod){
-		
-			SPurityB_Mod[0]->Fill(1);
-			if(awayJet && bJet){
-				SPurityB_Mod[0]->Fill(2);
-				if(_met < 20){
-					SPurityB_Mod[0]->Fill(3);
-					
-					if(debug) std::cout<<"7.5.2.b.1\n";
-					BControlMTDist[0][1][0][0]->Fill(MT_calc(FOLep[0][0], _met, _met_phi));
-					BControlMTDist[0][1][0][1]->Fill(MT_calc(FOLep[0][0], _met, _met_phi),_weight*BControlPrescales[0][runIndex]);
-			
-					if(MT_calc(FOLep[0][0], _met, _met_phi) < 20){
-					//if(_mt[leptonCounter-1] < 20){
-						//SPurityB_Mod[0]->SetBinContent(5,( SPurityB[0]->GetBinContent(5) + 1 ));
-						
-						float CorrectedPt = FOLep[0][0].Pt();
-						float pTrel = _ptRelAll[FOI[0][0]];
-						float pTratio = FOLep[0][0].Pt()/_closeJetPtAll[FOI[0][0]];
-					
-						if(debug) std::cout<<"7.5.2.b.2\n";
-					
-						if(pTrel > RelCutFO[0])
-							CorrectedPt = FOLep[0][0].Pt()*(1 + TMath::Max(0.0,_miniIsolation[FOI[0][0]]));
-						else 
-							CorrectedPt = TMath::Max(FOLep[0][0].Pt(),_closeJetPtAll[FOI[0][0]]*RatCutFO[0]);
-						
-						if(debug) std::cout<<"7.5.2.b.3\n";
-						SPurityB_Mod[0]->Fill(4);
-						BControlPtDist[0][1][0]->Fill(CorrectedPt);
-						BControlPtDist[0][1][1]->Fill(FOLep[0][0].Pt(),_weight*BControlPrescales[0][runIndex]);
-						
-						if(_miniIsolation[FOI[0][0]] < 0.1 && (pTrel > RelCutFO[0] || pTratio > RatCutFO[0])){
-							BControlPtDistTight[0][1][0]->Fill(CorrectedPt);
-							BControlPtDistTight[0][1][1]->Fill(FOLep[0][0].Pt(),_weight*BControlPrescales[0][runIndex]);
-						}
-						
-					}
-				}
-				else{
-					if(debug) std::cout<<"7.5.2.b.4\n";
-					BControlMTDist[0][1][1][0]->Fill(MT_calc(FOLep[0][0], _met, _met_phi));
-					BControlMTDist[0][1][1][1]->Fill(MT_calc(FOLep[0][0], _met, _met_phi),_weight*BControlPrescales[0][runIndex]);
-				}
-			}
-		
-		}
-	
-	}
 	
 	
 	if(debug) std::cout<<"8";
@@ -2112,72 +1354,12 @@ if(_eventNb == 110365493)  std::cout<<"8\n";
     _nLeptons = leptonCounter;
    
     
-    /*if ((_sameSign[0][0] < 2) &&
-        (_sameSign[0][1] < 2) &&
-        (_sameSign[1][0] + _sameSign[0][0] < 2) &&
-        (_sameSign[1][1] + _sameSign[0][1] < 2)) {
-        //std::cout<<"No same sign"<<std::endl;
-        return;
-    }
 	
-	//std::cout<<"AND SS\n";
-    _sb = true;
-    int _chargePair = 0;
-    _doubleF = false;
-    if (_sameSign[0][0] > 1) {
-        _sb = false;
-        _chargePair = -1;
-    }
-    if (_sameSign[0][1] > 1) {
-        _sb = false;
-        _chargePair = 1;
-    }
-    if (_sb) {
-        if ((_sameSign[0][0] == 1) && (_sameSign[1][0] > 0)) _chargePair = -1;
-        if ((_sameSign[0][1] == 1) && (_sameSign[1][1] > 0)) _chargePair = 1;
-        if (_chargePair == 0) {
-            _doubleF = true;
-            if (_sameSign[1][0] > 1) _chargePair = -1;
-            if (_sameSign[1][1] > 1) _chargePair = 1;
-        }
-    }
-    int _index1 = -1;
-    int _index2 = -1;
-   // std::cout<<"iso table, nLeptons = "<<_nLeptons<<" and chargepair = "<<_chargePair<<"\n";
-    double isoTable[2] = {0.1, 0.1};
-    if (!_sb) {
-		//std::cout<<"not sb\n";
-        for (int iL = 0; iL != _nLeptons; ++iL) {
-            if ( (_isolation[iL] < isoTable[_flavors[iL]]) && (_charges[iL] == _chargePair) ) {
-                if (_index1 < 0) _index1 = iL;
-                else _index2 = iL;
-            }
-        }
-    } else if (!_doubleF) {
-		//std::cout<<"not dF\n";
-        for (int iL = 0; iL != _nLeptons; ++iL) {
-			//std::cout<<"charge "<<iL<<" = "<<_charges[iL]<<" and iso = "<<_isolation[iL]<<"\n";
-            if ( (_isolation[iL] < isoTable[_flavors[iL]]) && (_charges[iL] == _chargePair) ) {
-                if (_index1 < 0) _index1 = iL;
-                else _index2 = iL;
-            } else if (_charges[iL] == _chargePair) _index2 = iL;
-        }
-    } else {
-		//std::cout<<"else\n";
-        for (int iL = 0; iL != _nLeptons; ++iL) {
-            if ( _charges[iL] == _chargePair ) {
-                if (_index1 < 0) _index1 = iL;
-                else _index2 = iL;
-            }
-        }
-    }*/
-    
-
-
-    
 
 	
-    //outputTree->Fill();
+
+	
+    outputTree->Fill();
 
 }
 

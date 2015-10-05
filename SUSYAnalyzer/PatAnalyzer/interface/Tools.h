@@ -137,7 +137,7 @@ namespace tools {
                                                            double v_electron_d0,
                                                            bool bool_electron_chargeConsistency,
                                                            edm::Handle< std::vector<reco::Conversion> > &theConversions,
-                                                           reco::BeamSpot::Point BS, EGammaMvaEleEstimatorCSA14* myMVATrig);
+                                                           reco::BeamSpot::Point BS);//, EGammaMvaEleEstimatorCSA14* myMVATrig);
 														   
 														   
 	//bool isMVATightNoIsoSIP(const pat::Electron  thePatElectron, EGammaMvaEleEstimatorCSA14* myMVATrig);										   													   
