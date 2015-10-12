@@ -1,0 +1,79 @@
+
+Processing MaySyncYield.cc++...
+Info in <TUnixSystem::ACLiC>: creating shared library /lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/test/./MaySyncYield_cc.so
+In file included from input_line_12:9:
+././MaySyncYield.cc:1108:113: warning: format specifies type 'int' but the argument has type 'unsigned long' [-Wformat]
+                        if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+                                                           ~~~                                                                       ^~~~~~
+                                                           %1lu
+././MaySyncYield.cc:1108:121: warning: format specifies type 'int' but the argument has type 'unsigned long' [-Wformat]
+                        if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+                                                               ~~~                                                                           ^~~~~~~~~~
+                                                               %9lu
+././MaySyncYield.cc:1108:133: warning: format specifies type 'int' but the argument has type 'unsigned long' [-Wformat]
+                        if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+                                                                   ~~~~                                                                                  ^~~~~~~~
+                                                                   %12lu
+././MaySyncYield.cc:1108:143: warning: format specifies type 'int' but the argument has type 'size_type' (aka 'unsigned long') [-Wformat]
+                        if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+                                                                         ~~~                                                                                       ^~~~~~~~~~~~~~~
+                                                                         %2zu
+././MaySyncYield.cc:1108:33: warning: format string is not a string literal (potentially insecure) [-Wformat-security]
+                        if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+                                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Scale = 0.0411823
+Entries 106641
+...........SR 00
+Event Type ee
+LL :::: 5
+HL :::: 16
+HH :::: 11
+Event Type em
+LL :::: 11
+HL :::: 50
+HH :::: 25
+Event Type mm
+LL :::: 5
+HL :::: 26
+HH :::: 8
+SR 10
+Event Type ee
+LL :::: 1
+HL :::: 7
+HH :::: 6
+Event Type em
+LL :::: 5
+HL :::: 31
+HH :::: 10
+Event Type mm
+LL :::: 3
+HL :::: 15
+HH :::: 4
+SR 20
+Event Type ee
+LL :::: 0
+HL :::: 2
+HH :::: 3
+Event Type em
+LL :::: 2
+HL :::: 6
+HH :::: 5
+Event Type mm
+LL :::: 0
+HL :::: 4
+HH :::: 1
+SR 30
+Event Type ee
+LL :::: 0
+HL :::: 0
+HH :::: 0
+Event Type em
+LL :::: 1
+HL :::: 0
+HH :::: 3
+Event Type mm
+LL :::: 0
+HL :::: 0
+HH :::: 0

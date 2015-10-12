@@ -1,0 +1,1000 @@
+   21  du -ah ThirdRound/
+   22  rm -rf ThirdRound/
+   23  ls
+   24  ls -lh *.root
+   25  rm FOhistos_1Lep*.root
+   26  ls -lh >& list
+   27  nano list
+   28  ssh -Y dev2
+   29  exit
+   30  ssh -Y dev2
+   31  cd /lfs/scratch/mrcarver/CMSSW_7_4_11_patch1/src/SUSYAnalyzer/PatAnalyzer/test/
+   32  cmsenv
+   33  nedit ../src/SSSync.cc &
+   34  cd ../ && scram b && cd test
+   35  prox
+   36  nedit SSSync_Interactive_Debug.py &
+   37  cmsRun SSSync_Interactive_Debug.py >& DMptest
+   38  nano DMptest 
+   39  cmsRun SSSync_Interactive_Debug.py >& DMptest
+   40  cd ../ && scram b && cd test
+   41  cmsRun SSSync_Interactive_Debug.py >& DMptest
+   42  nano DMptest 
+   43  cmsRun SSSync_Interactive_Debug.py >& DMptest
+   44  nano DMptest 
+   45  cmsRun SSSync_Interactive_Debug.py >& DMptest
+   46  nano DMptest 
+   47  cmsRun SSSync_Interactive_Debug.py >& DMptest
+   48  nano DMptest 
+   49  cd ../ && scram b && cd test
+   50  source ~/.bash_profile 
+   51  cmsenv
+   52  cmsRun hlt.py 
+   53  mv output.root Has10Events.root
+   54  cmsRun hlt.py >& log
+   55  exit
+   56  ssh -Y dev2
+   57  cd /scratch/osg/mrcarver/LastDQMCrap/CMSSW_7_4_10_patch1/src/HLTrigger/Configuration/test/
+   58  cmsenv
+   59  ls
+   60  nano +999999 hlt.py 
+   61  nano outdump 
+   62  nano +999999 hlt.py 
+   63  prox
+   64  cmsRun hlt.py >& log
+   65  nano log
+   66  edmDumpEventContent output.root 
+   67  nano +999999 hlt.py 
+   68  screen
+   69  screen -r
+   70  nano +99999 hlt.py 
+   71  screen -r
+   72  root -l output.root 
+   73  nano +999999 hlt.py 
+   74  screen -r
+   75  cp log fuck
+   76  nano fuck
+   77  screen -r
+   78  cp log fuck
+   79  nano fuck
+   80  nano +99999 hlt.py 
+   81  screen -r
+   82  nano log
+   83  ls -lh *.root
+   84  ls
+   85  pwd
+   86  cd /scratch/osg/mrcarver/LastDQMCrap/CMSSW_7_4_10_patch1/src/HLTrigger/Configuration/test/
+   87  ls
+   88  nano +999999 hlt.py 
+   89  mv output.root almost.root
+   90  cmsRun hlt.py >& log
+   91  cmsenv
+   92  cmsRun hlt.py >& log
+   93  nano log
+   94  prox
+   95  cmsRun hlt.py >& log
+   96  nano log
+   97  nano outdump 
+   98  nedit outdump &
+   99  nano +999999 hlt.py 
+  100  cmsRun hlt.py >& log
+  101  nano log
+  102  edmDumpEventContent output.root 
+  103  nano +99999 hlt.py 
+  104  cmsRun hlt.py >& log
+  105  source ~/.bash_profile 
+  106  cmsenv
+  107  cmsRun hlt.py >& log
+  108  nano log
+  109  nano +9999999 log
+  110  exit
+  111  ssh -Y dev2
+  112  prox
+  113  cd /scratch/osg/mrcarver/LastDQMCrap/CMSSW_7_4_10_patch1/src/HLTrigger/Configuration/test/
+  114  cmsenv
+  115  screen
+  116  screen -r
+  117  edmDumpEventContent output.root 
+  118  ssh -Y dev2
+  119  cd /scratch/osg/mrcarver/LastDQMCrap/CMSSW_7_4_10_patch1/src/HLTrigger/Configuration/test/
+  120  cmsenv
+  121  nedit hlt.py &
+  122  nano outdump 
+  123  cmsRun hlt.py >& log
+  124  nano log
+  125  edmDumpEventContent output.root 
+  126  cmsRun hlt.py >& log
+  127  nano log
+  128  cmsRun hlt.py >& log
+  129  nano log
+  130  cmsRun hlt.py >& log
+  131  nano log
+  132  edmDumpEventContent output.root 
+  133  screen
+  134  screen 0r
+  135  screen -r
+  136  cp log fuck
+  137  nano fuck
+  138  screen -r
+  139  work
+  140  nedit ../src/SSSync.cc &
+  141  source ~/.bash_profile 
+  142  cmsenv
+  143  cmsRun hlt.py >& log
+  144  prox
+  145  cmsRun hlt.py >& log
+  146  nano outdump 
+  147  cmsRun hlt.py >& log
+  148  nano log
+  149  exit
+  150  cd /scratch/osg/mrcarver/OOTB/CMSSW_7_5_0_pre1/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  151  cmsenv
+  152  root -l Emulator_EDM_Out.root 
+  153  source ~/.bash_profile 
+  154  cmsenv
+  155  prox
+  156  cmsRun RunTrackFinder.py >& mfuck 
+  157  exit
+  158  ssh -Y dev2
+  159  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  160  cmsenv
+  161  screen
+  162  cp mfuck log
+  163  nano log
+  164  screen -r
+  165  screen -r 16631.pts-21.dev2 
+  166  screen -r 4333.pts-50.dev2 
+  167  screen -r
+  168  cp mfuck log
+  169  nano log
+  170  cp mfuck log
+  171  nano log
+  172  cp mfuck log
+  173  nano log
+  174  cp mfuck log
+  175  nano log
+  176  cp mfuck log
+  177  nano log
+  178  cp mfuck log
+  179  nano log
+  180  cp mfuck log
+  181  nano log
+  182  cp mfuck log
+  183  nano log
+  184  cp mfuck log
+  185  nano log
+  186  cp mfuck log
+  187  nano log
+  188  cp mfuck log
+  189  nano log
+  190  cp mfuck log
+  191  nano log
+  192  screen -r
+  193  source ~/.bash_profile 
+  194  cmsenv
+  195  proxc
+  196  prox
+  197  cmsRun RunTrackFinder.py >& mfuck 
+  198  nano mfuck 
+  199  exit
+  200  ssh -Y dev2
+  201  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  202  cmsenv
+  203  screen
+  204  cp mfuck log
+  205  nano log
+  206  source ~/.bash_profile 
+  207  cmsenv
+  208  prox
+  209  cmsRun RunTrackFinder.py >& mfuck 
+  210  exit
+  211  source ~/.bash_profile 
+  212  cmsenv
+  213  prox
+  214  exit
+  215  screen -r
+  216  exit
+  217  screen -r
+  218  ssh -Y dev1
+  219  exit
+  220  screen -r
+  221  ssh -Y gator2
+  222  exit
+  223  source ~/.bash_profile 
+  224  cmsenv
+  225  prox
+  226  cmsRun RunTrackFinder >& mfuck
+  227  nano mfuck 
+  228  cmsenv
+  229  cmsRun RunTrackFinder >& mfuck
+  230  exit
+  231  work
+  232  pwd
+  233  source ~/.bash_profile 
+  234  cmsenv
+  235  prox
+  236  cmsRun RunTrackFinder.py >& mfuck 
+  237  exit
+  238  ssh -Y dev2
+  239  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  240  cmsenv
+  241  screen -r
+  242  nano mfuck 
+  243  root -l ModeFuck.root 
+  244  nedit EffRateScript.cc &
+  245  nedit ../plugins/L1TMuonUpgradedTrackFinder.* &
+  246  root -l RateEffOutput.root 
+  247  root -l -b -q EffRateScript.cc++
+  248  root -l RateEffOutput.root 
+  249  root -l -b -q EffRateScript.cc++
+  250  root -l RateEffOutput.root 
+  251  nano mfuck 
+  252  nedit RunTrackFinder.py &
+  253  mv ModeFuck.root GMTEffTuple_PU20BX25_10k.root
+  254  screen
+  255  root -l -b -q EffRateScript.c++
+  256  root -l -b -q EffRateScript.cc++
+  257  root -l RateEffOutput.root 
+  258  root -l -b -q EffRateScript.cc++
+  259  root -l RateEffOutput.root 
+  260  root -l -b -q EffRateScript.cc++
+  261  root -l RateEffOutput.root 
+  262  root -l -b -q EffRateScript.cc++
+  263  root -l RateEffOutput.root 
+  264  root -l GMTEffTuple_PU20BX25_10k.root 
+  265  root -l RateEffOutput.root 
+  266  root -l -b -q EffRateScript.cc++
+  267  root -l -b -q EffRateScript.cc++ >& out
+  268  nano out 
+  269  root -l GMTEffTuple_PU20BX25_10k.root 
+  270  root -l -b -q EffRateScript.cc++ >& out
+  271  nano out
+  272  root -l -b -q EffRateScript.cc++ >& out
+  273  nano out
+  274  root -l RateEffOutput.root 
+  275  screen -r
+  276  nano mfuck 
+  277  nedit RunTrackFinder.py &
+  278  screen
+  279  cp mfuck log
+  280  nano log
+  281  screen -r
+  282  cd ../ && scram b && cd test
+  283  screen -r
+  284  screen 
+  285  cp mfuck ock
+  286  nano ock
+  287  rm ock 
+  288  cp mfuck log
+  289  nano log 
+  290  cp mfuck log
+  291  nano log 
+  292  cp mfuck log
+  293  nano log 
+  294  cp mfuck log
+  295  nano log 
+  296  cp mfuck log
+  297  nano log 
+  298  cp mfuck log
+  299  nano log 
+  300  cp mfuck log
+  301  nano log 
+  302  cp mfuck log
+  303  nano log 
+  304  cp /lfs/scratch/mrcarver/CMSSW_7_4_6/src/SUSYAnalyzer/PatAnalyzer/test/SSSync_Interactive.py /lfs/scratch/mrcarver/CMSSW_7_4_6/src/SUSYAnalyzer/PatAnalyzer/test/SubmitCMSSW_all.sh .
+  305  nedit RunTrackFinder.py SSSync_Interactive.py &
+  306  cp mfuck log
+  307  nano log 
+  308  pwd
+  309  nano ~/.bash_profile 
+  310  ls /cms/data/store/mc/Fall13dr/Mu*
+  311  cp mfuck log
+  312  nano log 
+  313  cp mfuck log
+  314  nano log 
+  315  cp mfuck log
+  316  nano log 
+  317  cp mfuck log
+  318  nano log 
+  319  cp mfuck log
+  320  nano log 
+  321  screen -r
+  322  root -l -b -q EffRateScript.cc++
+  323  root -l RateEffOutput.root 
+  324  ls /cms/data/store/mc/Fall13dr/MuPlus_Pt-1to150_PositiveEndcap-gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/00000/
+  325  ls /cms/data/store/mc/Fall13dr/MuPlus_Pt-1to150_PositiveEndcap-gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/20000/
+  326  sh SubmitCMSSW_all.sh /cms/data/store/mc/Fall13dr/MuPlus_Pt-1to150_PositiveEndcap-gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/ /cms/data/store/user/t2/users/mrcarver/GMTEffTuples 17
+  327  qstat -u mrcarver
+  328  nano /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt 
+  329  nedit SSSync_Interactive.py &
+  330  nano /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt 
+  331  nano /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/logs/Job_1.txt 
+  332  nano /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/logs/Job_3.txt 
+  333  nano /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_4.txt 
+  334  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  335  cmsenv
+  336  nedit RunTrackFinder.py SSSync_Interactive.py &
+  337  sh SubmitCMSSW_all.sh /cms/data/store/mc/Fall13dr/MuPlus_Pt-1to150_PositiveEndcap-gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/ /cms/data/store/user/t2/users/mrcarver/GMTEffTuples 17
+  338  qstat -u mrcarver
+  339  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt fuck
+  340  nano fuck
+  341  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/logs/Job_1.txt fuck
+  342  nano fuck
+  343  qstat -u mrcarver
+  344  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt fuck
+  345  nano fuck
+  346  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt fuck
+  347  nano fuck
+  348  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt fuck
+  349  nano fuck
+  350  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt fuck
+  351  nano fuck
+  352  cp /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/errs/Job_1.txt fuck
+  353  nano fuck
+  354  qstat -u mrcarver
+  355  hadd GMTEffTuple_PU40BX25_10k.root /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/Job_*.root 
+  356  nedit EffRateScript.cc &
+  357  root -l -b -q EffRateScript.cc++
+  358  root -l RateEffOutput.root 
+  359  sh SubmitCMSSW_all.sh /cms/data/store/mc/Fall13dr/MuPlus_Pt-1to150_PositiveEndcap-gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/ /cms/data/store/user/t2/users/mrcarver/GMTEffTuples 2
+  360  qstat -u mrcarver
+  361  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15PrePremix/Neutrino_E-10_gun/GEN-SIM-DIGI-RAW/MCRUN2_74_V9-v1/20001/ /cms/data/store/user/t2/users/mrcarver/GMTRateTuples 5
+  362  qstat -u mrcarver
+  363  cp /cms/data/store/user/t2/users/mrcarver/GMTRateTuples/errs/Job_32.txt 
+  364  cp /cms/data/store/user/t2/users/mrcarver/GMTRateTuples/errs/Job_32.txt fuck
+  365  nano fuck
+  366  cp /cms/data/store/user/t2/users/mrcarver/GMTRateTuples/errs/Job_2.txt fuck
+  367  nano fuck
+  368  exit
+  369  ssh -Y dev2
+  370  qstat -u mrcarver
+  371  ssh -Y dev2
+  372  ls *.root
+  373  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  374  cmsenv
+  375  ls *.root
+  376  hadd GMTEffTuple_PU40BX25_full.root /cms/data/store/user/t2/users/mrcarver/GMTEffTuples/Job_*.root
+  377  hadd GMTRateTuple_full.root /cms/data/store/user/t2/users/mrcarver/GMTRateTuples/Job_*.root
+  378  nedit EffRateScript.cc &
+  379  root -l -b -q EffRateScript.cc++
+  380  root -l RateEffOutput.root 
+  381  ssh -Y dev2
+  382  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  383  cmsenv
+  384  nedit EffRateScript.cc &
+  385  root -l RateEffOutput.root 
+  386  root -l -b -q EffRateScript.cc++
+  387  root -l RateEffOutput.root 
+  388  root -l -b -q EffRateScript.cc++
+  389  root -l RateEffOutput.root 
+  390  root -l -b -q EffRateScript.cc++
+  391  root -l RateEffOutput.root 
+  392  root -l -b -q EffRateScript.cc++
+  393  root -l RateEffOutput.root 
+  394  root -l -b -q EffRateScript.cc++
+  395  root -l RateEffOutput.root 
+  396  root -l -b -q EffRateScript.cc++
+  397  root -l RateEffOutput.root 
+  398  nano .bash_profile 
+  399  source ~/.bash_profile 
+  400  cd /lfs/scratch/mrcarver/
+  401  ls
+  402  mkdir FinalAnalysisCode
+  403  cd FinalAnalysisCode/
+  404  scram l
+  405  source ~/.bash_profile 
+  406  scram l
+  407  nano ~/.bash_profile 
+  408  source ~/.bash_profile 
+  409  scram l
+  410  nano ~/.bash_profile 
+  411  source ~/.bash_profile 
+  412  scram l
+  413  cmsrel CMSSW_7_4_14
+  414  cd CMSSW_7_4_14/src/
+  415  cmsenv
+  416  git cms-merge-topic ikrav:egm_id_7.4.12_v1
+  417  ls
+  418  git checkoub -b AnalysisCode
+  419  git checkout -b AnalysisCode
+  420  scram b -j8
+  421  git status
+  422  git push my-cmssw AnalysisCode 
+  423  nedit /scratch/osg/lesya/CMSSW_7_4_12_patch4/src/SUSYAnalyzer/PatAnalyzer/plugins/FakeMuons.cc &
+  424  nedit /scratch/osg/lesya/CMSSW_7_4_12_patch4/src/SUSYAnalyzer/PatAnalyzer/plugins/TwolSelection.cc &
+  425  nedit RecoEgamma/ElectronIdentification/test/runHEEPIDExample_miniAOD_cfg.py &
+  426  cp -r ../../../CMSSW_7_4_11_patch1/src/SUSYAnalyzer/ .
+  427  nedit SUSYAnalyzer/PatAnalyzer/src/SSSync.* &
+  428  scram b 
+  429  cd SUSYAnalyzer/PatAnalyzer/src/
+  430  ls
+  431  mv FakeMuons.cc FakeMuons.cc~
+  432  mv FakeMuonsSB.cc FakeMuonsSB.cc~
+  433  mv FakeMuonsYa.cc FakeMuonsYa.cc~
+  434  mv SSAnals.cc SSAnals.cc~
+  435  mv SSSync.cc.save save_SSSync.txt
+  436  mv SSSync.cc.save.1 save_SSSync_1.txt 
+  437  mv SSb.cc SSb.cc~
+  438  mv SSb13.cc SSb13.cc~
+  439  mv TwolSelection.cc TwolSelection.cc~
+  440  scram b
+  441  git status
+  442  ls
+  443  cd ../..
+  444  cd ..
+  445  ls
+  446  git add SUSYAnalyzer/*
+  447  git commit -m "Added SUSYAnalyzer code which compiles out of the box.. odd"
+  448  git push my-cmssw AnalysisCode 
+  449  cd SUSYAnalyzer/PatAnalyzer/test/
+  450  ls *.root
+  451  rm *.root
+  452  ls
+  453  rm T0 
+  454  rm T1 
+  455  rm T5 
+  456  rm T6 
+  457  rm T7 
+  458  rm -rf ttwOutput 
+  459  rm -rf ttwOutput2/
+  460  rm -rf ttwOutput3/
+  461  rm t5log 
+  462  rm *log*
+  463  ls
+  464  rm *.txt
+  465  ls
+  466  ls AllSamples/
+  467  rm -rf AllSamples/
+  468  ls ChargeFlips/
+  469  rm -rf ChargeFlips/
+  470  cd ../../..
+  471  ls
+  472  git status
+  473  cd SUSYAnalyzer/PatAnalyzer/test/
+  474  ls
+  475  ls GRIDTEST/
+  476  rm -rf GRIDTEST/
+  477  rm -rf PromptPlots
+  478  rm -rf PromptPlots_NN/
+  479  rm -rf PromptPlots_Prescaled/
+  480  rm -rf PureDiLepEffPics/
+  481  rm -rf PurityPics/
+  482  rm -rf SBCompPlots/
+  483  rm -rf SavePDL*
+  484  rm -rf SeptemberFRPlots/
+  485  ls
+  486  rm DMptest 
+  487  rm aj
+  488  rm adump 
+  489  rm ZEEFastSimLog 
+  490  rm ZMMFastSimLog 
+  491  rm allj 
+  492  rm -rf crabconfigs/
+  493  rm crabConfig_tutorial_MC_analysis.py 
+  494  rm dataDump 
+  495  rm debugging 
+  496  rm di
+  497  rm dif
+  498  rm dis
+  499  rm dump 
+  500  rm ediff 
+  501  rm fiii 
+  502  rm files 
+  503  rm fuck
+  504  rm fucknoreq 
+  505  rm fuckyou 
+  506  rm his
+  507  rm hist
+  508  rm jbs
+  509  rm l1debug 
+  510  rm l1ntup 
+  511  rm loop 
+  512  rm lowpTout 
+  513  ls melrose/
+  514  rm -rf melrose/
+  515  rm minidump 
+  516  ls muoncrap/
+  517  rm -rf muoncrap/
+  518  ls
+  519  rm f1 
+  520  rm mvatest 
+  521  rm out
+  522  rm outdif 
+  523  ls results/
+  524  rm -rf results/
+  525  rm segtest 
+  526  rm ssbold 
+  527  rm test
+  528  rm tfile*
+  529  ls timing/
+  530  rm -rf timing/
+  531  rm tmp 
+  532  rm triggers 
+  533  rm ttest 
+  534  rm udiff 
+  535  rm users 
+  536  rm w
+  537  rm wl 
+  538  ls
+  539  cd ..
+  540  ls
+  541  ls wrong 
+  542  rm wrong 
+  543  rm log 
+  544  rm flog 
+  545  ls
+  546  cd ..
+  547  ls
+  548  cd Su
+  549  ls SUSYAnalyzer/
+  550  cd SUSYAnalyzer/
+  551  ls
+  552  rm glog 
+  553  rm plog 
+  554  cd PatAnalyzer/
+  555  ls
+  556  ls scripts/
+  557  ls jetfiles/
+  558  ls interface/
+  559  ls plugins/
+  560  ls src/
+  561  cd ..
+  562  git status
+  563  git status >& stat
+  564  nedit stat &
+  565  chmod 744 stat
+  566  ./stat 
+  567  git status >& stat
+  568  nano stat
+  569  git commit -m "Removed a bunch of logs/crap/rootfiles that weren't needed"
+  570  git push my-cmssw AnalysisCode 
+  571  ssh -Y dev2
+  572  cd /lfs/scratch/mrcarver/FinalAnalysisCode/CMSSW_7_4_14/src/
+  573  cmsenv
+  574  git status >& stat
+  575  nano stat
+  576  git push my-cmssw AnalysisCode
+  577  ls SUSYAnalyzer/PatAnalyzer/test/*.root
+  578  cd /lfs/scratch/mrcarver/FinalAnalysisCode/CMSSW_7_4_14/src/SUSYAnalyzer/PatAnalyzer/test/
+  579  ls
+  580  ls *.root
+  581  git status
+  582  cmsenv
+  583  git status
+  584  git push my-cmssw AnalysisCode
+  585  ssh -Y dev2
+  586  nano .bash_profile 
+  587  source .bash_profile 
+  588  anal
+  589  git status
+  590  git add *
+  591  git commit -m "trying to get SUSYAnalyzer pushed"
+  592  git push my-cmssw AnalysisCode
+  593  cd ../../..
+  594  cd ../..
+  595  cd ..
+  596  mkdir Fall15AnalysisCode
+  597  cd Fall15AnalysisCode/
+  598  cmsrel CMSSW_7_4_12
+  599  cd CMSSW_7_4_12/src/
+  600  cmsenv
+  601  git cms-merge-topic ikrav:egm_id_7.4.12_v1
+  602  cp -r ../../../FinalAnalysisCode/CMSSW_7_4_14/src/SUSYAnalyzer/ .
+  603  ls SUSYAnalyzer/PatAnalyzer/plugins/.svn/
+  604  ls SUSYAnalyzer/PatAnalyzer/test/
+  605  ls SUSYAnalyzer/PatAnalyzer/test/*.root
+  606  find *.root
+  607  find *.cc
+  608  ls
+  609  git chekcout -b Fall15AnalysisCode
+  610  git checkout -b Fall15AnalysisCode
+  611  git push my-cmssw Fall15AnalysisCode
+  612  ls
+  613  scram b -j 12
+  614  git status
+  615  git add SUSYAnalyzer/
+  616  git status
+  617  git commit -m "added SUSYAnalyzer"
+  618  git push my-cmssw Fall15AnalysisCode 
+  619  anal
+  620  ls
+  621  nedit SSSync_Interactive_Debug.py &
+  622  nedit ../src/SSSync.* &
+  623  cmsRun SSSync_Interactive_Debug.py >& log
+  624  nano log
+  625  cd ../../..
+  626  cd SUSYAnalyzer/PatAnalyzer/
+  627  cd test/
+  628  cd ..
+  629  mkdir CSA14Files
+  630  cp /lfs/scratch/mrcarver/CMSSW_7_4_6/src/EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_E* CSA14Files/
+  631  pwd
+  632  cd test/
+  633  cmsRun SSSync_Interactive_Debug.py >& log 
+  634  nano log
+  635  cd ../ && scram b && cd test
+  636  cmsRun SSSync_Interactive_Debug.py >& log 
+  637  nano log
+  638  cd ../ && scram b && cd test
+  639  cmsRun SSSync_Interactive_Debug.py >& log 
+  640  nano log
+  641  cd ../ && scram b && cd test
+  642  cmsRun SSSync_Interactive_Debug.py >& log 
+  643  nano log
+  644  cd ../ && scram b && cd test
+  645  cmsRun SSSync_Interactive_Debug.py >& log 
+  646  nano log
+  647  cd ../../..
+  648  ls
+  649  scram b clean
+  650  anal
+  651  cd ../../..
+  652  cd ../..
+  653  cd ../Fall15AnalysisCode/
+  654  nano ~/.bash_profile 
+  655  source ~/.bash_profile 
+  656  anal
+  657  ls
+  658  ls ../../..
+  659  nedit SSSync_Interactive_Debug.py &
+  660  nedit ../src/SSSync.* &
+  661  cd ..
+  662  mkdir PHYS14Files
+  663  cp /lfs/scratch/mrcarver/CMSSW_7_4_6/src/EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_E* PHYS14Files/
+  664  pwd
+  665  scram b && cd test/
+  666  cmsRun SSSync_Interactive_Debug.py >& log
+  667  nano log
+  668  cd ../../..
+  669  scram b clean
+  670  scram b -j 15
+  671  cd SUSYAnalyzer/PatAnalyzer/test/
+  672  cmsRun SSSync_Interactive_Debug.py >& log
+  673  nano log
+  674  cd ../ && scram b && cd test
+  675  scram b && cd test
+  676  cmsRun SSSync_Interactive_Debug.py >& log
+  677  nano log
+  678  cd ../ && scram b && cd test
+  679  cmsRun SSSync_Interactive_Debug.py >& log
+  680  nano log
+  681  cd ../ && scram b && cd test
+  682  cmsRun SSSync_Interactive_Debug.py >& log
+  683  ssh -Y ev2
+  684  ssh -Y dev2
+  685  anal
+  686  nano log
+  687  nedit ../src/SSSync.* &
+  688  nedit SSSync_Interactive_Debug.py &
+  689  cd ../ && scram b && cd test
+  690  cmsRun SSSync_Interactive_Debug.py >& log
+  691  nano log
+  692  cd ../ && scram b && cd test
+  693  cmsRun SSSync_Interactive_Debug.py >& log
+  694  nano log
+  695  cd ../ && scram b && cd test
+  696  cmsRun SSSync_Interactive_Debug.py >& log
+  697  nano log
+  698  cd ../ && scram b && cd test
+  699  cmsRun SSSync_Interactive_Debug.py >& log
+  700  nano log
+  701  cd ../ && scram b && cd test
+  702  cmsRun SSSync_Interactive_Debug.py >& log
+  703  nano log
+  704  cd ../ && scram b && cd test
+  705  cmsRun SSSync_Interactive_Debug.py >& log
+  706  nano log
+  707  cd ../ && scram b && cd test
+  708  cmsRun SSSync_Interactive_Debug.py >& log
+  709  nano log
+  710  cd ../ && scram b && cd test
+  711  cmsRun SSSync_Interactive_Debug.py >& log
+  712  cd ../ && scram b && cd test
+  713  cmsRun SSSync_Interactive_Debug.py >& log
+  714  cd ../ && scram b && cd test
+  715  cmsRun SSSync_Interactive_Debug.py >& log
+  716  cd ../ && scram b && cd test
+  717  scram b && cd test
+  718  cmsRun SSSync_Interactive_Debug.py >& log
+  719  nano log
+  720  cd ../ && scram b && cd test
+  721  nedit ../../../RecoEgamma/ElectronIdentification/test/VIDUsageExample.cc ../../../RecoEgamma/ElectronIdentification/test/runHEEPIDExample_miniAOD_cfg.py &
+  722  cmsRun SSSync_Interactive_Debug.py >& log
+  723  nano log
+  724  cd ../ && scram b && cd test
+  725  scram b && cd test
+  726  nedit /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/plugins/L1TMuonUpgradedTrackFinder.* &
+  727  scram b && cd test
+  728  cmsRun SSSync_Interactive_Debug.py >& log 
+  729  nano log
+  730  cd ../ && scram b && cd test
+  731  scram b && cd test
+  732  cmsRun SSSync_Interactive_Debug.py >& log
+  733  nano log
+  734  cmsRun SSSync_Interactive_Debug.py >& log
+  735  nano log
+  736  cmsRun SSSync_Interactive_Debug.py >& log
+  737  nano log
+  738  cmsRun SSSync_Interactive_Debug.py >& log
+  739  nano log
+  740  ls *.root
+  741  edmDumpEventContent MVAoutput.root 
+  742  cd ../ && scram b && cd test
+  743  scram b && cd test
+  744  cmsRun SSSync_Interactive_Debug.py >& log
+  745  nano log
+  746  edmDumpEventContent MVAoutput.root 
+  747  nedit ../../../RecoEgamma/ElectronIdentification/interface/CutBasedElectronID.h &
+  748  cmsRun SSSync_Interactive_Debug.py >& log
+  749  nano olog
+  750  nano log
+  751  edmDumpEventContent MVAoutput.root 
+  752  cd ../ && scram b && cd test
+  753  cmsRun SSSync_Interactive_Debug.py >& LOG
+  754  rm log 
+  755  mv LOG log
+  756  nano log
+  757  cd ../ && scram b && cd test
+  758  cmsRun SSSync_Interactive_Debug.py >& log
+  759  nano log
+  760  ssh -Y dev2
+  761  anal
+  762  nedit SSSync_Interactive_Debug.py &
+  763  nedit ../src/SSSync.* &
+  764  nano log
+  765  edmDumpEventContent MVAoutput.root 
+  766  cmsRun SSSync_Interactive_Debug.py >& log 
+  767  nano log
+  768  cmsRun SSSync_Interactive_Debug.py >& log 
+  769  nano log
+  770  cd ../ && scram b && cd test
+  771  cmsRun SSSync_Interactive_Debug.py >& log 
+  772  nano log
+  773  ls *.root
+  774  root -l New
+  775  root -l NewTest.root 
+  776  nedit /lfs/scratch/mrcarver/CMSSW_7_4_6/src/SUSYAnalyzer/PatAnalyzer/src/SSSync.cc &
+  777  cd ../ && scram b && cd test
+  778  scram b && cd test
+  779  scram b
+  780  scram b >& comp
+  781  nano comp
+  782  scram b >& comp
+  783  nano comp
+  784  scram b >& comp
+  785  nano comp
+  786  scram b >& comp
+  787  nano comp
+  788  nedit src/Tools.cc &
+  789  scram b >& comp
+  790  nano comp
+  791  scram b 
+  792  git status
+  793  git add interface/Tools.h src/SSSync.* src/Tools.cc test/SSSync_Interactive_Debug.py
+  794  git status
+  795  git commit -m "got MVA to run and updated a few bits of code"
+  796  git push my-cmssw Fall15AnalysisCode
+  797  ssh -Y dev2
+  798  anal
+  799  nedit ../src/SSSync.* &
+  800  nedit SSSync_Interactive_Debug.py &
+  801  cd ../ && scram b && cd test
+  802  scram b
+  803  scram b >& comp
+  804  nano comp
+  805  ssh -Y dev2
+  806  work
+  807  nedit ../src/SSSync.* &
+  808  nedit ../src/Tools.cc ../interface/Tools.h &
+  809  anal
+  810  nedit ../src/SSSync.* &
+  811  nedit ../src/Tools.cc ../interface/Tools.h &
+  812  nedit SSSync_Interactive_Debug.py &
+  813  nedit ../comp *
+  814  nedit ../comp &
+  815  cd ../ && scram b >& comp
+  816  scram b >& comp
+  817  nedit comp &
+  818  scram b >& comp
+  819  nedit comp &
+  820  scram b >& comp
+  821  scram b && cd test
+  822  cmsRun SSSync_Interactive_Debug.py >& log
+  823  nano log
+  824  nedit /lfs/scratch/mrcarver/CMSSW_7_4_6/src/EgammaAnalysis/ElectronTools/src/EGammaMvaEleEstimatorCSA14.cc &
+  825  cd ../ && scram b && cd test
+  826  nedit ../src/OnTheFlyCorrections.cc ../interface/OnTheFlyCorrections.hh &
+  827  ls ..
+  828  ls ../jetfiles/
+  829  mv ~/Summer15_25nsV2_MC ../jetfiles/
+  830  mv ~/Summer15_25nsV5_DATA ../jetfiles/
+  831  ls ../jetfiles/
+  832  ls ../jetfiles/Summer15_25nsV2_MC/Summer15_25nsV2_MC_
+  833  ls ../jetfiles/Summer15_25nsV2_MC/
+  834  pwd
+  835  ls ../jetfiles/Summer15_25nsV5_DATA/
+  836  cd ../ && scram b && cd test
+  837  ls *.cc
+  838  nedit EventYield.cc MaySyncYield.cc SyncYield.cc &
+  839  nedit ../src/FakeMuons.cc~ &
+  840  cd ../ && scram b && cd test
+  841  ssh -Y dev2
+  842  anal
+  843  nedit ../src/SSSync.* &
+  844  nedit SSSync_Interactive_Debug.py &
+  845  cd ../ && scram b && cd test
+  846  cmsRun SSSync_Interactive_Debug.py >& log
+  847  nano log
+  848  nedit ../src/OnTheFlyCorrections.cc ../interface/OnTheFlyCorrections.hh &
+  849  nano log
+  850  cd ../ && scram b && cd test
+  851  cmsRun SSSync_Interactive_Debug.py >& log
+  852  nano log
+  853  ls ../jetfiles/
+  854  ls ../jetfiles/Summer15_25nsV2_MC/
+  855  nano log 
+  856  cd ../ && scram b && cd test
+  857  cmsRun SSSync_Interactive_Debug.py >& log
+  858  nano log
+  859  nedit ../jetfiles/Summer15_25nsV2_MC/Summer15_25nsV2_MC_L1FastJet_AK4PF.txt &
+  860  cd ../ && scram b && cd test
+  861  cmsRun SSSync_Interactive_Debug.py >& log
+  862  nano log
+  863  cd ../ && scram b && cd test
+  864  cmsRun SSSync_Interactive_Debug.py >& log
+  865  nano log
+  866  cd ../ && scram b && cd test
+  867  ls ../jetfiles/Summer15_25nsV2_MC/
+  868  cmsRun SSSync_Interactive_Debug.py >& log
+  869  nano log
+  870  cd ../ && scram b && cd test
+  871  cmsRun SSSync_Interactive_Debug.py >& log
+  872  nano log
+  873  cd ../ && scram b && cd test
+  874  cmsRun SSSync_Interactive_Debug.py >& log
+  875  nano log
+  876  cd ../ && scram b && cd test
+  877  nedit SSSync_Interactive.py &
+  878  nedit SubmitCMSSW_all.sh &
+  879  pwd
+  880  nano ~/.bash_profile 
+  881  mkdir /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples
+  882  mkdir /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC
+  883  sh SubmitCMSSW_all.sh 
+  884  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 10
+  885  qstat -u mrcarver
+  886  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_1.txt fuck
+  887  nano fuck
+  888  qstat -u mrcarver
+  889  ssh -Y dev2
+  890  anal
+  891  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/logs/Job_1.txt fuck
+  892  nano fuck
+  893  nedit ../src/SSSync.* &
+  894  cd ../ && scram b && cd test
+  895  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 200
+  896  qstat -u mrcarver
+  897  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_1.txt fuck
+  898  nano fuck
+  899  qstat -u mrcarver
+  900  nano /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/logs/Job_1.txt 
+  901  nedit SSSync_Interactive.py &
+  902  cd ../ && scram b && cd test
+  903  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 200
+  904  qstat -u mrcarver
+  905  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_1.txt fuck
+  906  nano fuck
+  907  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/logs/Job_1.txt fuck
+  908  nano fuck
+  909  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/logs/Job_1.txt fuck
+  910  nano fuck
+  911  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_1.txt fuck
+  912  nano fuck
+  913  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_1.txt fuck
+  914  nano fuck
+  915  qstat -u mrcarver
+  916  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/logs/Job_1.txt fuck
+  917  nano fuck
+  918  cd ../ && scram b && cd test
+  919  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 10
+  920  qstat -u mrcarver
+  921  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 10
+  922  qstat -u mrcarver
+  923  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_13.txt fuck
+  924  nano fuck
+  925  qstat -u mrcarver
+  926  ls *.cc
+  927  nedit SyncYield.cc &
+  928  qstat -u mrcarver
+  929  cp SyncYield.cc FindSRYields.cc
+  930  nedit FindSRYields.cc &
+  931  qstat -u mrcarver
+  932  root -l /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/Job_1.root 
+  933  root -l -b -q FindSRYields.cc++
+  934  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 5
+  935  qstat -u mrcarver
+  936  ls *.cc
+  937  nedit MaySyncYield_TTandWJets.cc &
+  938  nedit MaySyncYield.cc &
+  939  nedit FindSRYields.cc &
+  940  qstat -u mrcarver
+  941  nedit FindSRYields.cc &
+  942  qstat -u mrcarver
+  943  cp /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L/errs/Job_1.txt fuck
+  944  nano fuck
+  945  root -l -b -q MaySyncYield.cc++
+  946  cd ../ && scram b && cd test
+  947  scram b && cd test
+  948  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/ZZTo4L 5
+  949  qstat -u mrcarver
+  950  root -l -b -q MaySyncYield.cc++
+  951  anal
+  952  nedit MaySyncYield.cc &
+  953  root -l -b -q MaySyncYield.cc++
+  954  nedit ../src/SSSync.* &
+  955  root -l -b -q MaySyncYield.cc++
+  956  root -l -b -q MaySyncYield.cc++ >& ylog
+  957  nano ylog 
+  958  nedit ylog &
+  959  root -l -b -q MaySyncYield.cc++ >& ylog
+  960  nano ylog 
+  961  nedit ../src/SSSync.* &
+  962  sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/ /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets 15
+  963  qstat -u mrcarver
+  964  exit
+  965  ssh -Y dev2
+  966  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  967  mcsenv
+  968  cmsenv
+  969  nedit RunTrackFinder.py &
+  970  cmsenv
+  971  cmsRun RunTrackFinder.py >& vlog
+  972  nano vlog 
+  973  cmsRun RunTrackFinder.py >& vlog
+  974  nano vlog 
+  975  nedit ../plugins/L1TMuonUpgradedTrackFinder.* & 
+  976  cd ../ && scram b && cd test
+  977  ls plugins/
+  978  rm plugins/~L1TMuonUpgradedTrackFinder.cc 
+  979  scram b && cd test
+  980  nedit ../src/sp_tf.cpp &
+  981  cd ../ && scram b && cd test
+  982  cmsRun RunTrackFinder.py >& vlog 
+  983  nano vlog 
+  984  cmsRun RunTrackFinder.py >& vlog 
+  985  nano vlog 
+  986  ls
+  987  ls *.txt
+  988  nano vlog 
+  989  cd /scratch/osg/mrcarver/EmuDevelopment/CMSSW_7_6_0_pre4/src/L1Trigger/L1EndcapMuonTrackFinder/test/
+  990  ls /cms/data/store/mc/Fall13dr/MuPlus_Pt-1to150_NegativeEndcap-gun/
+  991  nano ~/.bash_profile 
+  992  mdev
+  993  ls
+  994  nedit RunTrackFinder.py &
+  995  edmDumpEventContent /scratch/osg/acarnes/generation/config/50k_success/second_out_nE_n13_51.root 
+  996  nedit ../src/sp_tf.cpp &
+  997  cmsRun RunTrackFinder.py >& vlog
+  998  nano log
+  999  nano vlog 
+ 1000  qstat -u mrcarver
+ 1001  anal
+ 1002  qstat -u mrcarver
+ 1003  nedit MaySyncYield.cc &
+ 1004  root -l -b -q MaySyncYield.cc++ >& ylog 
+ 1005  nano ylog 
+ 1006  nedit FuckYieldstexts.txt &
+ 1007  root -l -b -q MaySyncYield.cc++ >& ylog 
+ 1008  nano ylog 
+ 1009* root -l -b -q MaySyncYield.cc++ >
+ 1010  nano ylog 
+ 1011  root -l -b -q MaySyncYield.cc++ >& ylog 
+ 1012  nano ylog 
+ 1013  hadd /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Full.root /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Job_*.root
+ 1014  qstat -u mrcarver
+ 1015  nano ylog 
+ 1016  root -l -b -q MaySyncYield.cc++
+ 1017  ls -lh /cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Full.root 
+ 1018  nedit SubmitSignalYieldJobs.sh
+ 1019  chmod 744 SubmitSignalYieldJobs.sh 
+ 1020  history >& hist

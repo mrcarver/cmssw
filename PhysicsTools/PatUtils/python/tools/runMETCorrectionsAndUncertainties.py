@@ -302,8 +302,8 @@ class RunMETCorrectionsAndUncertainties(ConfigToolBase):
         #jet ES configuration and jet cleaning
         #self.jetConfiguration()
         self.jetCleaning(process, autoJetCleaning, postfix)
-        
 
+		
         # correct the MET
         patMetCorrectionSequence, metModName = self.getCorrectedMET(process, metType, correctionLevel,
                                                                     produceIntermediateCorrections,
@@ -356,7 +356,9 @@ class RunMETCorrectionsAndUncertainties(ConfigToolBase):
     def produceMET(self, process,  metType, metModuleSequence, postfix):
         if metType == "PF" and not hasattr(process, 'pat'+metType+'Met'):
             process.load("PhysicsTools.PatUtils.patPFMETCorrections_cff")
-            
+         
+		
+		    
         if postfix != "" and metType == "PF" and not hasattr(process, 'pat'+metType+'Met'+postfix):
             configtools.cloneProcessingSnippet(process, getattr(process,"producePatPFMETCorrections"), postfix)
             setattr(process, 'pat'+metType+'Met'+postfix, getattr(process,'patPFMet' ).clone() )
@@ -379,6 +381,7 @@ class RunMETCorrectionsAndUncertainties(ConfigToolBase):
                     ) ) 
             
         metModuleSequence += getattr(process, 'pat'+metType+'Met'+postfix )
+		
 
 #====================================================================================================
     def getCorrectedMET(self, process, metType, correctionLevel,produceIntermediateCorrections, metModuleSequence, postfix ):
@@ -394,6 +397,7 @@ class RunMETCorrectionsAndUncertainties(ConfigToolBase):
 
         if metType == "MVA": #corrections are irrelevant for the MVA MET (except jet smearing?)
             return patMetCorrectionSequence, metModName
+			
                 
      ## MM: FIXME, smearing procedure needs a lot of work, still 2010 recipes everywhere
      ## ==> smearing disabled for all cases
@@ -593,6 +597,8 @@ class RunMETCorrectionsAndUncertainties(ConfigToolBase):
         
         # uncertainty sequence
         metUncSequence = cms.Sequence()
+		
+		
 
         #===================================================================================
         # jet energy resolution shifts
@@ -1477,14 +1483,14 @@ def runMetCorAndUncFromMiniAOD(process, metType="PF",
                                jetCorLabelL3=cms.InputTag('ak4PFCHSL1FastL2L3Corrector'),
                                jetCorLabelRes=cms.InputTag('ak4PFCHSL1FastL2L3ResidualCorrector'),
                                jecUncFile="CondFormats/JetMETObjects/data/Summer15_50nsV5_DATA_UncertaintySources_AK4PFchs.txt",
-                               postfix=""):
+                               postfix="fuck"):
 
     runMETCorrectionsAndUncertainties = RunMETCorrectionsAndUncertainties()
 
     #MET T1 uncertainties
     runMETCorrectionsAndUncertainties(process, metType="PF",
                                       correctionLevel=["T1"],
-                                      computeUncertainties=True,
+                                      computeUncertainties=False,
                                       produceIntermediateCorrections=False,
                                       addToPatDefaultSequence=False,
                                       jetCollection=jetColl,

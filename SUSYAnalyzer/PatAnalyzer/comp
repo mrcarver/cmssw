@@ -1,0 +1,124 @@
+>> Local Products Rules ..... started
+>> Local Products Rules ..... done
+>> Entering Package SUSYAnalyzer/PatAnalyzer
+>> Creating project symlinks
+  src/RecoEgamma/ElectronIdentification/python -> python/RecoEgamma/ElectronIdentification
+  src/RecoEgamma/PhotonIdentification/python -> python/RecoEgamma/PhotonIdentification
+  src/PhysicsTools/PatAlgos/python -> python/PhysicsTools/PatAlgos
+  src/SUSYAnalyzer/PatAnalyzer/python -> python/SUSYAnalyzer/PatAnalyzer
+>> Compiling edm plugin /lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc 
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'double tools::pfRelIso15(const pat::Muon*, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:24:12: warning: unused variable 'beta' [-Wunused-variable]
+     double beta = mu->pfIsolationR03().sumPUPt;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'double tools::pfRelIso(const pat::Electron*, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:56:12: warning: variable 'CorrectedTerm' set but not used [-Wunused-but-set-variable]
+     double CorrectedTerm=0.0;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Electron*> tools::MVALooseElectronSelector(edm::Handle<std::vector<pat::Electron> >, double, reco::Vertex::Point, double, bool, edm::Handle<std::vector<reco::Conversion> >&, reco::BeamSpot::Point, edm::ValueMap<float>)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:238:11: warning: unused variable 'value' [-Wunused-variable]
+     float value = valuesMap[elePtr];
+           ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Muon*> tools::MVALooseMuonSelector(const std::vector<pat::Muon>&, double, reco::Vertex::Point, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:548:12: warning: unused variable 'v_muon_dz' [-Wunused-variable]
+     double v_muon_dz = 0.1;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Muon*> tools::SSSyncMuonSelector(const std::vector<pat::Muon>&, double, reco::Vertex::Point, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:579:9: warning: unused variable 'v_muon_numberOfMatchedStations' [-Wunused-variable]
+     int v_muon_numberOfMatchedStations = 2;
+         ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:580:9: warning: unused variable 'v_muon_nPixelValidHits' [-Wunused-variable]
+     int v_muon_nPixelValidHits = 1;
+         ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:581:9: warning: unused variable 'v_muon_numberOfValidMuonHits' [-Wunused-variable]
+     int v_muon_numberOfValidMuonHits = 1;
+         ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:582:9: warning: unused variable 'v_muon_nValidHits' [-Wunused-variable]
+     int v_muon_nValidHits = 6;
+         ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:583:12: warning: unused variable 'v_muon_chi2Norm' [-Wunused-variable]
+     double v_muon_chi2Norm = 10.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<int> tools::SSSyncMuonSelectorIndex(const std::vector<pat::Muon>&, double, reco::Vertex::Point, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:756:12: warning: unused variable 'v_muon_emVetoEt' [-Wunused-variable]
+     double v_muon_emVetoEt=4.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:757:12: warning: unused variable 'v_muon_hadVetoEt' [-Wunused-variable]
+     double v_muon_hadVetoEt= 6.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const reco::Muon*> tools::EffsMuonSelector(const std::vector<reco::Muon>&, double, reco::Vertex::Point, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:811:12: warning: unused variable 'v_muon_emVetoEt' [-Wunused-variable]
+     double v_muon_emVetoEt=4.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:812:12: warning: unused variable 'v_muon_hadVetoEt' [-Wunused-variable]
+     double v_muon_hadVetoEt= 6.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Muon*> tools::ssbMuonSelector(const std::vector<pat::Muon>&, double, reco::Vertex::Point, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:861:12: warning: unused variable 'v_muon_emVetoEt' [-Wunused-variable]
+     double v_muon_emVetoEt=4.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:862:12: warning: unused variable 'v_muon_hadVetoEt' [-Wunused-variable]
+     double v_muon_hadVetoEt= 6.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<int> tools::ssbMuonSelectorIndex(const std::vector<pat::Muon>&, double, reco::Vertex::Point, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:913:12: warning: unused variable 'v_muon_emVetoEt' [-Wunused-variable]
+     double v_muon_emVetoEt=4.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:914:12: warning: unused variable 'v_muon_hadVetoEt' [-Wunused-variable]
+     double v_muon_hadVetoEt= 6.;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Electron*> tools::SSOptimizerElectronSelector(const std::vector<pat::Electron>&, double, reco::Vertex::Point, double, bool, edm::Handle<std::vector<reco::Conversion> >&, reco::BeamSpot::Point)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:960:12: warning: unused variable 'v_electron_dz' [-Wunused-variable]
+     double v_electron_dz = 0.1;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<int> tools::SSOptimizerElectronSelectorIndex(const std::vector<pat::Electron>&, double, reco::Vertex::Point, double, bool, edm::Handle<std::vector<reco::Conversion> >&, reco::BeamSpot::Point)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:1028:12: warning: unused variable 'v_electron_dz' [-Wunused-variable]
+     double v_electron_dz = 0.03;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Electron*> tools::ssbElectronSelector(const std::vector<pat::Electron>&, double, reco::Vertex::Point, double, bool, edm::Handle<std::vector<reco::Conversion> >&, reco::BeamSpot::Point)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:1099:12: warning: unused variable 'v_electron_dz' [-Wunused-variable]
+     double v_electron_dz = 0.03;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<int> tools::ssbElectronSelectorIndex(const std::vector<pat::Electron>&, double, reco::Vertex::Point, double, bool, edm::Handle<std::vector<reco::Conversion> >&, reco::BeamSpot::Point)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:1169:12: warning: unused variable 'v_electron_dz' [-Wunused-variable]
+     double v_electron_dz = 0.03;
+            ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<const pat::Jet*> tools::JetSelectorAll(const std::vector<pat::Jet>&, double, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:2008:13: warning: unused variable 'bool_jet_id' [-Wunused-variable]
+     bool    bool_jet_id= false;
+             ^
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc: In function 'std::vector<int> tools::JetSelectorIndexAll(const std::vector<pat::Jet>&, double, double)':
+/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/src/Tools.cc:2045:13: warning: unused variable 'bool_jet_id' [-Wunused-variable]
+     bool    bool_jet_id= false;
+             ^
+>> Building edm plugin tmp/slc6_amd64_gcc491/src/SUSYAnalyzer/PatAnalyzer/src/SUSYAnalyzerPatAnalyzer/libSUSYAnalyzerPatAnalyzer.so
+Leaving library rule at SUSYAnalyzer/PatAnalyzer
+@@@@ Running edmWriteConfigs for SUSYAnalyzerPatAnalyzer
+--- Registered EDM Plugin: SUSYAnalyzerPatAnalyzer
+------- copying files from src/SUSYAnalyzer/PatAnalyzer/scripts -------
+>> copied AnalysisTreeClass.C
+>> copied AnalysisTreeClass.h
+>> copied MakeAnalysisTreeClass.C
+>> copied MergeRootFiles.C
+>> copied list_of_arrays_sizes.txt
+>> copied make_analysis_tree_class.sh
+>> copied merge_root_files.sh
+>> copied modify_analysis_class.sh
+>> Leaving Package SUSYAnalyzer/PatAnalyzer
+>> Package SUSYAnalyzer/PatAnalyzer built
+>> Local Products Rules ..... started
+>> Local Products Rules ..... done
+gmake[1]: Entering directory `/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12'
+>> Creating project symlinks
+  src/RecoEgamma/ElectronIdentification/python -> python/RecoEgamma/ElectronIdentification
+  src/RecoEgamma/PhotonIdentification/python -> python/RecoEgamma/PhotonIdentification
+  src/PhysicsTools/PatAlgos/python -> python/PhysicsTools/PatAlgos
+  src/SUSYAnalyzer/PatAnalyzer/python -> python/SUSYAnalyzer/PatAnalyzer
+>> Done python_symlink
+>> Compiling python modules python
+>> Compiling python modules src/SUSYAnalyzer/PatAnalyzer/python
+>> All python modules compiled
+@@@@ Refreshing Plugins:edmPluginRefresh
+>> Pluging of all type refreshed.
+>> Done generating edm plugin poisoned information
+gmake[1]: Leaving directory `/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12'

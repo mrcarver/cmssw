@@ -1,0 +1,5 @@
+sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/ /cms/data/store/user/t2/users/mrcarver/Run2Tuples/50ns/TTJets/ 5
+sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/ /cms/data/store/user/t2/users/mrcarver/Run2Tuples/50ns/WZ/ 5
+sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/ /cms/data/store/user/t2/users/mrcarver/Run2Tuples/50ns/WJets/ 5
+sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/ /cms/data/store/user/t2/users/mrcarver/Run2Tuples/50ns/DY10/ 5
+sh SubmitCMSSW_all.sh /cms/data/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v2/ /cms/data/store/user/t2/users/mrcarver/Run2Tuples/50ns/DY50/ 5

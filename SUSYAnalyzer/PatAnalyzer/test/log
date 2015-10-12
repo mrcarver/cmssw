@@ -1,0 +1,194 @@
+[arg 1] :  SSSync_Interactive_Debug.py
+05-Oct-2015 17:40:25 EDT  Initiating request to open file file:///cms/data/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/A0523330-7214-E511-BB04-00259073E506.root
+05-Oct-2015 17:40:26 EDT  Successfully opened file file:///cms/data/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/A0523330-7214-E511-BB04-00259073E506.root
+treeb
+treea
+begin end
+Begin processing the 1st record. Run 1, Event 12155901, LumiSection 48425 at 05-Oct-2015 17:40:54.320 EDT
+Begin processing the 2nd record. Run 1, Event 12155902, LumiSection 48425 at 05-Oct-2015 17:40:54.818 EDT
+Begin processing the 3rd record. Run 1, Event 12155903, LumiSection 48425 at 05-Oct-2015 17:40:54.835 EDT
+Begin processing the 4th record. Run 1, Event 12155904, LumiSection 48425 at 05-Oct-2015 17:40:54.849 EDT
+Begin processing the 5th record. Run 1, Event 12155905, LumiSection 48425 at 05-Oct-2015 17:40:54.860 EDT
+Begin processing the 6th record. Run 1, Event 12155907, LumiSection 48425 at 05-Oct-2015 17:40:54.872 EDT
+Begin processing the 7th record. Run 1, Event 12155909, LumiSection 48425 at 05-Oct-2015 17:40:54.898 EDT
+Begin processing the 8th record. Run 1, Event 12155910, LumiSection 48425 at 05-Oct-2015 17:40:54.921 EDT
+Begin processing the 9th record. Run 1, Event 12155913, LumiSection 48425 at 05-Oct-2015 17:40:54.936 EDT
+Begin processing the 10th record. Run 1, Event 12155914, LumiSection 48425 at 05-Oct-2015 17:40:54.951 EDT
+Begin processing the 11th record. Run 1, Event 12155917, LumiSection 48425 at 05-Oct-2015 17:40:54.962 EDT
+Begin processing the 12th record. Run 1, Event 12155918, LumiSection 48425 at 05-Oct-2015 17:40:54.982 EDT
+Begin processing the 13th record. Run 1, Event 12155927, LumiSection 48425 at 05-Oct-2015 17:40:55.005 EDT
+Begin processing the 14th record. Run 1, Event 12155931, LumiSection 48425 at 05-Oct-2015 17:40:55.027 EDT
+Begin processing the 15th record. Run 1, Event 12155938, LumiSection 48425 at 05-Oct-2015 17:40:55.042 EDT
+Begin processing the 16th record. Run 1, Event 12155946, LumiSection 48425 at 05-Oct-2015 17:40:55.054 EDT
+Begin processing the 17th record. Run 1, Event 12155949, LumiSection 48425 at 05-Oct-2015 17:40:55.071 EDT
+Begin processing the 18th record. Run 1, Event 12155951, LumiSection 48425 at 05-Oct-2015 17:40:55.088 EDT
+Begin processing the 19th record. Run 1, Event 12155958, LumiSection 48425 at 05-Oct-2015 17:40:55.108 EDT
+Begin processing the 20th record. Run 1, Event 12155959, LumiSection 48425 at 05-Oct-2015 17:40:55.125 EDT
+Begin processing the 21st record. Run 1, Event 12155961, LumiSection 48425 at 05-Oct-2015 17:40:55.149 EDT
+Begin processing the 22nd record. Run 1, Event 12155962, LumiSection 48425 at 05-Oct-2015 17:40:55.189 EDT
+Begin processing the 23rd record. Run 1, Event 12155963, LumiSection 48425 at 05-Oct-2015 17:40:55.205 EDT
+Begin processing the 24th record. Run 1, Event 12155964, LumiSection 48425 at 05-Oct-2015 17:40:55.220 EDT
+Begin processing the 25th record. Run 1, Event 12155966, LumiSection 48425 at 05-Oct-2015 17:40:55.245 EDT
+Begin processing the 26th record. Run 1, Event 12155969, LumiSection 48425 at 05-Oct-2015 17:40:55.263 EDT
+Begin processing the 27th record. Run 1, Event 12155970, LumiSection 48425 at 05-Oct-2015 17:40:55.277 EDT
+Begin processing the 28th record. Run 1, Event 12155973, LumiSection 48425 at 05-Oct-2015 17:40:55.286 EDT
+Begin processing the 29th record. Run 1, Event 12155976, LumiSection 48425 at 05-Oct-2015 17:40:55.295 EDT
+Begin processing the 30th record. Run 1, Event 12155979, LumiSection 48425 at 05-Oct-2015 17:40:55.306 EDT
+Begin processing the 31st record. Run 1, Event 12155981, LumiSection 48425 at 05-Oct-2015 17:40:55.332 EDT
+Begin processing the 32nd record. Run 1, Event 12155985, LumiSection 48425 at 05-Oct-2015 17:40:55.350 EDT
+Begin processing the 33rd record. Run 1, Event 12155992, LumiSection 48425 at 05-Oct-2015 17:40:55.358 EDT
+Begin processing the 34th record. Run 1, Event 12155993, LumiSection 48425 at 05-Oct-2015 17:40:55.368 EDT
+Begin processing the 35th record. Run 1, Event 12155995, LumiSection 48425 at 05-Oct-2015 17:40:55.379 EDT
+Begin processing the 36th record. Run 1, Event 12156000, LumiSection 48425 at 05-Oct-2015 17:40:55.391 EDT
+Begin processing the 37th record. Run 1, Event 12156001, LumiSection 48425 at 05-Oct-2015 17:40:55.409 EDT
+Begin processing the 38th record. Run 1, Event 12156002, LumiSection 48425 at 05-Oct-2015 17:40:55.427 EDT
+Begin processing the 39th record. Run 1, Event 12156003, LumiSection 48425 at 05-Oct-2015 17:40:55.441 EDT
+Begin processing the 40th record. Run 1, Event 12156006, LumiSection 48425 at 05-Oct-2015 17:40:55.448 EDT
+Begin processing the 41st record. Run 1, Event 12156011, LumiSection 48425 at 05-Oct-2015 17:40:55.462 EDT
+Begin processing the 42nd record. Run 1, Event 12156017, LumiSection 48425 at 05-Oct-2015 17:40:55.478 EDT
+Begin processing the 43rd record. Run 1, Event 12156025, LumiSection 48425 at 05-Oct-2015 17:40:55.500 EDT
+Begin processing the 44th record. Run 1, Event 12156027, LumiSection 48425 at 05-Oct-2015 17:40:55.521 EDT
+Begin processing the 45th record. Run 1, Event 12156028, LumiSection 48425 at 05-Oct-2015 17:40:55.532 EDT
+Begin processing the 46th record. Run 1, Event 12156029, LumiSection 48425 at 05-Oct-2015 17:40:55.545 EDT
+Begin processing the 47th record. Run 1, Event 12156030, LumiSection 48425 at 05-Oct-2015 17:40:55.564 EDT
+Begin processing the 48th record. Run 1, Event 12156031, LumiSection 48425 at 05-Oct-2015 17:40:55.588 EDT
+Begin processing the 49th record. Run 1, Event 12156034, LumiSection 48425 at 05-Oct-2015 17:40:55.606 EDT
+Begin processing the 50th record. Run 1, Event 12156036, LumiSection 48425 at 05-Oct-2015 17:40:55.614 EDT
+Begin processing the 51st record. Run 1, Event 12156041, LumiSection 48425 at 05-Oct-2015 17:40:55.624 EDT
+Begin processing the 52nd record. Run 1, Event 12156044, LumiSection 48425 at 05-Oct-2015 17:40:55.642 EDT
+Begin processing the 53rd record. Run 1, Event 12156047, LumiSection 48425 at 05-Oct-2015 17:40:55.651 EDT
+Begin processing the 54th record. Run 1, Event 12156048, LumiSection 48425 at 05-Oct-2015 17:40:55.671 EDT
+Begin processing the 55th record. Run 1, Event 12156049, LumiSection 48425 at 05-Oct-2015 17:40:55.692 EDT
+Begin processing the 56th record. Run 1, Event 12156051, LumiSection 48425 at 05-Oct-2015 17:40:55.708 EDT
+Begin processing the 57th record. Run 1, Event 12156053, LumiSection 48425 at 05-Oct-2015 17:40:55.720 EDT
+Begin processing the 58th record. Run 1, Event 12156059, LumiSection 48425 at 05-Oct-2015 17:40:55.732 EDT
+Begin processing the 59th record. Run 1, Event 12156060, LumiSection 48425 at 05-Oct-2015 17:40:55.746 EDT
+Begin processing the 60th record. Run 1, Event 12156061, LumiSection 48425 at 05-Oct-2015 17:40:55.770 EDT
+Begin processing the 61st record. Run 1, Event 12156063, LumiSection 48425 at 05-Oct-2015 17:40:55.790 EDT
+Begin processing the 62nd record. Run 1, Event 12156065, LumiSection 48425 at 05-Oct-2015 17:40:55.814 EDT
+Begin processing the 63rd record. Run 1, Event 12156066, LumiSection 48425 at 05-Oct-2015 17:40:55.831 EDT
+Begin processing the 64th record. Run 1, Event 12156067, LumiSection 48425 at 05-Oct-2015 17:40:55.842 EDT
+Begin processing the 65th record. Run 1, Event 12156072, LumiSection 48425 at 05-Oct-2015 17:40:55.863 EDT
+Begin processing the 66th record. Run 1, Event 12156077, LumiSection 48425 at 05-Oct-2015 17:40:55.889 EDT
+Begin processing the 67th record. Run 1, Event 12156078, LumiSection 48425 at 05-Oct-2015 17:40:55.903 EDT
+Begin processing the 68th record. Run 1, Event 12156079, LumiSection 48425 at 05-Oct-2015 17:40:55.922 EDT
+Begin processing the 69th record. Run 1, Event 12156081, LumiSection 48425 at 05-Oct-2015 17:40:55.934 EDT
+Begin processing the 70th record. Run 1, Event 12156085, LumiSection 48425 at 05-Oct-2015 17:40:55.951 EDT
+Begin processing the 71st record. Run 1, Event 12156088, LumiSection 48425 at 05-Oct-2015 17:40:55.972 EDT
+Begin processing the 72nd record. Run 1, Event 12156095, LumiSection 48425 at 05-Oct-2015 17:40:55.983 EDT
+Begin processing the 73rd record. Run 1, Event 12156096, LumiSection 48425 at 05-Oct-2015 17:40:55.995 EDT
+Begin processing the 74th record. Run 1, Event 12156097, LumiSection 48425 at 05-Oct-2015 17:40:56.011 EDT
+Begin processing the 75th record. Run 1, Event 12156098, LumiSection 48425 at 05-Oct-2015 17:40:56.023 EDT
+Begin processing the 76th record. Run 1, Event 12156100, LumiSection 48425 at 05-Oct-2015 17:40:56.041 EDT
+Begin processing the 77th record. Run 1, Event 12156101, LumiSection 48425 at 05-Oct-2015 17:40:56.059 EDT
+Begin processing the 78th record. Run 1, Event 12156105, LumiSection 48425 at 05-Oct-2015 17:40:56.071 EDT
+Begin processing the 79th record. Run 1, Event 12156109, LumiSection 48425 at 05-Oct-2015 17:40:56.089 EDT
+Begin processing the 80th record. Run 1, Event 12156113, LumiSection 48425 at 05-Oct-2015 17:40:56.098 EDT
+Begin processing the 81st record. Run 1, Event 12156114, LumiSection 48425 at 05-Oct-2015 17:40:56.115 EDT
+Begin processing the 82nd record. Run 1, Event 12156116, LumiSection 48425 at 05-Oct-2015 17:40:56.134 EDT
+Begin processing the 83rd record. Run 1, Event 12156118, LumiSection 48425 at 05-Oct-2015 17:40:56.154 EDT
+Begin processing the 84th record. Run 1, Event 12156119, LumiSection 48425 at 05-Oct-2015 17:40:56.166 EDT
+Begin processing the 85th record. Run 1, Event 12156124, LumiSection 48425 at 05-Oct-2015 17:40:56.178 EDT
+Begin processing the 86th record. Run 1, Event 12156128, LumiSection 48425 at 05-Oct-2015 17:40:56.192 EDT
+Begin processing the 87th record. Run 1, Event 12156129, LumiSection 48425 at 05-Oct-2015 17:40:56.205 EDT
+Begin processing the 88th record. Run 1, Event 12156131, LumiSection 48425 at 05-Oct-2015 17:40:56.228 EDT
+Begin processing the 89th record. Run 1, Event 12156135, LumiSection 48425 at 05-Oct-2015 17:40:56.246 EDT
+Begin processing the 90th record. Run 1, Event 12156140, LumiSection 48425 at 05-Oct-2015 17:40:56.257 EDT
+Begin processing the 91st record. Run 1, Event 12156142, LumiSection 48426 at 05-Oct-2015 17:40:56.280 EDT
+Begin processing the 92nd record. Run 1, Event 12156145, LumiSection 48426 at 05-Oct-2015 17:40:56.293 EDT
+Begin processing the 93rd record. Run 1, Event 12156146, LumiSection 48426 at 05-Oct-2015 17:40:56.321 EDT
+Begin processing the 94th record. Run 1, Event 12156148, LumiSection 48426 at 05-Oct-2015 17:40:56.340 EDT
+Begin processing the 95th record. Run 1, Event 12156150, LumiSection 48426 at 05-Oct-2015 17:40:56.357 EDT
+Begin processing the 96th record. Run 1, Event 12156153, LumiSection 48426 at 05-Oct-2015 17:40:56.369 EDT
+Begin processing the 97th record. Run 1, Event 12156155, LumiSection 48426 at 05-Oct-2015 17:40:56.380 EDT
+Begin processing the 98th record. Run 1, Event 12156168, LumiSection 48426 at 05-Oct-2015 17:40:56.398 EDT
+Begin processing the 99th record. Run 1, Event 12156173, LumiSection 48426 at 05-Oct-2015 17:40:56.427 EDT
+Begin processing the 100th record. Run 1, Event 12156177, LumiSection 48426 at 05-Oct-2015 17:40:56.452 EDT
+05-Oct-2015 17:40:56 EDT  Closed file file:///cms/data/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/A0523330-7214-E511-BB04-00259073E506.root
+
+TrigReport ---------- Event  Summary ------------
+TrigReport Events total = 100 passed = 100 failed = 0
+
+TrigReport ---------- Path   Summary ------------
+TrigReport  Trig Bit#   Executed     Passed     Failed      Error Name
+TrigReport     1    0        100        100          0          0 p
+
+TrigReport -------End-Path   Summary ------------
+TrigReport  Trig Bit#   Executed     Passed     Failed      Error Name
+TrigReport     0    0        100        100          0          0 outp
+
+TrigReport ---------- Modules in Path: p ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0        100        100          0          0 goodOfflinePrimaryVertices
+TrigReport     1    1        100        100          0          0 electronMVAValueMapProducer
+TrigReport     1    2        100        100          0          0 SyncExercise
+
+TrigReport ------ Modules in End-Path: outp ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     0    0        100        100          0          0 writeedmfile
+
+TrigReport ---------- Module Summary ------------
+TrigReport    Visited   Executed     Passed     Failed      Error Name
+TrigReport        100        100        100          0          0 goodOfflinePrimaryVertices
+TrigReport        100        100        100          0          0 electronMVAValueMapProducer
+TrigReport        100        100        100          0          0 SyncExercise
+TrigReport        100        100        100          0          0 TriggerResults
+TrigReport        100        100        100          0          0 writeedmfile
+
+TimeReport ---------- Event  Summary ---[sec]----
+TimeReport       event loop CPU/event = 0.113548
+TimeReport      event loop Real/event = 0.125648
+TimeReport     sum Streams Real/event = 0.020947
+TimeReport efficiency CPU/Real/thread = 0.903704
+
+TimeReport ---------- Path   Summary ---[Real sec]----
+TimeReport  per event     per exec  Name
+TimeReport   0.008172     0.008172  p
+TimeReport  per event     per exec  Name
+
+TimeReport -------End-Path   Summary ---[Real sec]----
+TimeReport  per event     per exec  Name
+TimeReport   0.012314     0.012314  outp
+TimeReport  per event     per exec  Name
+
+TimeReport ---------- Modules in Path: p ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.000046     0.000046  goodOfflinePrimaryVertices
+TimeReport   0.000527     0.000527  electronMVAValueMapProducer
+TimeReport   0.000976     0.000976  SyncExercise
+TimeReport  per event    per visit  Name
+
+TimeReport ------ Modules in End-Path: outp ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.007391     0.007391  writeedmfile
+TimeReport  per event    per visit  Name
+
+TimeReport ---------- Module Summary ---[Real sec]----
+TimeReport  per event     per exec    per visit  Name
+TimeReport   0.000028     0.000028     0.000028  TriggerResults
+TimeReport   0.000046     0.000046     0.000046  goodOfflinePrimaryVertices
+TimeReport   0.000527     0.000527     0.000527  electronMVAValueMapProducer
+TimeReport   0.000976     0.000976     0.000976  SyncExercise
+TimeReport   0.007391     0.007391     0.007391  writeedmfile
+TimeReport  per event     per exec    per visit  Name
+
+T---Report end!
+
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                             1        1
+    2 fileAction           -s file_open                              2        2
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostEndRun                        
+    2 fileAction           pre-events       pre-events       
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                  3                   3

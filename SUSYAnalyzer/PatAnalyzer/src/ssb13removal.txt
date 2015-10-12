@@ -1,0 +1,111 @@
+  /*    float corrMetx = rawmetX;
+     float corrMety = rawmetY;
+     
+     for( std::vector<pat::Jet>::const_iterator jet = (*thePatJets).begin(); jet != (*thePatJets).end(); jet++ ) {
+     
+     
+     double sumMuPtX=0.;
+     double sumMuPtY=0.;
+     double sumMuPt=0.;
+     
+     std::vector <reco::PFCandidatePtr> const constituents = (&*jet)->getPFConstituents();
+     for(std::vector <reco::PFCandidatePtr>::const_iterator it=constituents.begin(); it!=constituents.end(); ++it) {
+     const reco::PFCandidatePtr & icand = *it;
+     //if(  icand->isMuon() || icand->isGlobalMuon() || icand->isTrackerMuon() || icand->isStandAloneMuon() || icand->isCaloMuon()) {
+     if(  icand->muonRef().isNonnull() ) {
+     double mupt = icand->pt();
+     double muphi = icand->phi();
+     bool found = false;
+     for( std::vector<pat::Muon>::const_iterator mu = (*thePatMuons).begin() ; mu != (*thePatMuons).end() ; mu++ ) {
+     if ( (fabs(mu->pt() - mupt)/mupt < 0.1) && (fabs(mu->phi() - muphi) < 0.01)  ) {
+     found = mu->isGlobalMuon() || mu->isStandAloneMuon();
+     //std::cout<<"Selected Muons "<<mu->pt()<<" - "<<mupt<<"; "<<mu->phi()<<" - "<<muphi<<std::endl;
+     } //else
+     //std::cout<<"Muons "<<mu->pt()<<" - "<<mupt<<"; "<<mu->phi()<<" - "<<muphi<<std::endl;
+     }
+     if (found) {
+     sumMuPtX+=icand->px();
+     sumMuPtY+=icand->py();
+     sumMuPt+=icand->pt();
+     }
+     }
+     }
+     
+     double uncX = ((&*jet)->correctedP4("Uncorrected")).Px();
+     double uncY = ((&*jet)->correctedP4("Uncorrected")).Py();
+     double uncPt = ((&*jet)->correctedP4("Uncorrected")).Pt();
+     
+     double noMuPt = sqrt((uncX - sumMuPtX)*(uncX - sumMuPtX) + (uncY - sumMuPtY)*(uncY - sumMuPtY));
+     double noMuPhi = atan2(uncY - sumMuPtY, uncX - sumMuPtX);
+     
+     std::pair <float, float> corr = fMetCorrector->getCorrections(
+     ((&*jet)->correctedP4("Uncorrected")).Pt(),
+     ((&*jet)->correctedP4("Uncorrected")).Eta(),
+     //fTR->JMetCorrNoMuPt[ind],
+     //((&*jet)->correctedP4("Uncorrected")).Pt() - sumMuPt,
+     noMuPt,
+     //((&*jet)->correctedP4("Uncorrected")).Phi(),
+     noMuPhi,
+     (&*jet)->neutralEmEnergyFraction()+(&*jet)->chargedEmEnergyFraction(),
+     myRhoJets,
+     (&*jet)->jetArea());
+     corrMetx += corr.first ;
+     corrMety += corr.second;
+     //if (sumMuPt)
+     //    std::cout<<((&*jet)->correctedP4("Uncorrected")).Pt()-sumMuPt<<" "<<noMuPt<<std::endl;
+     
+     //std::cout<<"Corrections: "<<(&*jet)->pt()/uncPt<<" "
+     //<<fMetCorrector->getJetCorrectionRawPt(uncPt, float(((&*jet)->correctedP4("Uncorrected")).Eta()), myRhoJets, (&*jet)->jetArea(),_corrLevel)<<std::endl;
+     
+     }
+     float newmet    = sqrt(corrMetx*corrMetx + corrMety*corrMety);
+     float newmetphi = atan2(corrMety, corrMetx);
+     
+     //std::cout<<newmet<<" "<<_met<<"; "<<newmetphi<<" "<<_met_phi<<" "<<std::endl;
+     
+     _met = newmet;
+     _met_phi = newmetphi;
+     */
+	 
+	  //std::vector<const pat::Jet* > SelectedJets = JetSelector(*thePatJets, _jetPtCut, _jetEtaCut);
+    //std::cout<<"Jet size "<<SelectedJetsAll.size()<<std::endl;
+    //std::cout<<"Lep size "<<sMu.size()<<" "<<sEl.size()<<std::endl;
+    //if (SelectedJetsAll.size() == 0) return;
+	
+	  /*    for(unsigned int i = 0 ; i < SelectedJets.size() ;i++ ){
+     _jetEta[i] = SelectedJets[i]->eta();
+     _jetPhi[i] = SelectedJets[i]->phi();
+     _jetPt[i] = SelectedJets[i]->pt();
+     
+     ((TLorentzVector *)_jetP4->At(i))->SetPtEtaPhiM( _jetPt[i], _jetEta[i], _jetPhi[i], 0 );
+     
+     _csv[i] = SelectedJets[i]->bDiscriminator("combinedSecondaryVertexBJetTags");
+     
+     if(SelectedJets[i]->bDiscriminator("combinedSecondaryVertexBJetTags") > 0.679) {
+     Bjets.push_back( &*SelectedJets[i] );
+     _bTagged[i] = true;
+     } else _bTagged[i] = false;
+     
+     HT+= SelectedJets[i]->pt();
+     }
+     */
+	 
+	        /*if ((_jetPtAll[i] > _jetPtCut) && (fabs(_jetEtaAll[i]) < _jetEtaCut)) {
+            
+            _jetEta[_n_Jets] = _jetEtaAll[i];
+            _jetPhi[_n_Jets] = _jetPhiAll[i];
+            _jetPt[_n_Jets] = _jetPtAll[i];
+            
+            ((TLorentzVector *)_jetP4->At(_n_Jets))->SetPtEtaPhiM( _jetPt[_n_Jets], _jetEta[_n_Jets], _jetPhi[_n_Jets], 0 );
+            
+            _csv[_n_Jets] = _csvAll[i];
+            
+            if(_csvAll[i] > 0.679) {
+                Bjets.push_back( &*SelectedJetsAll[i] );
+                _bTagged[_n_Jets] = true;
+                _n_bJets++;
+            } else _bTagged[_n_Jets] = false;
+            
+            HT+= _jetPt[_n_Jets];
+            _n_Jets++;
+        }*/
