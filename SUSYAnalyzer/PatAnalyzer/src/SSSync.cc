@@ -1015,7 +1015,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		_pdgids[leptonCounter] = iM->pdgId();
         _charges[leptonCounter] = iM->charge();
         _isolation[leptonCounter] = pfRelIso15(iM,myRhoJets);
-        _miniIsolation[leptonCounter] = getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(iM), 0.05, 0.2, 10., false, false,myRhoJets);
+        _miniIsolation[leptonCounter] = getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(iM), 0.05, 0.2, 10., false, false,myRhoJetsNC);
 		_TrackIso[leptonCounter] = 0.0;
 		_EcalPFIso[leptonCounter] = 0.0;
 		_HcalPFIso[leptonCounter] = 0.0;
@@ -1142,8 +1142,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 			
 			double uncPt = (SelectedJetsAll[k]->correctedP4("Uncorrected")).Pt();
         	double uncEta = (SelectedJetsAll[k]->correctedP4("Uncorrected")).Eta();
-			double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJetsNC, SelectedJetsAll[k]->jetArea(),_corrLevel);
-			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJetsNC, SelectedJetsAll[k]->jetArea(),_corrLevelAbs);
+			double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevel);
+			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevelAbs);
 			
 			double LepAwarePt = (uncPt*L1corr - iM->pt())*(L2L3corr/L1corr) + iM->pt();
 			double LepAwareE = (L2L3corr/L1corr)*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*L1corr - iM->energy()) + iM->energy();
@@ -1186,7 +1186,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         _flavors[leptonCounter] = 0;
 		_pdgids[leptonCounter] = iE->pdgId();
         _charges[leptonCounter] = iE->charge();
-        _miniIsolation[leptonCounter] = getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(iE), 0.05, 0.2, 10., false, false,myRhoJets);
+        _miniIsolation[leptonCounter] = getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(iE), 0.05, 0.2, 10., false, false,myRhoJetsNC);
 		//std::cout<<"miniIsoE = "<<_miniIsolation[leptonCounter]<<"\n";
         _isolation[leptonCounter] = pfRelIso15(iE, myRhoJets);
         _ipPV[leptonCounter] = TMath::Abs(iE->gsfTrack()->dxy(PV));
