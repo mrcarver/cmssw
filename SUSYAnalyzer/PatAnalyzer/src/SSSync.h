@@ -145,6 +145,8 @@ private:
     TTree* outputTree;
     
     string _corrLevel;
+	string _corrLevelAbs;
+	string _corrLevelRes;
 	
 	enum decay {
         W_L,  // 0
@@ -267,6 +269,10 @@ private:
 	int _nIsoMuControlObjs[4];
 	int _nEleControlObjs[5];
 	int _nIsoEleControlObjs[4];
+	
+	double _EcalPFIso[nLeptonsMax];
+	double _HcalPFIso[nLeptonsMax];
+	double _TrackIso[nLeptonsMax];
     
     int _nLeptons;
     
@@ -376,6 +382,7 @@ private:
     
     
 	double _rho;
+	double _rhoNC;
     double _met;
     double _met_phi;
     double HT;

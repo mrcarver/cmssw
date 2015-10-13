@@ -437,6 +437,10 @@ void MaySyncYield()
 	bool _istightMVANoIsoSIP[8];
 	bool _istightMVANoIsoSIP_LMVA[8];
 	bool _istightMVA[8];
+	
+	double _EcalPFIso[8];
+	double _HcalPFIso[8];
+	double _TrackIso[8];
     
     int _n_PV;
     
@@ -457,6 +461,8 @@ void MaySyncYield()
     double _met;
     double _met_phi;
     double HT;
+	
+	int _DiLepTrigs[5], _DiLepHTTrigs[3];
     
     TClonesArray* _leptonP4 = new TClonesArray("TLorentzVector", 8);
     for (int i=0; i!=8; ++i) {
@@ -525,7 +531,7 @@ void MaySyncYield()
 	TH1F *TotalEvents = new TH1F("TotalEvents","Total Events",5,0,5);
 	
 	//TFile *hfiles = new TFile("file:MaySyncOutput.root","READ");
-	TFile *hfiles = new TFile("file:TTW_sync_oldpTrel.root","READ");//
+	TFile *hfiles = new TFile("file:TTW_sync.root","READ");//
 	//TFile *hfiles = new TFile("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Full.root","READ");//
 	hfiles->cd("SyncExercise");
 	TH1D* _hCounters = new TH1D("hCounter", "Events counter", 5,0,5);
@@ -540,12 +546,15 @@ void MaySyncYield()
 	TotalEvents->SetBinContent(1,evs);
 	
     TChain *outputTree=new TChain("SyncExercise/SSSyncTree");
-	outputTree->Add("file:TTW_sync_oldpTrel.root");
+	outputTree->Add("file:TTW_sync.root");
 	//outputTree->Add("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Full.root");
 	
 	outputTree->SetBranchAddress("_selectedLeptonPt", &_selectedLeptonPt);
 	outputTree->SetBranchAddress("_selectedLeptonEta", &_selectedLeptonEta);
 	outputTree->SetBranchAddress("_selectedLeptonPhi", &_selectedLeptonPhi);
+	
+	outputTree->SetBranchAddress("_DiLepHTTrigs", &_DiLepHTTrigs);
+	outputTree->SetBranchAddress("_DiLepTrigs"    , &_DiLepTrigs);
 	
 	outputTree->SetBranchAddress("_eventNb",   &_eventNb); 
     outputTree->SetBranchAddress("_runNb",     &_runNb);    
@@ -562,6 +571,10 @@ void MaySyncYield()
 	outputTree->SetBranchAddress("_miniIsolationEA", &_miniIsolationEA);
    	outputTree->SetBranchAddress("_isolationComponents", &_isolationComponents);
     outputTree->SetBranchAddress("_isolationMC", &_isolationMC);
+	
+	outputTree->SetBranchAddress("_EcalPFIso", &_EcalPFIso);
+	outputTree->SetBranchAddress("_HcalPFIso", &_HcalPFIso);
+	outputTree->SetBranchAddress("_TrackIso", &_TrackIso  );
     
     outputTree->SetBranchAddress("_index1", &_index1);
     outputTree->SetBranchAddress("_index2", &_index2);
@@ -666,7 +679,61 @@ void MaySyncYield()
 		
 		//if(_genHT > 100)
 		//	continue;
+		/////////////////////////////
+		//// Now Do Jet Cleaning ////
+		/////////////////////////////used to be just before setting signal region. So far matches perfect so think its good. Leave for now though
 		
+		if(verbose) 
+				std::cout<<"Start Jet cleaning with "<<_n_Jets<<" Jets\n\n\n\n";
+        
+		float CleanedHT = 0;
+		int nCJets = 0, nCBJets = 0;
+		for(int i = 0 ; i < _n_Jets ;i++ ){
+		
+			TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
+			
+			if(_eventNb == 40603 && _lumiBlock == 123)
+				std::cout<<"Jet "<<i<<"pt = "<<_jetPt[i]<<", eta = "<<_jetEta[i]<<", phi = "<<_jetPhi[i]<<", bjet = "<<(_csv[i] > 0.814)<<"\n";
+			
+			
+			bool dr = false;
+			/*for(unsigned int j=0;j<looseout.size();j++){part of what was used when just before setting signal region
+	
+				if(((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
+					dr = true;
+					if(_eventNb == 40603 && _lumiBlock == 123)
+						std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt )<<"\n\n\n";
+				}
+			
+			}*/
+			
+			for(unsigned int j=0;j<_nLeptons;j++){
+				if(!i) ((TLorentzVector*)_leptonP4->At(j))->SetPtEtaPhiM(_selectedLeptonPt[j],_selectedLeptonEta[j],_selectedLeptonPhi[j],0);
+	
+				if(_miniIsolation[j] < 0.4  && _ipPV[j] < 0.05 && fabs(_ipZPV[j]) < 0.1 && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(j))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
+					dr = true;
+					if(_eventNb == 40603 && _lumiBlock == 123)
+						std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(j))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt )<<"\n\n\n";
+				}
+			
+			}
+ 
+
+			if(dr) continue;
+			
+			if(_csv[i] > 0.814)
+				nCBJets++;
+				
+			if(jt.Pt() < 40) continue;
+ 
+        	CleanedHT += _jetPt[i];
+        	nCJets++;
+			
+		}
+			
+		
+		if(verbose)
+			std::cout<<"Njets = "<<nCJets<<", Nbjets = "<<nCBJets<<", CleanedHT = "<<CleanedHT<<", MET = "<<_met<<"\n";
 
 		//////////////////////////////////////////////
 		//// Select leptons by type(loose, tight) ////
@@ -677,41 +744,26 @@ void MaySyncYield()
 		
 			//std::cout<<"in lep\n";
 		
-			((TLorentzVector*)_leptonP4->At(i))->SetPtEtaPhiM(_selectedLeptonPt[i],_selectedLeptonEta[i],_selectedLeptonPhi[i],0);
+			//((TLorentzVector*)_leptonP4->At(i))->SetPtEtaPhiM(_selectedLeptonPt[i],_selectedLeptonEta[i],_selectedLeptonPhi[i],0);
 			
 			//std::cout<<"pt = "<<((TLorentzVector*)_leptonP4->At(i))->Pt()<<"\n";
 		
-			if(_miniIsolationEA[i] < 0.4  && _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){//remove looseMVA for sync running
+			if(_miniIsolation[i] < 0.4  && _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){//remove looseMVA for sync running
 				
 				
 				if(_eventNb == 40603 && _lumiBlock == 123)
 					std::cout<<"\nloose lepton "<<_pdgids[i]<<", pt = "<<((TLorentzVector*)_leptonP4->At(i))->Pt()<<",eta = "<<((TLorentzVector*)_leptonP4->At(i))->Eta()<<
-					           ", phi = "<<((TLorentzVector*)_leptonP4->At(i))->Phi()<<", mIso = "<<_miniIsolationEA[i]<<
-							   ", isoEA = "<<_miniIsolationEA[i]<<", d0 = "<<_ipPV[i]<<
+					           ", phi = "<<((TLorentzVector*)_leptonP4->At(i))->Phi()<<", mIso = "<<_miniIsolation[i]<<
+							   ", isoEA = "<<_miniIsolation[i]<<", d0 = "<<_ipPV[i]<<
 							   ", dz = "<<_ipZPV[i]<<", SIP = "<<_3dIPsig[i]<<", MVAVal = "<<_MVAVal[i]<<
 							   ", missingHits = "<<_missingHits[i]<<"\n";
 				
-				bool mvaT = false;
-							   
-				if(fabs(((TLorentzVector*)_leptonP4->At(i))->Eta()) < 0.8){
-					if(_MVAVal[i] > -0.11)
-						mvaT = true;
-				}
-				else if(fabs(((TLorentzVector*)_leptonP4->At(i))->Eta()) < 1.479){
-					if(_MVAVal[i] > -0.35)
-						mvaT = true;
-				}
-				else{
-					if(_MVAVal[i] > -0.55)
-						mvaT = true;
-				}
 				
-				if(mvaT)
-					looseout.push_back(i);
+				looseout.push_back(i);
 				
 			}
 			
-			if(_istightMVANoIsoSIP[i] && ((TLorentzVector*)_leptonP4->At(i))->Pt() > 10 && _3dIPsig[i] < 4  
+			if(_istightMVANoIsoSIP[i] && ((TLorentzVector*)_leptonP4->At(i))->Pt() > 10 && _3dIPsig[i] < 4  //containts info about MVA tight cuts
 					//&& _originReduced[i] == 0 //&& _pdgids[i] == _genCharge[i]//prompt and same charge as gen particle
 					&& _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){
 					
@@ -719,8 +771,8 @@ void MaySyncYield()
 					
 				if(_eventNb == 40603 && _lumiBlock == 123)
 					std::cout<<"\nTight lepton "<<_pdgids[i]<<", pt = "<<((TLorentzVector*)_leptonP4->At(i))->Pt()<<",eta = "<<((TLorentzVector*)_leptonP4->At(i))->Eta()<<
-					           ", phi = "<<((TLorentzVector*)_leptonP4->At(i))->Phi()<<", mIso = "<<_miniIsolationEA[i]<<
-							   ", isoEA = "<<_miniIsolationEA[i]<<", d0 = "<<_ipPV[i]<<
+					           ", phi = "<<((TLorentzVector*)_leptonP4->At(i))->Phi()<<", mIso = "<<_miniIsolation[i]<<
+							   ", isoEA = "<<_miniIsolation[i]<<", d0 = "<<_ipPV[i]<<
 							   ", dz = "<<_ipZPV[i]<<", SIP = "<<_3dIPsig[i]<<", pTratio = "<<(((TLorentzVector*)_leptonP4->At(i))->Pt())/_closeJetPtAll[i]<<
 							   ", pTrel = "<<_ptRelAll[i]<<", closest jet angle = "<<_closeJetAngAll[i]<<", pt = "<<_closeJetPtAll[i]<<"\n";
 				
@@ -735,14 +787,17 @@ void MaySyncYield()
 					relCut = 6.7;
 				}
 				
-				bool RatioRel = false, IsoCut = false;
+				bool RatioRel = false, IsoCut = false, IsoEmu = true;
+				
+				if(CleanedHT < 300)
+					IsoEmu = false;
 				
 				if(_closeJetAngAll[i] > 0.4)
 					RatioRel = true;
 				else if( ( (((TLorentzVector*)_leptonP4->At(i))->Pt())/_closeJetPtAll[i] > ratioCut || _ptRelAll[i] > relCut ) && _closeJetAngAll[i] < 0.4 )
 					RatioRel = true;
 					
-				if( _miniIsolationEA[i] < isoCut )
+				if( _miniIsolation[i] < isoCut )
 					IsoCut = true;
 				
 				
@@ -752,7 +807,10 @@ void MaySyncYield()
 				if(RatioRel && _eventNb == 40603 && _lumiBlock == 123)
 					std::cout<<"passes RatioRel\n";
 				
-				if(RatioRel && IsoCut){
+				if(_EcalPFIso[i] < 0.45 &&  _HcalPFIso[i] < 0.25 && _TrackIso[i] < 0.2)
+					IsoEmu = true;
+				
+				if(RatioRel && IsoCut && IsoEmu){
 					tight.push_back(i);
 					if(_eventNb == 40603 && _lumiBlock == 123)
 						std::cout<<"Passes Tight\n\n";
@@ -978,51 +1036,54 @@ void MaySyncYield()
 			
 		}
 		
-		/////////////////////////////
-		//// Now Do Jet Cleaning ////
-		/////////////////////////////
+		///////////////////////////////////////////
+		//// Apply Trigger Flavor Matching Req ////
+		///////////////////////////////////////////
 		
-		if(verbose) 
-				std::cout<<"Start Jet cleaning with "<<_n_Jets<<" Jets\n\n\n\n";
-        
-		float CleanedHT = 0;
-		int nCJets = 0, nCBJets = 0;
-		for(int i = 0 ; i < _n_Jets ;i++ ){
 		
-			TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
+		//Final pair type DE - Cross - DM
+		//GPairType[finalPair]
+		//FPT is needed because this is backwards in ntuplizer. Should fix but will do later
+		int FPT = GPairType[finalPair];
+		if(GPairType[finalPair] == 0)
+			FPT = 2;
 			
-			if(_eventNb == 40603 && _lumiBlock == 123)
-				std::cout<<"Jet "<<i<<"pt = "<<_jetPt[i]<<", eta = "<<_jetEta[i]<<", phi = "<<_jetPhi[i]<<", bjet = "<<(_csv[i] > 0.814)<<"\n";
-			
-			
-			bool dr = false;
-			for(unsigned int j=0;j<looseout.size();j++){
-	
-				if(((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
-					dr = true;
-					if(_eventNb == 40603 && _lumiBlock == 123)
-						std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt )<<"\n\n\n";
-				}
-			
-			}
- 
-
-			if(dr) continue;
-			
-			if(_csv[i] > 0.814)
-				nCBJets++;
+		if(GPairType[finalPair] == 2)
+			FPT = 0;
+		//
+		//
+		//
+		//
+		//DM 0-1 //Cross 2-3 //DE 4
+		//_DiLepTrigs
+		
+		//DM - Cross - DE
+		//_DiLepHTTrigs
+		
+		bool PassFlavMatch = false;
+		
+		if(CleanedHT < 300){
+		
+			if(FPT < 1 && (_DiLepTrigs[0] || _DiLepTrigs[1]))
+				PassFlavMatch = true;
 				
-			if(jt.Pt() < 40) continue;
- 
-        	CleanedHT += _jetPt[i];
-        	nCJets++;
-			
-		}
-			
+			if(FPT == 1 && (_DiLepTrigs[2] || _DiLepTrigs[3]))
+				PassFlavMatch = true;
+				
+			if(FPT > 1 && _DiLepTrigs[4])
+				PassFlavMatch = true;
 		
-		if(verbose)
-			std::cout<<"Njets = "<<nCJets<<", Nbjets = "<<nCBJets<<", CleanedHT = "<<CleanedHT<<", MET = "<<_met<<"\n";
-
+	
+		}
+		else{
+		
+			if(_DiLepHTTrigs[FPT])
+				PassFlavMatch = true;
+		
+		}
+		
+		if(!PassFlavMatch)
+			continue;
 		
 		///////////////////////////////
 		//// Set the Signal Region ////
