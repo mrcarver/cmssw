@@ -343,6 +343,7 @@ private:
     
     double _closeJetPt[nLeptonsMax];
     double _closeJetPtAll[nLeptonsMax];
+	double _closeJetEAll[nLeptonsMax];
     
     double _closeJetAngAll[nLeptonsMax];
     double _ptRelAll[nLeptonsMax];

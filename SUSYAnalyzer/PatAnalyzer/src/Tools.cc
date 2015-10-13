@@ -2147,7 +2147,13 @@ std::vector<const pat::Jet* > tools::JetSelector(const std::vector<pat::Jet>  & 
 				//std::cout<<"7\n";
             }
 	    }
-        vJets.push_back( &*jet );
+		
+		double eta = jet->eta();
+		bool looseJetID = (jet->neutralHadronEnergyFraction()<0.99 && jet->neutralEmEnergyFraction()<0.99 && (jet->chargedMultiplicity() + jet->neutralMultiplicity())>1) 
+							&& ((abs(eta)<=2.4 && jet->chargedHadronEnergyFraction() > 0 && jet->chargedMultiplicity()>0 && jet->chargedEmEnergyFraction()<0.99) 
+								|| abs(eta)>2.4) && abs(eta)<=3.0;
+        
+		if(looseJetID) vJets.push_back( &*jet );
         
         /*unsigned int nConst = jet->getPFConstituents().size();
         std::cout<<"Number of constituents "<<nConst<<std::endl;
@@ -2186,7 +2192,13 @@ std::vector<int> tools::JetSelectorIndex(const std::vector<pat::Jet>  & thePatJe
                 if( jet->chargedMultiplicity() < 1 ) continue;
             }
 	    }
-        vJets.push_back( i );
+		
+		double eta = jet->eta();
+		bool looseJetID = (jet->neutralHadronEnergyFraction()<0.99 && jet->neutralEmEnergyFraction()<0.99 && (jet->chargedMultiplicity() + jet->neutralMultiplicity())>1) 
+							&& ((abs(eta)<=2.4 && jet->chargedHadronEnergyFraction() > 0 && jet->chargedMultiplicity()>0 && jet->chargedEmEnergyFraction()<0.99) 
+								|| abs(eta)>2.4) && abs(eta)<=3.0;
+		
+        if(looseJetID) vJets.push_back( i );
         
     }
     return vJets;
