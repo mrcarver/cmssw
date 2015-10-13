@@ -428,8 +428,10 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	
 	if(debug) std::cout<<"0.1\n";
 	
-	for(int z=0;z<3;z++)
+	for(int z=0;z<3;z++){
 		_DiLepHTTrigs[z] = 0;
+		//std::cout<<"dilepHT names "<<z<<" = "<<DiLepHTTrigNames[z]<<"\n";	
+	}
 	
 	for(int z=0;z<2;z++)
 		_BControlTrigs[z] = 0;
@@ -453,7 +455,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	
     for (unsigned int i = 0, n = trigResults->size(); i < n; ++i) {
 	//for (unsigned int i = 0; i< 300; i++) {
-    // std::cout << "Trigger " << trigNames.triggerName(i) << 
+     //std::cout << "Trigger " << trigNames.triggerName(i) << 
     //	  ": " << (trigResults->accept(i) ? "PASS" : "fail (or not run)") 
     //	  << std::endl;
 	
@@ -493,8 +495,12 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		//std::pair<int,int> prescale = hltConfig_.prescaleValues(iEvent,iEventSetup,trigNames.triggerName(i));
 		//std::cout<<PathName<<" L1 prescale = "<<prescale.first<<" and HLT = "<<prescale.second<<"\n";
 	  	for(int z=0;z<3;z++){
-			if(PathName.Contains(DiLepHTTrigNames[z]))
+			
+			
+			if(PathName.Contains(DiLepHTTrigNames[z])){
 				_DiLepHTTrigs[z] = 1;
+				//std::cout<<DiLepHTTrigNames[z]<<" Passed!\n";
+			}
 				
 		}
 		for(int z=0;z<2;z++){
@@ -767,8 +773,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	
     _met = pfmet->pt();
     _met_phi = pfmet->phi();
-	double rawmetX = pfmet->px();
-    double rawmetY = pfmet->py();
+	//double rawmetX = pfmet->px();
+    //double rawmetY = pfmet->py();
     //==================================
     
     //============ Pat Muons ============
@@ -932,7 +938,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
    // }
 
     
-    std::vector<const pat::Jet* > SelectedJetsAll = JetSelectorAll(*thePatJets, 5., 2.4);
+    std::vector<const pat::Jet* > SelectedJetsAll = JetSelectorAll(*thePatJets, 5., 3.0);
     
     std::vector<const pat::Jet* > SelectedJets = JetSelector(*thePatJets, _jetPtCut, _jetEtaCut);//_jetEtaCut
 
@@ -962,19 +968,19 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         double uncEta = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Eta();
         double uncPhi = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Phi();
         
-		std::cout<<"before L1\n";
+		//std::cout<<"before L1\n";
 		
-        double corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
+       // double corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
 		
-		std::cout<<"before L3abs\n";
+		//std::cout<<"before L3abs\n";
 		
-		double Lcorr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelAbs);
+		//double Lcorr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelAbs);
             
-        _jetEtaAll[i] = uncEta;
-        _jetPhiAll[i] = uncPhi;
-        _jetPtAll[i] = uncPt;//*corr;
+        _jetEtaAll[i] = SelectedJetsAll[i]->eta();//uncEta;
+        _jetPhiAll[i] = SelectedJetsAll[i]->phi();//uncPhi;
+        _jetPtAll[i] = SelectedJetsAll[i]->pt();//uncPt;//*corr;
 		
-		std::cout<<" jet "<<i<<" raw pT = "<<_jetPtAll[i]<<", corr pt = "<<uncPt*corr*Lcorr<<", eta = "<<_jetEtaAll[i]<<", phi = "<<_jetPhiAll[i]<<", L1corr = "<<corr<<", L2L3 = "<<Lcorr<<", rho = "<<myRhoJets<<", area = "<<SelectedJetsAll[i]->jetArea()<<"\n";
+		//std::cout<<" jet "<<i<<" raw pT = "<<_jetPtAll[i]<<", corr pt = "<<uncPt*Lcorr<<", eta = "<<_jetEtaAll[i]<<", phi = "<<_jetPhiAll[i]<<", L1corr = "<<corr<<", L2L3 = "<<Lcorr<<", rho = "<<myRhoJets<<", area = "<<SelectedJetsAll[i]->jetArea()<<"\n";
         
         //((TLorentzVector *)_jetAllP4->At(i))->SetPtEtaPhiM( _jetPtAll[i], _jetEtaAll[i], _jetPhiAll[i], 0 );
         
@@ -1139,13 +1145,11 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 			double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJetsNC, SelectedJetsAll[k]->jetArea(),_corrLevel);
 			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJetsNC, SelectedJetsAll[k]->jetArea(),_corrLevelAbs);
 			
-			double LepAwarePt = (uncPt*L1corr - iM->pt())*L2L3corr + iM->pt();
+			double LepAwarePt = (uncPt*L1corr - iM->pt())*(L2L3corr/L1corr) + iM->pt();
 			
 			TLorentzVector pJet; pJet.SetPtEtaPhiM( LepAwarePt, _jetEtaAll[k], _jetPhiAll[k], 0 );
 			
-			
-			
-			pJet-=*((TLorentzVector *)_leptonP4->At(leptonCounter));
+			pJet-=*((TLorentzVector *)_leptonP4->At(leptonCounter));//need still?yes
             double ang = ((TLorentzVector *)_leptonP4->At(leptonCounter))->DeltaR( pJet );
             if (ang < _closeJetAngAll[leptonCounter]) {
                 _closeJetAngAll[leptonCounter] = ang;
@@ -1342,7 +1346,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 			double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevel);
 			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevelAbs);
 			
-			double LepAwarePt = (uncPt*L1corr - iE->pt())*L2L3corr + iE->pt();
+			double LepAwarePt = (uncPt*L1corr - iE->pt())*(L2L3corr/L1corr) + iE->pt();
+		
 		
             TLorentzVector pJet; pJet.SetPtEtaPhiM( LepAwarePt, _jetEtaAll[k], _jetPhiAll[k], 0 );
 			pJet -= *((TLorentzVector *)_leptonP4->At(leptonCounter));
@@ -1381,14 +1386,14 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         _jetEta[_n_Jets] = SelectedJets[i]->eta();
         _jetPhi[_n_Jets] = SelectedJets[i]->phi();
 		
-		double uncPt = (SelectedJets[i]->correctedP4("Uncorrected")).Pt();
-        double uncEta = (SelectedJets[i]->correctedP4("Uncorrected")).Eta();
-		double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
-		double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelAbs);
+		//double uncPt = (SelectedJets[i]->correctedP4("Uncorrected")).Pt();
+        //double uncEta = (SelectedJets[i]->correctedP4("Uncorrected")).Eta();
+		//double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
+		//double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelAbs);
 				
 		
-        //_jetPt[_n_Jets] = SelectedJets[i]->pt()*corr;
-		_jetPt[_n_Jets] = uncPt*L1corr*L2L3corr;
+        _jetPt[_n_Jets] = SelectedJets[i]->pt();
+		//_jetPt[_n_Jets] = uncPt*L1corr*L2L3corr;
        
         //TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[_n_Jets],_jetEta[_n_Jets],_jetPhi[_n_Jets],0);
        // double dR1 = ((TLorentzVector *)_leptonP4->At(_index1))->DeltaR( jt );

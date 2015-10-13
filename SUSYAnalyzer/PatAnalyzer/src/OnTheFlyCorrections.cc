@@ -7,12 +7,12 @@ OnTheFlyCorrections::OnTheFlyCorrections(std::string gt, bool isdata){
 	//std::string path="/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_12/src/SUSYAnalyzer/PatAnalyzer/jetfiles/";
 	std::string path="/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_14/src/SUSYAnalyzer/PatAnalyzer/jetfiles/"+gt+"/";
 	
-	std::cout<<"calling from "<<path<<"\n";
+	//std::cout<<"calling from "<<path<<"\n";
 	
-	JetCorrectorParameters *ResJetPar = new JetCorrectorParameters(path+gt+"_L2L3Residual_AK4PF.txt");
-	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(path+gt+"_L3Absolute_AK4PF.txt");
-	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(path+gt+"_L2Relative_AK4PF.txt");
-	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(path+gt+"_L1FastJet_AK4PF.txt");
+	JetCorrectorParameters *ResJetPar = new JetCorrectorParameters(path+gt+"_L2L3Residual_AK4PFchs.txt");
+	JetCorrectorParameters *L3JetPar  = new JetCorrectorParameters(path+gt+"_L3Absolute_AK4PFchs.txt");
+	JetCorrectorParameters *L2JetPar  = new JetCorrectorParameters(path+gt+"_L2Relative_AK4PFchs.txt");
+	JetCorrectorParameters *L1JetPar  = new JetCorrectorParameters(path+gt+"_L1FastJet_AK4PFchs.txt");
 
 	fJetCorPar.push_back(*L1JetPar);
 	fJetCorPar.push_back(*L2JetPar);

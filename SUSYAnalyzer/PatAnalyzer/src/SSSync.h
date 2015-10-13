@@ -424,7 +424,7 @@ private:
 	
 	int _DiLepHTTrigs[3], _nDiLepHTObjs[3];
 	TClonesArray* _DiLepHTObjs[3];
-	TString DiLepHTTrigNames[3] = {"HLT_DoubleMu8_Mass8_HTT300","HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300","HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300"};
+	TString DiLepHTTrigNames[3] = {"HLT_DoubleMu8_Mass8_PFHT300","HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300","HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300"};
 	
 	int _DiLepTrigs[5], _nDiLepObjs[5];
 	TClonesArray* _DiLepObjs[5];
