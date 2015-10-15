@@ -492,6 +492,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	      
 	  
 	  	TString PathName = trigNames.triggerName(i);
+		
+		std::cout<<PathName<<" passed!\n";
 		//std::pair<int,int> prescale = hltConfig_.prescaleValues(iEvent,iEventSetup,trigNames.triggerName(i));
 		//std::cout<<PathName<<" L1 prescale = "<<prescale.first<<" and HLT = "<<prescale.second<<"\n";
 	  	for(int z=0;z<3;z++){
@@ -1145,22 +1147,33 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 			double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevel);
 			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevelAbs);
 			
-			double LepAwarePt = (uncPt*L1corr - iM->pt())*(L2L3corr/L1corr) + iM->pt();
-			double LepAwareE = (L2L3corr/L1corr)*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*L1corr - iM->energy()) + iM->energy();
+			TLorentzVector pJet; pJet.SetPtEtaPhiE( uncPt*L1corr, _jetEtaAll[k], _jetPhiAll[k], L1corr*(SelectedJetsAll[k]->correctedP4("Uncorrected")).E() );
 			
-			TLorentzVector pJet; pJet.SetPtEtaPhiE( LepAwarePt, _jetEtaAll[k], _jetPhiAll[k], LepAwareE );
-			double ang = ((TLorentzVector *)_leptonP4->At(leptonCounter))->DeltaR( pJet );
-			pJet-=*((TLorentzVector *)_leptonP4->At(leptonCounter));//need still?yes
+			pJet -= *((TLorentzVector *)_leptonP4->At(leptonCounter));
+			
+			pJet *= L2L3corr/L1corr;
+			
+			pJet += *((TLorentzVector *)_leptonP4->At(leptonCounter));
+			
+			//double LepAwarePt = (uncPt*L1corr - iM->pt())*(L2L3corr/L1corr) + iM->pt();
+			//double LepAwareE = (L2L3corr/L1corr)*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*L1corr - iM->energy()) + iM->energy();
+			
+			//TLorentzVector pJet; pJet.SetPtEtaPhiE( LepAwarePt, _jetEtaAll[k], _jetPhiAll[k], LepAwareE );
+			
+			//pJet-=*((TLorentzVector *)_leptonP4->At(leptonCounter));//need still?yes
             
+			double ang = ((TLorentzVector *)_leptonP4->At(leptonCounter))->DeltaR( pJet );
             if (ang < _closeJetAngAll[leptonCounter]) {
                 _closeJetAngAll[leptonCounter] = ang;
-                _closeJetPtAll[leptonCounter] = LepAwarePt;//_jetPtAll[k]
+                _closeJetPtAll[leptonCounter] = pJet.Pt();//LepAwarePt;//_jetPtAll[k]
 				//_closeJetEAll[leptonCounter] = corr2/corr*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*corr - ((TLorentzVector *)leptonP4->At(leptonCounter))->E()) + ((TLorentzVector *)_leptonP4->At(leptonCounter))->E();
-                _ptRelAll[leptonCounter] = ((TLorentzVector *)_leptonP4->At(leptonCounter))->Perp(pJet.Vect());//
-                _closeIndex[leptonCounter] = k;
+                _ptRelAll[leptonCounter] =  ((TLorentzVector *)_leptonP4->At(leptonCounter))->Perp(pJet.Vect() - ((TLorentzVector *)_leptonP4->At(leptonCounter))->Vect()); 
+										  //((TLorentzVector *)_leptonP4->At(leptonCounter))->Perp(pJet.Vect());//
+                
+				_closeIndex[leptonCounter] = k;
 				
 				
-				//std::cout<<"Closest jet "<<k<<" muon: pT = "<<_jetPtAll[k]<<", eta = "<<_jetEtaAll[k]<<", phi = "<<_jetPhiAll[k]<<", dR = "<<ang<<", L1corr = "<<L1corr<<", L2L3 = "<<L2L3corr<<"\n";
+				//std::cout<<"Closest jet "<<k<<" muon: pT = "<<_jetPtAll[k]<<", corr pT = "<<_closeJetPtAll[leptonCounter]<<", eta = "<<_jetEtaAll[k]<<", phi = "<<_jetPhiAll[k]<<", dR = "<<ang<<", L1corr = "<<L1corr<<", L2L3 = "<<L2L3corr<<"\n";
             }
         }
        
@@ -1348,24 +1361,28 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 			double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevel);
 			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[k]->jetArea(),_corrLevelAbs);
 			
-			double LepAwarePt = (uncPt*L1corr - iE->pt())*(L2L3corr/L1corr) + iE->pt();
-			double LepAwareE = (L2L3corr/L1corr)*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*L1corr - iE->energy()) + iE->energy();
-		
-            TLorentzVector pJet; pJet.SetPtEtaPhiE( LepAwarePt, _jetEtaAll[k], _jetPhiAll[k], LepAwareE );
-			double ang = ((TLorentzVector *)_leptonP4->At(leptonCounter))->DeltaR( pJet );
+			TLorentzVector pJet; pJet.SetPtEtaPhiE( uncPt*L1corr, _jetEtaAll[k], _jetPhiAll[k], L1corr*(SelectedJetsAll[k]->correctedP4("Uncorrected")).E() );
 			
 			pJet -= *((TLorentzVector *)_leptonP4->At(leptonCounter));
 			
-            
+			pJet *= L2L3corr/L1corr;
+			
+			pJet += *((TLorentzVector *)_leptonP4->At(leptonCounter));
+			
+			//double LepAwarePt = (uncPt*L1corr - iE->pt())*(L2L3corr/L1corr) + iE->pt();
+			//double LepAwareE = (L2L3corr/L1corr)*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*L1corr - iE->energy()) + iE->energy();
+			
+            double ang = ((TLorentzVector *)_leptonP4->At(leptonCounter))->DeltaR( pJet );
             if (ang < _closeJetAngAll[leptonCounter]) {
                 _closeJetAngAll[leptonCounter] = ang;
-                _closeJetPtAll[leptonCounter] = LepAwarePt;
+                _closeJetPtAll[leptonCounter] = pJet.Pt();//LepAwarePt;
 				//_closeJetEAll[leptonCounter] = corr2/corr*((SelectedJetsAll[k]->correctedP4("Uncorrected")).E()*corr - ((TLorentzVector *)leptonP4->At(leptonCounter))->E()) + ((TLorentzVector *)_leptonP4->At(leptonCounter))->E();
-                _ptRelAll[leptonCounter] = ((TLorentzVector *)_leptonP4->At(leptonCounter))->Perp(pJet.Vect());
-                
+                _ptRelAll[leptonCounter] = ((TLorentzVector *)_leptonP4->At(leptonCounter))->Perp(pJet.Vect() - ((TLorentzVector *)_leptonP4->At(leptonCounter))->Vect());
+										 //((TLorentzVector *)_leptonP4->At(leptonCounter))->Perp(pJet.Vect());
+				
                 _closeIndex[leptonCounter] = k;
 				
-				//std::cout<<"Closest jet ele: pT = "<<_jetPtAll[k]<<", eta = "<<_jetEtaAll[k]<<", phi = "<<_jetPhiAll[k]<<", dR = "<<ang<<", L1corr = "<<L1corr<<", L2L3 = "<<L2L3corr<<"\n";
+				//std::cout<<"Closest jet ele: pT = "<<_jetPtAll[k]<<", corr pT = "<<_closeJetPtAll[leptonCounter]<<", eta = "<<_jetEtaAll[k]<<", phi = "<<_jetPhiAll[k]<<", dR = "<<ang<<", L1corr = "<<L1corr<<", L2L3 = "<<L2L3corr<<"\n";
             }
         }
 		
