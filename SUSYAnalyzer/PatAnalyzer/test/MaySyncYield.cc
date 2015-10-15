@@ -692,6 +692,7 @@ void MaySyncYield()
 		float CleanedHT = 0;
 		int nCJets = 0, nCBJets = 0;
 		int LepCleanIndex = -1;
+		/*
 		for(int i = 0 ; i < _n_Jets ;i++ ){
 		
 			TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
@@ -701,15 +702,15 @@ void MaySyncYield()
 			
 			
 			bool dr = false;
-			/*for(unsigned int j=0;j<looseout.size();j++){part of what was used when just before setting signal region
+			//for(unsigned int j=0;j<looseout.size();j++){part of what was used when just before setting signal region
 	
-				if(((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
-					dr = true;
-					if(_eventNb == 381733 && _lumiBlock == 1153)
-						std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt )<<"\n\n\n";
-				}
+			//	if(((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
+			//		dr = true;
+			//		if(_eventNb == 381733 && _lumiBlock == 1153)
+			//			std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt )<<"\n\n\n";
+			//	}
 			
-			}*/
+			//}
 			
 			for(unsigned int j=0;j<_nLeptons;j++){
 				if(!i) ((TLorentzVector*)_leptonP4->At(j))->SetPtEtaPhiM(_selectedLeptonPt[j],_selectedLeptonEta[j],_selectedLeptonPhi[j],0);
@@ -736,8 +737,68 @@ void MaySyncYield()
         	CleanedHT += _jetPt[i];
         	nCJets++;
 			
-		}
+		}*/
 			
+		//// test for only cleaning one jet per lepton
+		std::vector<int> JetIndex;
+		for(unsigned int j=0;j<_nLeptons;j++){
+		
+			((TLorentzVector*)_leptonP4->At(j))->SetPtEtaPhiM(_selectedLeptonPt[j],_selectedLeptonEta[j],_selectedLeptonPhi[j],0);
+		
+			if(LepCleanIndex != 99999 && _3dIPsig[j] < 4 && _chargeConsistent[j] && _missingHits[j] < 1 && _miniIsolation[j] < 0.4  && _ipPV[j] < 0.05 
+					&& fabs(_ipZPV[j]) < 0.1  && ((TLorentzVector *)_leptonP4->At(j))->Pt() > 10.0 
+					){//Loose Lep Req
+				//dr = true;
+				//LepCleanIndex = j;
+				//if(_eventNb == 381733 && _lumiBlock == 1153)
+				//	std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(j))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt )<<"\n\n\n";
+			
+				bool dR = false;
+				double JdR = 999;
+				int JetIndexG = -1;
+				//double 
+			
+				for(int i = 0 ; i < _n_Jets ;i++ ){
+				
+					TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
+					
+					if( jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40) && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < 0.4  && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < JdR){
+					
+						JdR = ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt );
+						dR = true;
+						JetIndexG = i;
+						
+						
+					
+					}
+			
+				}
+				
+				JetIndex.push_back(JetIndexG);
+			
+			}
+		}
+		
+		for(int i = 0 ; i < _n_Jets ;i++ ){
+		
+			bool ok = true;
+			for(int j=0;j<JetIndex.size();j++){
+			
+				if(JetIndex[j] == i)
+					ok = false;
+			
+			}
+			
+			if( _jetPt[i] >= 40 && ok){
+				CleanedHT += _jetPt[i];
+				nCJets++;
+			}
+			
+			if(_csv[i] > 0.814 && _jetPt[i] >= 25 && ok)
+				nCBJets++;
+		
+		}
+		////test for only cleaning one jet per leptons
 		
 		if(_eventNb == 381733 && _lumiBlock == 1153)
 			std::cout<<"Njets = "<<nCJets<<", Nbjets = "<<nCBJets<<", CleanedHT = "<<CleanedHT<<", MET = "<<_met<<"\n";
