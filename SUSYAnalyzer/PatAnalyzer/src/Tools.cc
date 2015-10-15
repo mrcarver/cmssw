@@ -2128,6 +2128,10 @@ std::vector<const pat::Jet* > tools::JetSelector(const std::vector<pat::Jet>  & 
         if( jet->pt() < v_jet_pt )continue;
 		//std::cout<<"1\n";
         if( TMath::Abs( jet->eta() ) > v_jet_eta) continue;
+		
+		//std::cout<<"\nNHEF = "<<jet->neutralHadronEnergyFraction()<<", NEmEF = "<<jet->neutralEmEnergyFraction()<<", ChargeMult = "<<jet->chargedMultiplicity()<<
+		//		   "NeuMult = "<<jet->neutralMultiplicity()<<"\n";
+		
         if( bool_jet_id )
 	    {
 			//std::cout<<"2\n";

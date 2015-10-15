@@ -429,11 +429,11 @@ private:
 	
 	int _DiLepTrigs[5], _nDiLepObjs[5];
 	TClonesArray* _DiLepObjs[5];
-	TString DiLepTrigNames[5] = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL",
-								 "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL",
+	TString DiLepTrigNames[5] = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",
+								 "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",
 								 "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL",
-								 "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL",
-								 "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL"};
+								 "HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL",
+								 "HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL"};
 					//[flav][iso?][thresh]
 	int _ControlTrigs[2][2][5], _nControlObjs[2][2][5];
 	TClonesArray* _ControlObjs[2][2][5];

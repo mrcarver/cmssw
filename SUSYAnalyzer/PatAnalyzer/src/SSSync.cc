@@ -493,7 +493,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	  
 	  	TString PathName = trigNames.triggerName(i);
 		
-		std::cout<<PathName<<" passed!\n";
+		//std::cout<<PathName<<" passed!\n";
 		//std::pair<int,int> prescale = hltConfig_.prescaleValues(iEvent,iEventSetup,trigNames.triggerName(i));
 		//std::cout<<PathName<<" L1 prescale = "<<prescale.first<<" and HLT = "<<prescale.second<<"\n";
 	  	for(int z=0;z<3;z++){
@@ -982,7 +982,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         _jetPhiAll[i] = SelectedJetsAll[i]->phi();//uncPhi;
         _jetPtAll[i] = SelectedJetsAll[i]->pt();//uncPt;//*corr;
 		
-		//std::cout<<" jet "<<i<<" raw pT = "<<_jetPtAll[i]<<", corr pt = "<<uncPt*Lcorr<<", eta = "<<_jetEtaAll[i]<<", phi = "<<_jetPhiAll[i]<<", L1corr = "<<corr<<", L2L3 = "<<Lcorr<<", rho = "<<myRhoJets<<", area = "<<SelectedJetsAll[i]->jetArea()<<"\n";
+		//std::cout<<" jet "<<i<<" raw pT = "<<_jetPtAll[i]<<", eta = "<<_jetEtaAll[i]<<", phi = "<<_jetPhiAll[i]<<"\n";//, L1corr = "<<corr<<", L2L3 = "<<Lcorr<<", rho = "<<myRhoJets<<", area = "<<SelectedJetsAll[i]->jetArea()<<"\n";
         
         //((TLorentzVector *)_jetAllP4->At(i))->SetPtEtaPhiM( _jetPtAll[i], _jetEtaAll[i], _jetPhiAll[i], 0 );
         
@@ -1431,6 +1431,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
             _bTagged[_n_Jets] = true;
             _n_bJets++;
         } else _bTagged[_n_Jets] = false;
+		
+		//std::cout<<"jet pT = "<<_jetPt[_n_Jets]<<", eta = "<<_jetEta[_n_Jets]<<", phi = "<<_jetPhi[_n_Jets]<<"\n";
         
         HT+= _jetPt[_n_Jets];
         _n_Jets++;
