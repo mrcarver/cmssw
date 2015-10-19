@@ -48,7 +48,7 @@ _looseD0E(0.05),
 //_looseD0Mu(0.2),
 //_looseD0E(9999999.),
 //_jetPtCut(40.),
-_jetPtCut(25.),
+_jetPtCut(18.),
 _jetEtaCut(2.4),
 _tauPt(20),
 _tauEta(2.3),
@@ -56,6 +56,7 @@ _regression(false)
 {
     Sample              = iConfig.getUntrackedParameter<std::string>("SampleLabel") ;
 	doFR 				= iConfig.getUntrackedParameter<bool>("doFR");
+	Dov1v3Corrections 	= iConfig.getUntrackedParameter<bool>("Dov1v3Corrections");
     IT_muon             = iConfig.getParameter<edm::InputTag>("MuonLabel") ;
     IT_electron         = iConfig.getParameter<edm::InputTag>("ElectronLabel") ;
     IT_tau              = iConfig.getParameter<edm::InputTag>("TauLabel") ;
@@ -122,6 +123,10 @@ void SSSync::beginJob()
 
 	outputTree->Branch("_DiLepHTTrigs", &_DiLepHTTrigs, "_DiLepHTTrigs[3]/I");
 	outputTree->Branch("_DiLepTrigs", &_DiLepTrigs, "_DiLepTrigs[5]/I");
+	outputTree->Branch("_ControlTrigs", &_ControlTrigs, "_ControlTrigs[2][2][5]/I");
+	outputTree->Branch("_ControlTrigPrescale", &_ControlTrigPrescale, "_ControlTrigPrescale[2][2][5]/I");
+	outputTree->Branch("_BControlTrigs", &_BControlTrigs, "_BControlTrigs[2]/I");
+	outputTree->Branch("_BControlTrigPrescale", &_BControlTrigPrescale, "_BControlTrigPrescale[2]/I");
 	
 	for(int t=0;t<5;t++){
 	
@@ -132,7 +137,7 @@ void SSSync::beginJob()
 		
 		//outputTree->Branch(Form("_DiLepObjs%i",t),"TClonesArray", &_DiLepObjs[t], 32000, 0);
 		
-		outputTree->Branch(Form("_nDiLepObjs%i",t), &_nDiLepObjs[t], "_nDiLepObjs[5]/I");
+		//outputTree->Branch(Form("_nDiLepObjs%i",t), &_nDiLepObjs[t], "_nDiLepObjs[5]/I");
 		if(t<3){
 			
 			_DiLepHTObjs[t] = new TClonesArray("TLorentzVector",40);
@@ -141,7 +146,7 @@ void SSSync::beginJob()
 			
 			//outputTree->Branch(Form("_DiLepHTObjs%i",t),"TClonesArray", &_DiLepHTObjs[t], 32000, 0);
 			
-			outputTree->Branch(Form("_nDiLepHTObjs%i",t), &_nDiLepHTObjs[t], "_nDiLepHTObjs[3]/I");
+			//outputTree->Branch(Form("_nDiLepHTObjs%i",t), &_nDiLepHTObjs[t], "_nDiLepHTObjs[3]/I");
 			if(t<2){
 			
 				_BControlObjs[t] = new TClonesArray("TLorentzVector",40);
@@ -149,8 +154,8 @@ void SSSync::beginJob()
 					new ( (*_BControlObjs[t])[i] ) TLorentzVector();
 					
 				//outputTree->Branch(Form("_BControlObjs%i",t),"TClonesArray", &_BControlObjs[t], 32000, 0);	
-				outputTree->Branch(Form("_BControlTrigs%i",t), &_BControlTrigs[t], "_BControlTrigs[2]/I");//
-				outputTree->Branch(Form("_nBControlObjs%i",t), &_nBControlObjs[t], "_nBControlObjs[2]/I");//
+				//outputTree->Branch(Form("_BControlTrigs%i",t), &_BControlTrigs[t], "_BControlTrigs[2]/I");//
+				//outputTree->Branch(Form("_nBControlObjs%i",t), &_nBControlObjs[t], "_nBControlObjs[2]/I");//
 			}
 		}
 		
@@ -162,8 +167,8 @@ void SSSync::beginJob()
 					new ( (*_ControlObjs[x][y][t])[i] ) TLorentzVector();
 				
 				//outputTree->Branch(Form("_ControlObjs%i%i%i",x,y,t),"TClonesArray", &_ControlObjs[x][y][t], 32000, 0);
-				outputTree->Branch(Form("_ControlTrigs%i%i%i",x,y,t), &_ControlTrigs[x][y][t], "_ControlTrigs[2][2][5]/I");
-				outputTree->Branch(Form("_nControlObjs%i%i%i",x,y,t), &_nControlObjs[x][y][t], "_nControlObjs[2][2][5]/I");
+				//outputTree->Branch(Form("_ControlTrigs%i%i%i",x,y,t), &_ControlTrigs[x][y][t], "_ControlTrigs[2][2][5]/I");
+				//outputTree->Branch(Form("_nControlObjs%i%i%i",x,y,t), &_nControlObjs[x][y][t], "_nControlObjs[2][2][5]/I");
 			}
 		}
 		
@@ -232,6 +237,8 @@ void SSSync::beginJob()
 	
     outputTree->Branch("_mt", &_mt, "_mt[8]/D");
     outputTree->Branch("_isloose", &_isloose, "_isloose[8]/O");
+	outputTree->Branch("_isFO", &_isFO, "_isFO[8]/O");
+	outputTree->Branch("_isTight", &_isTight, "_isTight[8]/O");
     outputTree->Branch("_istight", &_istight, "_istight[8]/O");
 	outputTree->Branch("_istightNoIso", &_istightNoIso, "_istightNoIso[8]/O");
 	outputTree->Branch("_istightNoIsoSIP", &_istightNoIsoSIP, "_istightNoIsoSIP[8]/O");
@@ -341,8 +348,9 @@ void SSSync::beginJob()
     _corrLevel = "L1FastJet";
 	_corrLevelAbs = "L3Absolute";
 	_corrLevelRes = "L2L3Residual";
+	_corrLevelFull = "L3Absolute";
 	
-    //if (isData) _corrLevel = "L2L3Residual";
+    if (isData) _corrLevelFull = "L2L3Residual";
     
     _nEventsTotal = 0;
     _nEventsFiltered = 0;
@@ -398,11 +406,15 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	edm::Handle<edm::TriggerResults> trigResults;
 	edm::InputTag trigResultsTag("TriggerResults","","HLT");
 	iEvent.getByLabel(trigResultsTag,trigResults);
-	
+	/*
 	edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
 	edm::InputTag triggerObjects_("selectedPatTrigger","","PAT");//PAT for MC and RECO for data
-	iEvent.getByLabel(triggerObjects_, triggerObjects);
-	
+	edm::InputTag triggerObjectsData_("selectedPatTrigger","","RECO");//PAT for MC and RECO for data
+	if(Sample=="ElectronsMC")
+		iEvent.getByLabel(triggerObjects_, triggerObjects);
+	else
+		iEvent.getByLabel(triggerObjectsData_, triggerObjects);
+	*/
 	const edm::TriggerNames trigNames = iEvent.triggerNames(*trigResults);
 	
 	
@@ -433,16 +445,20 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		//std::cout<<"dilepHT names "<<z<<" = "<<DiLepHTTrigNames[z]<<"\n";	
 	}
 	
-	for(int z=0;z<2;z++)
+	for(int z=0;z<2;z++){
 		_BControlTrigs[z] = 0;
+		_BControlTrigPrescale[z] = 1;
+	}
 	
 	for(int z=0;z<5;z++)
 		_DiLepTrigs[z] = 0;
 	
 	for(int z=0;z<2;z++){
 		for(int x=0;x<2;x++){
-			for(int y=0;y<5;y++)
+			for(int y=0;y<5;y++){
 				_ControlTrigs[z][x][y] = 0;
+				_ControlTrigPrescale[z][x][y] = 1;
+			}
 		}
 	}
 	
@@ -451,48 +467,54 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	//HLTConfigProvider *hltconfig = new HLTConfigProvider;////
 	//hltconfig->init(
 	
-	
+	edm::Handle<pat::PackedTriggerPrescales> triggerPrescalesH_; 
+	edm::InputTag triggerPrescaleToken("patTrigger","","RECO");
+  	iEvent.getByLabel( triggerPrescaleToken, triggerPrescalesH_);
 	
     for (unsigned int i = 0, n = trigResults->size(); i < n; ++i) {
 	//for (unsigned int i = 0; i< 300; i++) {
-     //std::cout << "Trigger " << trigNames.triggerName(i) << 
-    //	  ": " << (trigResults->accept(i) ? "PASS" : "fail (or not run)") 
-    //	  << std::endl;
+     
 	
 	// const char *path = trigNames.triggerName(i).c_str();
 	//  Triggers->GetXaxis()->SetBinLabel(i+1,path);
 
 	  if(trigResults->accept(i)){
 	  
-	  
+	  	TString PathName = trigNames.triggerName(i);
+		//std::cout << "\n\nTrigger " << trigNames.triggerName(i) << 
+    	//  ": " << (trigResults->accept(i) ? "PASS" : "fail (or not run)") 
+    	 // << std::endl;
 	  		
 	    //get prescale info from hltConfig_
-		//TString name = trigNames.triggerName(i);
 		//std::vector<int> *prescales, *l1prescales;
-		//if(debug) std::cout<<"0.2.0.0\n";
-		//std::pair<std::vector<std::pair<std::string,int> >,int> detailedPrescaleInfo = hltConfig_.prescaleValuesInDetail(iEvent, iEventSetup, trigNames.triggerName(i));	 
-		//if(debug) std::cout<<"0.2.0\n";
+		if(debug) std::cout<<"0.2.0.0\n";
+		std::pair<std::vector<std::pair<std::string,int> >,int> detailedPrescaleInfo = hltConfig_.prescaleValuesInDetail(iEvent, iEventSetup, trigNames.triggerName(i));   
+		if(debug) std::cout<<"0.2.0\n";
 		//prescales->push_back( triggerPrescalesH_.isValid() ? detailedPrescaleInfo.second : -1 );
 		//prescales->push_back( detailedPrescaleInfo.second  );
-	  	//std::cout<<name<<" HLT prescale = "<<detailedPrescaleInfo.second<<"\n";
+	  //	std::cout<<" HLT prescale = "<<detailedPrescaleInfo.second<<"\n";
 	  
 		// save l1 prescale values in standalone vector
-		//std::vector <int> l1prescalevals;
-		//for( size_t varind = 0; varind < detailedPrescaleInfo.first.size(); varind++ ){
-		//  l1prescalevals.push_back(detailedPrescaleInfo.first.at(varind).second);
-		//}
-
+		std::vector <int> l1prescalevals;
+		for( size_t varind = 0; varind < detailedPrescaleInfo.first.size(); varind++ ){
+		  l1prescalevals.push_back(detailedPrescaleInfo.first.at(varind).second);
+		}
+		if(debug) std::cout<<"0.2.0.1.1\n";
 		// find and save minimum l1 prescale of any ORed L1 that seeds the HLT
-		//std::vector<int>::iterator result = std::min_element(std::begin(l1prescalevals), std::end(l1prescalevals));
-		//size_t minind = std::distance(std::begin(l1prescalevals), result);
+		std::vector<int>::iterator result = std::min_element(std::begin(l1prescalevals), std::end(l1prescalevals));
+		size_t minind = std::distance(std::begin(l1prescalevals), result);
 		// sometimes there are no L1s associated with a HLT. In that case, this branch stores -1 for the l1prescale
 		//l1prescales->push_back( minind < l1prescalevals.size() ? l1prescalevals.at(minind) : -1 );
 	
-		//std::cout<<name<<" L1 prescale = "<<l1prescalevals.at(minind)<<"\n";
+		//std::cout<<" L1 prescale = "<<l1prescalevals.at(minind)<<"\n";
 	      
-	  
-	  	TString PathName = trigNames.triggerName(i);
+	  if(debug) std::cout<<"0.2.0.1\n";
+	  	//int Prescale = 1;
+		//if(triggerPrescalesH_.isValid() && minind)
+		//int	Prescale = detailedPrescaleInfo.second * l1prescalevals.at(minind);
+		//if(debug) std::cout<<"0.2.0.2\n";
 		
+		//std::cout<<"Prescale = "<<Prescale<<"\n";
 		//std::cout<<PathName<<" passed!\n";
 		//std::pair<int,int> prescale = hltConfig_.prescaleValues(iEvent,iEventSetup,trigNames.triggerName(i));
 		//std::cout<<PathName<<" L1 prescale = "<<prescale.first<<" and HLT = "<<prescale.second<<"\n";
@@ -508,6 +530,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		for(int z=0;z<2;z++){
 			if(PathName.Contains(BControlTrigNames[z])){
 				_BControlTrigs[z] = 1;
+				_BControlTrigPrescale[z] = detailedPrescaleInfo.second * l1prescalevals.at(minind);//Prescale;
 			}
 		}
 		for(int z=0;z<5;z++){
@@ -519,6 +542,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 				for(int y=0;y<5;y++){
 					if(PathName.Contains(ControlTrigNames[z][x][y])){
 						_ControlTrigs[z][x][y] = 1;
+						_ControlTrigPrescale[z][x][y] = detailedPrescaleInfo.second * l1prescalevals.at(minind);//Prescale;
 						
 					}
 				}
@@ -532,7 +556,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
     }
 	
 	
-	
+	/*
 	std::vector<TLorentzVector> MBmuon, EBeles;
 	
 	edm::Handle<std::vector<pat::TriggerObjectStandAlone>> trigObjs;
@@ -555,7 +579,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		//}
 	}
 	
-	
+	*/
 	
 	if(debug) std::cout<<"0.4\n";
 	//============ Primary vertices ============
@@ -577,11 +601,12 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	_PFHT800 = 0;
 	
 	
-	
+	/*
 	std::string ht800 = (Sample == "ElectronsMC" ? "HLT_PFHT900_v1" : "HLT_PFHT800_v1");
 	bool tht800 = trigResults->accept(trigNames.triggerIndex(ht800));
 	if(tht800)
 		_PFHT800 = 1;
+	*/
 
 	if(debug) std::cout<<"1.1\n";
 	
@@ -611,6 +636,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		}
 	}
 
+	/*
 	if(debug) std::cout<<"1.2\n";
 	for (pat::TriggerObjectStandAlone obj : *triggerObjects) { // note: not "const &" since we want to call unpackPathNames
       
@@ -669,7 +695,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 			
         }
 	}
-	
+	*/
 
 	float genqpt = 0.0;
 	
@@ -815,76 +841,72 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
     double myRhoJetsNC = *rhoJetsNC;
 	_rhoNC = myRhoJetsNC;
     //==================================
-    /*
-	float corrMetx = rawmetX;
-     float corrMety = rawmetY;
-     
-     for( std::vector<pat::Jet>::const_iterator jet = (*thePatJets).begin(); jet != (*thePatJets).end(); jet++ ) {
-     
-     
-     double sumMuPtX=0.;
-     double sumMuPtY=0.;
-     double sumMuPt=0.;
-     
-     std::vector <reco::PFCandidatePtr> const constituents = (&*jet)->getPFConstituents();
-     for(std::vector <reco::PFCandidatePtr>::const_iterator it=constituents.begin(); it!=constituents.end(); ++it) {
-     const reco::PFCandidatePtr & icand = *it;
-     //if(  icand->isMuon() || icand->isGlobalMuon() || icand->isTrackerMuon() || icand->isStandAloneMuon() || icand->isCaloMuon()) {
-     if(  icand->muonRef().isNonnull() ) {
-     double mupt = icand->pt();
-     double muphi = icand->phi();
-     bool found = false;
-     for( std::vector<pat::Muon>::const_iterator mu = (*thePatMuons).begin() ; mu != (*thePatMuons).end() ; mu++ ) {
-     if ( (fabs(mu->pt() - mupt)/mupt < 0.1) && (fabs(mu->phi() - muphi) < 0.01)  ) {
-     found = mu->isGlobalMuon() || mu->isStandAloneMuon();
-     //std::cout<<"Selected Muons "<<mu->pt()<<" - "<<mupt<<"; "<<mu->phi()<<" - "<<muphi<<std::endl;
-     } //else
-     //std::cout<<"Muons "<<mu->pt()<<" - "<<mupt<<"; "<<mu->phi()<<" - "<<muphi<<std::endl;
-     }
-     if (found) {
-     sumMuPtX+=icand->px();
-     sumMuPtY+=icand->py();
-     sumMuPt+=icand->pt();
-     }
-     }
-     }
-     
-     double uncX = ((&*jet)->correctedP4("Uncorrected")).Px();
-     double uncY = ((&*jet)->correctedP4("Uncorrected")).Py();
-     double uncPt = ((&*jet)->correctedP4("Uncorrected")).Pt();
-     
-     double noMuPt = sqrt((uncX - sumMuPtX)*(uncX - sumMuPtX) + (uncY - sumMuPtY)*(uncY - sumMuPtY));
-     double noMuPhi = atan2(uncY - sumMuPtY, uncX - sumMuPtX);
-     
-     std::pair <float, float> corr = fMetCorrector->getCorrections(
-     ((&*jet)->correctedP4("Uncorrected")).Pt(),
-     ((&*jet)->correctedP4("Uncorrected")).Eta(),
-     //fTR->JMetCorrNoMuPt[ind],
-     //((&*jet)->correctedP4("Uncorrected")).Pt() - sumMuPt,
-     noMuPt,
-     //((&*jet)->correctedP4("Uncorrected")).Phi(),
-     noMuPhi,
-     (&*jet)->neutralEmEnergyFraction()+(&*jet)->chargedEmEnergyFraction(),
-     myRhoJets,
-     (&*jet)->jetArea());
-     corrMetx += corr.first ;
-     corrMety += corr.second;
-     //if (sumMuPt)
-     //    std::cout<<((&*jet)->correctedP4("Uncorrected")).Pt()-sumMuPt<<" "<<noMuPt<<std::endl;
-     
-     //std::cout<<"Corrections: "<<(&*jet)->pt()/uncPt<<" "
-     //<<fMetCorrector->getJetCorrectionRawPt(uncPt, float(((&*jet)->correctedP4("Uncorrected")).Eta()), myRhoJets, (&*jet)->jetArea(),_corrLevel)<<std::endl;
-     
-     }
-     float newmet    = sqrt(corrMetx*corrMetx + corrMety*corrMety);
-     float newmetphi = atan2(corrMety, corrMetx);
-     
-     //std::cout<<newmet<<" "<<_met<<"; "<<newmetphi<<" "<<_met_phi<<" "<<std::endl;
-     
-     _met = newmet;
-     _met_phi = newmetphi;
-     
-	*/
+	
+	bool FUCK = false;
+	bool PD = false;
+	if(Dov1v3Corrections){
+	
+	
+	//in miniAOD v1
+    //double rawmetX = pfmet->shiftedP2_74x(pat::MET::METUncertainty(12),pat::MET::Raw).px;
+    //double rawmetY = pfmet->shiftedP2_74x(pat::MET::METUncertainty(12),pat::MET::Raw).py;
+
+    //in miniAOD v2
+    double rawmetX = pfmet->uncorPx(); 
+    double rawmetY = pfmet->uncorPy();
+
+    
+    double corrMetx = rawmetX;
+    double corrMety = rawmetY;
+
+    
+    for( std::vector<pat::Jet>::const_iterator jet = (*thePatJets).begin(); jet != (*thePatJets).end(); jet++ ) {
+        TLorentzVector pJet;
+        pJet.SetPtEtaPhiE(((&*jet)->correctedP4("Uncorrected")).Pt(), ((&*jet)->correctedP4("Uncorrected")).Eta(),((&*jet)->correctedP4("Uncorrected")).Phi(), ((&*jet)->correctedP4("Uncorrected")).E());
+        for(int unsigned it=0; it!=(&*jet)->numberOfDaughters(); ++it) {
+            const pat::PackedCandidate * icand = dynamic_cast<const pat::PackedCandidate *> ((&*jet)->daughter(it));
+            if(  fabs(icand->pdgId()) == 13 ) {
+                double mupt = icand->pt();
+                double muphi = icand->phi();
+                for( std::vector<pat::Muon>::const_iterator mu = (*thePatMuons).begin() ; mu != (*thePatMuons).end() ; mu++ ) {
+                    if ( (fabs(mu->pt() - mupt)/mupt < 0.1) && (fabs(mu->phi() - muphi) < 0.01)  ) {
+                        if (mu->isGlobalMuon() || mu->isStandAloneMuon()) {
+                            TLorentzVector pMu;
+                            pMu.SetPtEtaPhiE(mu->pt(),mu->eta(),mu->phi(),mu->energy());
+                            //pMu.SetPtEtaPhiE(icand->pt(),icand->eta(),icand->phi(),icand->energy());
+                            pJet-=pMu;
+                        }
+                    }
+                }
+            }
+        }
+        std::pair <double, double> corr = fMetCorrector->getCorrections(
+                                                                      ((&*jet)->correctedP4("Uncorrected")).Pt(),
+                                                                      ((&*jet)->correctedP4("Uncorrected")).Eta(),
+                                                                      pJet.Pt(),
+                                                                      pJet.Phi(),
+                                                                      (&*jet)->neutralEmEnergyFraction()+(&*jet)->chargedEmEnergyFraction(),
+                                                                      myRhoJets,
+                                                                      (&*jet)->jetArea());
+        corrMetx += corr.first ;
+        corrMety += corr.second;
+    }
+    double newmet    = sqrt(corrMetx*corrMetx + corrMety*corrMety);
+    double newmetphi = atan2(corrMety, corrMetx);
+
+    
+    //std::cout<<newmet<<" "<<_met<<"; "<<newmetphi<<" "<<_met_phi<<" "<<std::endl;
+    //std::cout<<std::endl;
+
+    
+    _met = newmet;
+    _met_phi = newmetphi;
+	
+	
+	
+	
+	}
+
     //============= 3D IP ==============
     //ESHandle<TransientTrackBuilder> theTTBuilder;
     //iEventSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theTTBuilder);//
@@ -966,23 +988,35 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
  
     for(unsigned int i = 0 ; i < SelectedJetsAll.size() ;i++ ){
         
-        double uncPt = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Pt();
-        double uncEta = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Eta();
-        double uncPhi = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Phi();
+        
         
 		//std::cout<<"before L1\n";
 		
-       // double corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
+       
 		
 		//std::cout<<"before L3abs\n";
 		
-		//double Lcorr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelAbs);
+		
             
         _jetEtaAll[i] = SelectedJetsAll[i]->eta();//uncEta;
         _jetPhiAll[i] = SelectedJetsAll[i]->phi();//uncPhi;
         _jetPtAll[i] = SelectedJetsAll[i]->pt();//uncPt;//*corr;
 		
-		//std::cout<<" jet "<<i<<" raw pT = "<<_jetPtAll[i]<<", eta = "<<_jetEtaAll[i]<<", phi = "<<_jetPhiAll[i]<<"\n";//, L1corr = "<<corr<<", L2L3 = "<<Lcorr<<", rho = "<<myRhoJets<<", area = "<<SelectedJetsAll[i]->jetArea()<<"\n";
+		
+		if(Dov1v3Corrections){
+		
+			double uncPt = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Pt();
+        	double uncEta = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Eta();
+        	//double uncPhi = (SelectedJetsAll[i]->correctedP4("Uncorrected")).Phi();
+			
+			double corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
+			double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelFull);
+			_jetPtAll[i] = uncPt*L2L3corr;
+		
+		}
+		
+		
+		if(PD) std::cout<<" jet "<<i<<" raw pT = "<<(SelectedJetsAll[i]->correctedP4("Uncorrected")).Pt()<<", corr pT = "<<_jetPtAll[i]<<", eta = "<<_jetEtaAll[i]<<", phi = "<<_jetPhiAll[i]<<"\n";//, L1corr = "<<corr<<", L2L3 = "<<Lcorr<<", rho = "<<myRhoJets<<", area = "<<SelectedJetsAll[i]->jetArea()<<"\n";
         
         //((TLorentzVector *)_jetAllP4->At(i))->SetPtEtaPhiM( _jetPtAll[i], _jetEtaAll[i], _jetPhiAll[i], 0 );
         
@@ -1134,7 +1168,16 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 
         
         _mt[leptonCounter] = MT_calc(*((TLorentzVector *)_leptonP4->At(leptonCounter)), _met, _met_phi);    
-        
+		
+		
+		if(_3dIPsig[leptonCounter] < 4 && _chargeConsistent[leptonCounter] && _missingHits[leptonCounter] < 1 && _miniIsolation[leptonCounter] < 0.4  && _ipPV[leptonCounter] < 0.05 
+			&& fabs(_ipZPV[leptonCounter]) < 0.1  && ((TLorentzVector *)_leptonP4->At(leptonCounter))->Pt() > 10.0 && _istightMVANoIsoSIP[leptonCounter]){
+			_isFO[leptonCounter] = true;
+		}
+		else
+			_isFO[leptonCounter] = false;
+	
+	
         _closeJetPtAll[leptonCounter] = 0;
         _closeJetAngAll[leptonCounter] = 10000;
         _ptRelAll[leptonCounter] = 0;
@@ -1173,7 +1216,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 				_closeIndex[leptonCounter] = k;
 				
 				
-				//std::cout<<"Closest jet "<<k<<" muon: pT = "<<_jetPtAll[k]<<", corr pT = "<<_closeJetPtAll[leptonCounter]<<", eta = "<<_jetEtaAll[k]<<", phi = "<<_jetPhiAll[k]<<", dR = "<<ang<<", L1corr = "<<L1corr<<", L2L3 = "<<L2L3corr<<"\n";
+				if(PD) std::cout<<"Closest jet "<<k<<" muon: pT = "<<_jetPtAll[k]<<", corr pT = "<<_closeJetPtAll[leptonCounter]<<", eta = "<<_jetEtaAll[k]<<", phi = "<<_jetPhiAll[k]<<", dR = "<<ang<<", L1corr = "<<L1corr<<", L2L3 = "<<L2L3corr<<"\n";
             }
         }
        
@@ -1342,7 +1385,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         else 
 		    _istightNoIsoSIP[leptonCounter] = false;
 		
-
+		
+		
         ((TLorentzVector *)_leptonP4->At(leptonCounter))->SetPtEtaPhiE(iE->pt(), iE->eta(), iE->phi(), iE->energy());
 		_selectedLeptonPt[leptonCounter] = iE->pt();
 		_selectedLeptonEta[leptonCounter] = iE->eta();
@@ -1350,6 +1394,12 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
  
         _mt[leptonCounter] = MT_calc(*((TLorentzVector *)_leptonP4->At(leptonCounter)), _met, _met_phi);
       
+	  	if(_3dIPsig[leptonCounter] < 4 && _chargeConsistent[leptonCounter] && _missingHits[leptonCounter] < 1 && _miniIsolation[leptonCounter] < 0.4  && _ipPV[leptonCounter] < 0.05 
+			&& fabs(_ipZPV[leptonCounter]) < 0.1  && ((TLorentzVector *)_leptonP4->At(leptonCounter))->Pt() > 10.0 && _istightMVANoIsoSIP[leptonCounter]){
+			_isFO[leptonCounter] = true;
+		}
+		else
+			_isFO[leptonCounter] = false;
         
         
         _closeIndex[leptonCounter] = 0;
@@ -1396,7 +1446,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	if(debug) std::cout<<"5\n";
 	
 	
-	if( doFR && leptonCounter < 1) return;	
+	//if( doFR && leptonCounter < 1) return;	
     if (leptonCounter < 2 && !doFR) return;
 	
 	_n_Jets = 0;
@@ -1407,15 +1457,18 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         _jetEta[_n_Jets] = SelectedJets[i]->eta();
         _jetPhi[_n_Jets] = SelectedJets[i]->phi();
 		
-		//double uncPt = (SelectedJets[i]->correctedP4("Uncorrected")).Pt();
-        //double uncEta = (SelectedJets[i]->correctedP4("Uncorrected")).Eta();
-		//double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
-		//double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelAbs);
-				
-		
         _jetPt[_n_Jets] = SelectedJets[i]->pt();
-		//_jetPt[_n_Jets] = uncPt*L1corr*L2L3corr;
+		
+		if(Dov1v3Corrections){
+		
+		double uncPt = (SelectedJets[i]->correctedP4("Uncorrected")).Pt();
+        double uncEta = (SelectedJets[i]->correctedP4("Uncorrected")).Eta();
+		double L1corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevel);
+		double L2L3corr = fMetCorrector->getJetCorrectionRawPt(uncPt, uncEta, myRhoJets, SelectedJetsAll[i]->jetArea(),_corrLevelFull);
+		_jetPt[_n_Jets] = uncPt*L2L3corr;
        
+	   
+	   }
         //TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[_n_Jets],_jetEta[_n_Jets],_jetPhi[_n_Jets],0);
        // double dR1 = ((TLorentzVector *)_leptonP4->At(_index1))->DeltaR( jt );
        // double dR2 = ((TLorentzVector *)_leptonP4->At(_index2))->DeltaR( jt );
@@ -1442,8 +1495,81 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	
     _nLeptons = leptonCounter;
    
+    if(PD) std::cout<<"before 1 Lep\n";
+   
 	
-
+	if( doFR && leptonCounter < 1) return;	
+	
+	bool FillFR = false;
+	
+	if(PD) std::cout<<" 1 Lep\n";
+	
+	if( doFR){
+	std::vector<int> FOIndex;
+	for(int j=0;j<_nLeptons;j++){
+	
+		((TLorentzVector*)_leptonP4->At(j))->SetPtEtaPhiM(_selectedLeptonPt[j],_selectedLeptonEta[j],_selectedLeptonPhi[j],0);
+	
+		if(_3dIPsig[j] < 4 && _chargeConsistent[j] && _missingHits[j] < 1 && _miniIsolation[j] < 0.4  && _ipPV[j] < 0.05 
+				&& fabs(_ipZPV[j]) < 0.1  && ((TLorentzVector *)_leptonP4->At(j))->Pt() > 10.0 
+				){//FO Lep Req
+				
+				
+			
+				if(PD) std::cout<<"lepton"<<j<<" pt/eta/phi = "<<_selectedLeptonPt[j]<<"/"<<_selectedLeptonEta[j]<<"/"<<_selectedLeptonPhi[j]<<"\n";
+				
+				if(_flavors[j] && _istightMVANoIsoSIP[j])
+					FOIndex.push_back(j);
+				else if(!_flavors[j])
+					FOIndex.push_back(j);
+			
+		}
+	}
+	
+	
+	
+	bool awayJet = false;
+	
+	if(FOIndex.size() == 1){
+	
+	if(PD) std::cout<<"1 FO\n";
+	
+		for(int i = 0 ; i < _n_Jets ;i++ ){
+		
+			TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
+			
+			
+			if( _jetPt[i] > 40 && ((TLorentzVector*)_leptonP4->At(FOIndex[0]))->DeltaR(jt) > 1){
+				awayJet = true;
+				
+				if(PD) std::cout<<"Jet"<<i<<" pt/eta/phi = "<<_jetPt[i]<<"/"<<_jetEta[i]<<"/"<<_jetPhi[i]<<"\n";
+			}
+		
+		}
+	
+		if(awayJet )//&& _met < 20 && _mt[FOIndex[0]] < 20)
+			FillFR = true;
+	
+	}
+	if(PD){
+	if(awayJet)
+		std::cout<<"away Jet \n";
+	
+	if(_met < 20)
+		std::cout<<"MET < 20 and = "<<_met<<", phi = "<<_met_phi<<"\n";
+	else
+		std::cout<<"MET > 20 and = "<<_met<<", phi = "<<_met_phi<<"\n";
+	
+	if(_mt[FOIndex[0]] < 20)
+		std::cout<<"MT < 20 and = "<<_mt[FOIndex[0]]<<"\n";
+	else
+		std::cout<<"MT > 20 and = "<<_mt[FOIndex[0]]<<"\n";
+	
+	}
+	}
+	
+	if(doFR && !FillFR) return;
+	
 	
     outputTree->Fill();
 

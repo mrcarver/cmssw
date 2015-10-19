@@ -57,6 +57,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 
 #include "RecoTauTag/RecoTau/interface/RecoTauVertexAssociator.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 
 
 
@@ -130,7 +131,7 @@ private:
     edm::ValueMap<unsigned> firstIdCutFailedMapToken_; //the number of the first cut failed in the order they are defined in the PSet starting at zero (ie if you et,dEtaIn,dPhiIn,hadem cuts defined and it passed et,dEtaIn but failed dPhiIn, this number would be 2, in the case of no cuts failed it is #cuts
     std::string idMD5NameToken_; //the md5sum of the ID you are using (E/gamma might ask you for this to verify you are running the right ID) 
 	
-	bool doFR;
+	bool doFR, Dov1v3Corrections;
 	
 	HLTConfigProvider hltConfig_;
 	
@@ -147,6 +148,7 @@ private:
     string _corrLevel;
 	string _corrLevelAbs;
 	string _corrLevelRes;
+	string _corrLevelFull;
 	
 	enum decay {
         W_L,  // 0
@@ -313,6 +315,7 @@ private:
 	double _miniIsolationEA[nLeptonsMax];
 	double _MVAVal[nLeptonsMax];
 	double _ptrel[nLeptonsMax];
+	double _ptratio[nLeptonsMax];
     double _isolationComponents[nLeptonsMax][4];
 	int _inheritance[nLeptonsMax][30];
     double _isolationMC[nLeptonsMax][4]; //all daughters; all visible daughters; all daughters in the cone; all visible daughters in the cone
@@ -347,6 +350,7 @@ private:
     
     double _closeJetAngAll[nLeptonsMax];
     double _ptRelAll[nLeptonsMax];
+	double _ptRatioAll[nLeptonsMax];
     double _closeJetPtAllMC[nLeptonsMax];
     double _closeJetPtAllstatus[nLeptonsMax];
     int _partonIdMatched[nLeptonsMax];
@@ -361,6 +365,9 @@ private:
 	bool _istightMVANoIsoSIP_LMVA[nLeptonsMax];
 	bool _istightMVA[nLeptonsMax];
 	bool _chargeConsistent[nLeptonsMax];
+	bool _isFO[nLeptonsMax];
+	bool _isTight[nLeptonsMax];
+	
 	
 	int _genCharge[nLeptonsMax];
 	double _genHT;
@@ -424,10 +431,12 @@ private:
 	TH1F *Triggers;
 	
 	int _DiLepHTTrigs[3], _nDiLepHTObjs[3];
+	//int _DiLepHTTrigPrescale[3];
 	TClonesArray* _DiLepHTObjs[3];
 	TString DiLepHTTrigNames[3] = {"HLT_DoubleMu8_Mass8_PFHT300","HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300","HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300"};
 	
 	int _DiLepTrigs[5], _nDiLepObjs[5];
+	//int _DiLepTrigPrescale[[5];
 	TClonesArray* _DiLepObjs[5];
 	TString DiLepTrigNames[5] = {"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ",
 								 "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ",
@@ -436,6 +445,7 @@ private:
 								 "HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL"};
 					//[flav][iso?][thresh]
 	int _ControlTrigs[2][2][5], _nControlObjs[2][2][5];
+	int _ControlTrigPrescale[2][2][5];
 	TClonesArray* _ControlObjs[2][2][5];
 	TString ControlTrigNames[2][2][5] = {{{"HLT_Ele8_CaloIdM_TrackIdM_PFJet30","HLT_Ele12_CaloIdM_TrackIdM_PFJet30","HLT_Ele18_CaloIdM_TrackIdM_PFJet30","HLT_Ele23_CaloIdM_TrackIdM_PFJet30","HLT_Ele33_CaloIdM_TrackIdM_PFJet30"},
 										  {"HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30","HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30","HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30","HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30","HLT_Ele34_CaloIdL_TrackIdL_IsoVL_PFJet30"}},
@@ -443,6 +453,7 @@ private:
 										  {"HLT_Mu8_TrkIsoVVL_v","HLT_Mu17_TrkIsoVVL_v","HLT_Mu24_TrkIsoVVL_v","HLT_Mu34_TrkIsoVVL_v","HLT_Mu35_TrkIsoVVL_v"}}};
 	
 	int _BControlTrigs[2], _nBControlObjs[2];
+	int _BControlTrigPrescale[2];
 	TClonesArray* _BControlObjs[2];
 	TString BControlTrigNames[2] = {"HLT_Mu10_CentralPFJet30_BTagCSV0p5","HLT_Ele10_CaloIdM_TrackIdM_CentralPFJet30_BTagCSV0p5"};
 	
