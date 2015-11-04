@@ -349,6 +349,12 @@ void MaySyncYield()
 	gStyle->SetPadGridY(true);
 	
 	gStyle->SetFuncColor(kRed);
+	
+	TH1F *HT_Yield = new TH1F("SS_HT",";H_{T} [GeV];Entries / 40 GeV",20,0,800);
+	TH1F *MET_Yield = new TH1F("SS_MET",";MET [GeV];Entries / 20 GeV",35,0,700);
+	TH1F *MTmin_Yield = new TH1F("SS_MTmin",";M_{T} min [GeV];Entries / 10 GeV",20,0,200);
+	TH1F *NJet_Yield = new TH1F("SS_NJ",";N jets;Entries / 1 jet",10,0,10);
+	TH1F *NBJet_Yield = new TH1F("SS_NBJ",";N b-jets;Entries / 1 b-jet",5,0,5);
     
     int _n_bJets;
     int _n_Jets;
@@ -424,6 +430,7 @@ void MaySyncYield()
     double _closeJetPtAll[8];
     double _closeJetAngAll[8];
     double _ptRelAll[8];
+	double _ptRatioAll[8];
 	
     double _closeJetPtAllMC[4];
     double _closeJetPtAllstatus[4];
@@ -442,6 +449,7 @@ void MaySyncYield()
 	double _EcalPFIso[8];
 	double _HcalPFIso[8];
 	double _TrackIso[8];
+	double _weight;
     
     int _n_PV;
     
@@ -463,7 +471,7 @@ void MaySyncYield()
     double _met_phi;
     double HT;
 	
-	int _DiLepTrigs[5], _DiLepHTTrigs[3];
+	int _DiLepTrigs[5], _DiLepHTTrigs[3], _ControlTrigs[2][2][5];
     
     TClonesArray* _leptonP4 = new TClonesArray("TLorentzVector", 8);
     for (int i=0; i!=8; ++i) {
@@ -483,11 +491,11 @@ void MaySyncYield()
   
     
    	// TH1D* _hCounter = new TH1D("hCounter", "Events counter", 5,0,5);
-    double lumi = 10000;
+    double lumi = 1280.0;
 	double ZZto4L = 15.4;
 	
 	double WZJets = 2.165;//1 file
-	double WJetsToLNu = 20508.9;//5 files
+	double WJetsToLNu = 20508.9*3;//5 files
 	double DYJets = 6024;//2 files
 	double DYHT[4] = {246.761,66.3448,8.31342,2.76733};//2 files per HT bin
 	double WJetsHT[4] = {2234.91,580.068,68.4003,23.1363};//2 files per HT bin
@@ -533,30 +541,45 @@ void MaySyncYield()
 	TH1F *TotalEvents = new TH1F("TotalEvents","Total Events",5,0,5);
 	
 	//TFile *hfiles = new TFile("file:MaySyncOutput.root","READ");
-	TFile *hfiles = new TFile("file:TTW_sync.root","READ");//
-	//TFile *hfiles = new TFile("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Full.root","READ");//
+	TFile *hfiles = new TFile("file:TTW_sync_V2_PUBtagWeight.root","READ");//
+	//TFile *hfiles = new TFile("file:TTW_sync_oldJetId.root","READ");//
+	//TFile *hfiles = new TFile("file:ttw_testofElectrons.root","READ");//
+	//TFile *hfiles = new TFile("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/WJetsToLNu_Full.root","READ");//
+	
+	//TFile *hfiles = new TFile("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/FullSelectionTuples/Data/DM_v3_1p28fb_Full.root","READ");//
+	//TFile *hfiles = new TFile("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/FullSelectionTuples/MC/WJets_Full.root","READ");//
+	
 	hfiles->cd("SyncExercise");
 	TH1D* _hCounters = new TH1D("hCounter", "Events counter", 5,0,5);
 	_hCounters->Read("hCounter");
 	evs += _hCounters->GetBinContent(1);
 	
 	
-	Double_t scale = lumi*DYHT[3]/evs;
+	Double_t scale = lumi*WJetsToLNu/evs;
 	
 	std::cout<<"Scale = "<<scale<<"\n";
 	
 	TotalEvents->SetBinContent(1,evs);
 	
     TChain *outputTree=new TChain("SyncExercise/SSSyncTree");
-	outputTree->Add("file:TTW_sync.root");
-	//outputTree->Add("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/TTJets/Full.root");
+	outputTree->Add("file:TTW_sync_V2_PUBtagWeight.root");
+	//outputTree->Add("file:TTW_sync_oldJetId.root");
+	//outputTree->Add("file:ttw_testofElectrons.root");
+	//outputTree->Add("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/WJetsToLNu_Full.root");
+	
+	//outputTree->Add("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/FullSelectionTuples/Data/DM_v3_1p28fb_Full.root");
+	//outputTree->Add("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/FullSelectionTuples/MC/WJets_Full.root");
+	
 	
 	outputTree->SetBranchAddress("_selectedLeptonPt", &_selectedLeptonPt);
 	outputTree->SetBranchAddress("_selectedLeptonEta", &_selectedLeptonEta);
 	outputTree->SetBranchAddress("_selectedLeptonPhi", &_selectedLeptonPhi);
 	
+	outputTree->SetBranchAddress("_weight", &_weight);
+	
 	outputTree->SetBranchAddress("_DiLepHTTrigs", &_DiLepHTTrigs);
 	outputTree->SetBranchAddress("_DiLepTrigs"    , &_DiLepTrigs);
+	outputTree->SetBranchAddress("_ControlTrigs"    , &_ControlTrigs);
 	
 	outputTree->SetBranchAddress("_eventNb",   &_eventNb); 
     outputTree->SetBranchAddress("_runNb",     &_runNb);    
@@ -625,6 +648,7 @@ void MaySyncYield()
     outputTree->SetBranchAddress("_closeJetPtAll", &_closeJetPtAll); 
     outputTree->SetBranchAddress("_closeJetAngAll", &_closeJetAngAll);
     outputTree->SetBranchAddress("_ptRelAll", &_ptRelAll);
+	outputTree->SetBranchAddress("_ptRatioAll", &_ptRatioAll);
     
     outputTree->SetBranchAddress("_closeJetPtAllMC", &_closeJetPtAllMC);
     outputTree->SetBranchAddress("_closeJetPtAllstatus", &_closeJetPtAllstatus);
@@ -666,7 +690,7 @@ void MaySyncYield()
 	
 	
 	////////////////
-	int SRs[4][3][3] = {{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}}};//[sigReg][lepton event type][lepton pt type]
+	double SRs[4][3][3] = {{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}}};//[sigReg][lepton event type][lepton pt type]
 	
 	bool verbose = false;
     	for (long it=0; it!=nEntries; ++it) {
@@ -686,7 +710,7 @@ void MaySyncYield()
 		//// Now Do Jet Cleaning ////
 		/////////////////////////////used to be just before setting signal region. So far matches perfect so think its good. Leave for now though
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153) 
+		if(_eventNb == 332739 && _lumiBlock == 1006) 
 				std::cout<<"Start Jet cleaning with "<<_n_Jets<<" Jets\n\n\n\n";
         
 		float CleanedHT = 0;
@@ -697,16 +721,16 @@ void MaySyncYield()
 		
 			TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
 			
-			if(_eventNb == 381733 && _lumiBlock == 1153)
-				std::cout<<"Jet "<<i<<"pt = "<<_jetPt[i]<<", eta = "<<_jetEta[i]<<", phi = "<<_jetPhi[i]<<", bjet = "<<(_csv[i] > 0.814)<<"\n";
+			if(_eventNb == 332739 && _lumiBlock == 1006)
+				std::cout<<"Jet "<<i<<"pt = "<<_jetPt[i]<<", eta = "<<_jetEta[i]<<", phi = "<<_jetPhi[i]<<", bjet = "<<(_csv[i] > 0.890)<<"\n";
 			
 			
 			bool dr = false;
 			//for(unsigned int j=0;j<looseout.size();j++){part of what was used when just before setting signal region
 	
-			//	if(((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
+			//	if(((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt() > 10.0 && jt.Pt() > ( (_csv[i] > 0.890) ? 25 : 40)){
 			//		dr = true;
-			//		if(_eventNb == 381733 && _lumiBlock == 1153)
+			//		if(_eventNb == 332739 && _lumiBlock == 1006)
 			//			std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(looseout[j]))->DeltaR( jt )<<"\n\n\n";
 			//	}
 			
@@ -717,10 +741,10 @@ void MaySyncYield()
 	
 				if(LepCleanIndex != 99999 && _3dIPsig[j] < 4 && _chargeConsistent[j] && _missingHits[j] < 1 && _miniIsolation[j] < 0.4  && _ipPV[j] < 0.05 
 						&& fabs(_ipZPV[j]) < 0.1 && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < 0.4 && ((TLorentzVector *)_leptonP4->At(j))->Pt() > 10.0 
-						&& jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40)){
+						&& jt.Pt() > ( (_csv[i] > 0.890) ? 25 : 40)){
 					dr = true;
 					LepCleanIndex = j;
-					if(_eventNb == 381733 && _lumiBlock == 1153)
+					if(_eventNb == 332739 && _lumiBlock == 1006)
 						std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(j))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt )<<"\n\n\n";
 				}
 			
@@ -729,7 +753,7 @@ void MaySyncYield()
 
 			if(dr) continue;
 			
-			if(_csv[i] > 0.814)
+			if(_csv[i] > 0.890)
 				nCBJets++;
 				
 			if(jt.Pt() < 40) continue;
@@ -741,16 +765,22 @@ void MaySyncYield()
 			
 		//// test for only cleaning one jet per lepton
 		std::vector<int> JetIndex;
+		
+		float pTcutFlav[2] = {15.0,10.0};
+		
 		for(unsigned int j=0;j<_nLeptons;j++){
 		
 			((TLorentzVector*)_leptonP4->At(j))->SetPtEtaPhiM(_selectedLeptonPt[j],_selectedLeptonEta[j],_selectedLeptonPhi[j],0);
 		
 			if(LepCleanIndex != 99999 && _3dIPsig[j] < 4 && _chargeConsistent[j] && _missingHits[j] < 1 && _miniIsolation[j] < 0.4  && _ipPV[j] < 0.05 
-					&& fabs(_ipZPV[j]) < 0.1  && ((TLorentzVector *)_leptonP4->At(j))->Pt() > 10.0 
+					&& fabs(_ipZPV[j]) < 0.1  && ((TLorentzVector *)_leptonP4->At(j))->Pt() > pTcutFlav[_flavors[j]]
 					){//Loose Lep Req
+					
+					
+					
 				//dr = true;
 				//LepCleanIndex = j;
-				//if(_eventNb == 381733 && _lumiBlock == 1153)
+				//if(_eventNb == 332739 && _lumiBlock == 1006)
 				//	std::cout<<"Fails cleaning with lepton pT "<<((TLorentzVector *)_leptonP4->At(j))->Pt()<<", and dR = "<<((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt )<<"\n\n\n";
 			
 				bool dR = false;
@@ -762,7 +792,7 @@ void MaySyncYield()
 				
 					TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[i],_jetEta[i],_jetPhi[i],0);
 					
-					if( jt.Pt() > ( (_csv[i] > 0.814) ? 25 : 40) && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < 0.4  && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < JdR){
+					if( jt.Pt() > ( (_csv[i] > 0.890) ? 25 : 40) && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < 0.4  && ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt ) < JdR){
 					
 						JdR = ((TLorentzVector *)_leptonP4->At(j))->DeltaR( jt );
 						dR = true;
@@ -794,13 +824,13 @@ void MaySyncYield()
 				nCJets++;
 			}
 			
-			if(_csv[i] > 0.814 && _jetPt[i] >= 25 && ok)
+			if(_csv[i] > 0.890 && _jetPt[i] >= 25 && ok)
 				nCBJets++;
 		
 		}
 		////test for only cleaning one jet per leptons
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153)
+		if(_eventNb == 332739 && _lumiBlock == 1006)
 			std::cout<<"Njets = "<<nCJets<<", Nbjets = "<<nCBJets<<", CleanedHT = "<<CleanedHT<<", MET = "<<_met<<"\n";
 
 		//////////////////////////////////////////////
@@ -819,7 +849,7 @@ void MaySyncYield()
 			if(_miniIsolation[i] < 0.4  && _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){//remove looseMVA for sync running
 				
 				
-				if(_eventNb == 381733 && _lumiBlock == 1153)
+				if(_eventNb == 332739 && _lumiBlock == 1006)
 					std::cout<<"\nloose lepton "<<_pdgids[i]<<", pt = "<<((TLorentzVector*)_leptonP4->At(i))->Pt()<<",eta = "<<((TLorentzVector*)_leptonP4->At(i))->Eta()<<
 					           ", phi = "<<((TLorentzVector*)_leptonP4->At(i))->Phi()<<", mIso = "<<_miniIsolation[i]<<
 							   ", isoEA = "<<_miniIsolation[i]<<", d0 = "<<_ipPV[i]<<
@@ -831,17 +861,17 @@ void MaySyncYield()
 				
 			}
 			
-			if(_istightMVANoIsoSIP[i] && ((TLorentzVector*)_leptonP4->At(i))->Pt() > 10 && _3dIPsig[i] < 4  //containts info about MVA tight cuts
+			if(_istightMVANoIsoSIP[i] && ((TLorentzVector*)_leptonP4->At(i))->Pt() > pTcutFlav[_flavors[i]] && _3dIPsig[i] < 4  //containts info about MVA tight cuts
 					//&& _originReduced[i] == 0 //&& _pdgids[i] == _genCharge[i]//prompt and same charge as gen particle
 					&& _ipPV[i] < 0.05 && fabs(_ipZPV[i]) < 0.1){
 					
 					
 					
-				if(_eventNb == 381733 && _lumiBlock == 1153)
+				if(_eventNb == 332739 && _lumiBlock == 1006)
 					std::cout<<"\nTight lepton "<<_pdgids[i]<<", pt = "<<((TLorentzVector*)_leptonP4->At(i))->Pt()<<",eta = "<<((TLorentzVector*)_leptonP4->At(i))->Eta()<<
 					           ", phi = "<<((TLorentzVector*)_leptonP4->At(i))->Phi()<<", mIso = "<<_miniIsolation[i]<<
 							   ", isoEA = "<<_miniIsolation[i]<<", d0 = "<<_ipPV[i]<<
-							   ", dz = "<<_ipZPV[i]<<", SIP = "<<_3dIPsig[i]<<", pTratio = "<<(((TLorentzVector*)_leptonP4->At(i))->Pt())/_closeJetPtAll[i]<<
+							   ", dz = "<<_ipZPV[i]<<", SIP = "<<_3dIPsig[i]<<", pTratio = "<<(((TLorentzVector*)_leptonP4->At(i))->Pt())/_closeJetPtAll[i]<<", ptratio 2 = "<<_ptRatioAll[i]<<
 							   ", pTrel = "<<_ptRelAll[i]<<", closest jet angle = "<<_closeJetAngAll[i]<<", pt = "<<_closeJetPtAll[i]<<"\n";
 				
 				
@@ -869,10 +899,10 @@ void MaySyncYield()
 					IsoCut = true;
 				
 				
-				if(IsoCut && _eventNb == 381733 && _lumiBlock == 1153)
+				if(IsoCut && _eventNb == 332739 && _lumiBlock == 1006)
 					std::cout<<"passes Iso\n";
 					
-				if(RatioRel && _eventNb == 381733 && _lumiBlock == 1153)
+				if(RatioRel && _eventNb == 332739 && _lumiBlock == 1006)
 					std::cout<<"passes RatioRel\n";
 				
 				if(_EcalPFIso[i] < 0.45 &&  _HcalPFIso[i] < 0.25 && _TrackIso[i] < 0.2)
@@ -880,7 +910,7 @@ void MaySyncYield()
 				
 				if(RatioRel && IsoCut && IsoEmu){
 					tight.push_back(i);
-					if(_eventNb == 381733 && _lumiBlock == 1153)
+					if(_eventNb == 332739 && _lumiBlock == 1006)
 						std::cout<<"Passes Tight\n\n";
 					
 				}
@@ -891,7 +921,7 @@ void MaySyncYield()
 		
 		
 		}
-		if(_eventNb == 381733 && _lumiBlock == 1153)
+		if(_eventNb == 332739 && _lumiBlock == 1006)
 			std::cout<<"loose size = "<<looseout.size()<<" and tight size = "<<tight.size()<<"\n";
 	
 		if(tight.size() < 2) continue;// or < 1 for SB selection
@@ -912,7 +942,7 @@ void MaySyncYield()
 			
 		std::vector<std::pair<int,int>> Pairs, SBPairs;
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153) std::cout<<"made SS Pairs\n";
+		if(_eventNb == 332739 && _lumiBlock == 1006) std::cout<<"made SS Pairs\n";
 		
 		for(unsigned int i=0;i<SSL[0].size();i++){
 		  for(unsigned int j=i+1;j<SSL[0].size();j++){
@@ -954,13 +984,13 @@ void MaySyncYield()
 		  }
 		}
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153) std::cout<<"before pairs.size()\n";
+		if(_eventNb == 332739 && _lumiBlock == 1006) std::cout<<"before pairs.size()\n";
 		
 		if(!Pairs.size())
 		      continue;
 			 
-		//if(_eventNb == 381733 && _lumiBlock == 1153)
-		if(_eventNb == 381733 && _lumiBlock == 1153)
+		//if(_eventNb == 332739 && _lumiBlock == 1006)
+		if(_eventNb == 332739 && _lumiBlock == 1006)
 			std::cout<<"At least one SS pair\n";
 		
 		/////////////////////////////////
@@ -1005,7 +1035,7 @@ void MaySyncYield()
 					
 				if(!SS && SF[0] && b1.M() > 76 && b1.M() < 106){
 					ZV = true;
-					if(_eventNb == 381733 && _lumiBlock == 1153 && ZV){
+					if(_eventNb == 332739 && _lumiBlock == 1006 && ZV){
 						std::cout<<"Fails ZV\n";
 						std::cout<<"Tight pT = "<<((TLorentzVector*)_leptonP4->At(Pairs[i].first))->Pt()<<", loose pT = "
 								 <<((TLorentzVector*)_leptonP4->At(looseout[j]))->Pt()<<", InvM = "<<b1.M()<<"\n";
@@ -1014,7 +1044,7 @@ void MaySyncYield()
 				
 				if(!SS && SF[1] && b2.M() > 76 && b2.M() < 106){
 					ZV = true;
-					if(_eventNb == 381733 && _lumiBlock == 1153 && ZV){
+					if(_eventNb == 332739 && _lumiBlock == 1006 && ZV){
 						std::cout<<"Fails ZV\n";
 						std::cout<<"Tight pT = "<<((TLorentzVector*)_leptonP4->At(Pairs[i].second))->Pt()<<", loose pT = "
 								 <<((TLorentzVector*)_leptonP4->At(looseout[j]))->Pt()<<", InvM = "<<b2.M()<<"\n";
@@ -1023,7 +1053,7 @@ void MaySyncYield()
 				
 				if(!SS && SF[0] && b1.M() < 12){
 					GV = true;
-					if(_eventNb == 381733 && _lumiBlock == 1153 && GV){
+					if(_eventNb == 332739 && _lumiBlock == 1006 && GV){
 						std::cout<<"Fails GV\n";
 						std::cout<<"Tight pT = "<<((TLorentzVector*)_leptonP4->At(Pairs[i].first))->Pt()<<", loose pT = "
 								 <<((TLorentzVector*)_leptonP4->At(looseout[j]))->Pt()<<", InvM = "<<b1.M()<<"\n";
@@ -1032,7 +1062,7 @@ void MaySyncYield()
 				
 				if(!SS && SF[1] && b2.M() < 12){
 					GV = true;
-					if(_eventNb == 381733 && _lumiBlock == 1153 && GV){
+					if(_eventNb == 332739 && _lumiBlock == 1006 && GV){
 						std::cout<<"Fails GV\n";
 						std::cout<<"Tight pT = "<<((TLorentzVector*)_leptonP4->At(Pairs[i].second))->Pt()<<", loose pT = "
 								 <<((TLorentzVector*)_leptonP4->At(looseout[j]))->Pt()<<", InvM = "<<b2.M()<<"\n";
@@ -1042,7 +1072,7 @@ void MaySyncYield()
 		
 			}
 			
-			if(_eventNb == 381733 && _lumiBlock == 1153 && LMV){
+			if(_eventNb == 332739 && _lumiBlock == 1006 && LMV){
 				std::cout<<"Fails LMV\n";
 				std::cout<<"Pt1 = "<<((TLorentzVector*)_leptonP4->At(Pairs[i].first))->Pt()<<", Pt2 = "<<((TLorentzVector*)_leptonP4->At(Pairs[i].second))->Pt()<<
 						   ", InvM = "<<both.M()<<"\n";
@@ -1071,15 +1101,15 @@ void MaySyncYield()
 		}
 		
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153) std::cout<<"fuck\n";
+		if(_eventNb == 332739 && _lumiBlock == 1006) std::cout<<"fuck\n";
 		
 		if(!GPairIndex.size())
 		      continue;
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153)
+		if(_eventNb == 332739 && _lumiBlock == 1006)
 			std::cout<<"Low Mass Veto Pass\n";
 			
-		if(_eventNb == 381733 && _lumiBlock == 1153) std::cout<<"At Least One Good Pair\n";
+		if(_eventNb == 332739 && _lumiBlock == 1006) std::cout<<"At Least One Good Pair\n";
 		
 		/////////////////////////////////////////////
 		//// Select best pair by type and pT sum ////
@@ -1126,7 +1156,7 @@ void MaySyncYield()
 		//
 		
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153)
+		if(_eventNb == 332739 && _lumiBlock == 1006)
 			std::cout<<"Slected best pair type of "<<GPairType[finalPair]<<" and FPT = "<<FPT<<"\n";
 		
 		
@@ -1161,7 +1191,7 @@ void MaySyncYield()
 		if(!PassFlavMatch)
 			continue;
 			
-		if(_eventNb == 381733 && _lumiBlock == 1153)
+		if(_eventNb == 332739 && _lumiBlock == 1006)
 			std::cout<<"Passed Flavor match\n";
 		
 		///////////////////////////////
@@ -1203,7 +1233,7 @@ void MaySyncYield()
 		
 		
 		
-		if(_eventNb == 381733 && _lumiBlock == 1153 && B0)
+		if(_eventNb == 332739 && _lumiBlock == 1006 && B0)
 			std::cout<<"Baseline Region Reached\n";
 		
 		//int Analysis = 1;///analysis = 0 for low pt and 1 for high pt
@@ -1220,7 +1250,7 @@ void MaySyncYield()
 			
 			int SignalRegion = GetHHSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin);
 			
-			if(_eventNb == 381733 && _lumiBlock == 1153)
+			if(_eventNb == 332739 && _lumiBlock == 1006)
 				std::cout<<"Final Pair pT = "<<((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt()<<" and "<<((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt()<<"\n";
 			
 			if(((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt() > 25)
@@ -1229,7 +1259,17 @@ void MaySyncYield()
 			if(((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt() > 25)
 				ept++;
 		
-			SRs[0][GPairType[finalPair]][ept]++;
+			SRs[0][GPairType[finalPair]][ept] += _weight;//++;*_weight*scale
+				
+			//if(GPairType[finalPair] > 1){
+			
+				HT_Yield->Fill(CleanedHT,_weight*scale);
+				MET_Yield->Fill(_met,_weight*scale);
+				MTmin_Yield->Fill(mTmin,_weight*scale);
+				NJet_Yield->Fill(nCJets,_weight*scale);
+				NBJet_Yield->Fill(nCBJets,_weight*scale);
+			
+			//}
 			
 			//if(SRs[0][GPairType[finalPair]][ept])
 			//	std::cout<<"filled something\n";
@@ -1242,7 +1282,7 @@ void MaySyncYield()
 			//else if(ept == 2)
 			//	SRYields[ept]->Fill(GetHHSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin));
 			
-			if(_eventNb == 381733 && _lumiBlock == 1153)
+			if(_eventNb == 332739 && _lumiBlock == 1006)
 				std::cout<<"Ok here and all vars = "<<nCBJets<<","<<_met<<","<<nCJets<<","<<CleanedHT<<","<<mTmin<<","<<ept<<"\n";
 				
 			SRYields[ept]->Fill(GetNewSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin,ept));
@@ -1250,7 +1290,7 @@ void MaySyncYield()
 			int HLSR = GetNewSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin,ept);
 			
 			
-			if(_eventNb == 381733 && _lumiBlock == 1153)
+			if(_eventNb == 332739 && _lumiBlock == 1006)
 				std::cout<<"Ok past the fill\n";
 			
 			if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
@@ -1261,10 +1301,10 @@ void MaySyncYield()
 			if(ept == 1) fprintf(EvtYieldHL,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
 																											 _pdgids[Pairs[GPairIndex[finalPair]].first], ((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt(), 
 																											 _pdgids[Pairs[GPairIndex[finalPair]].second],((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt(), 
-																											 nCJets, nCBJets, _met, CleanedHT, HLSR) );
+																											 nCJets, nCBJets, _met, CleanedHT, HLSR+32) );
 			
-			if(SigReg)
-				SRs[SigReg][GPairType[finalPair]][ept]++;
+			if(SigReg )
+				SRs[SigReg][GPairType[finalPair]][ept] += _weight;//++;*_weight;//*scale
 				
 				
 			
@@ -1280,7 +1320,7 @@ void MaySyncYield()
 	const char*	eventpt[3] = {"LL","HL","HH"};
 	int nbins[3] = {8,25,32};
 	
-	
+	/*
     
 	TString fileOutName = "Fuck_Yields.root";
 	TFile *out = new TFile(fileOutName,"RECREATE");
@@ -1300,7 +1340,7 @@ void MaySyncYield()
 	SRYields[1]->Write();
 	SRYields[2]->Write();
 	
-	
+	*/
 	
 	for(int i=0;i<4;i++){
 		std::cout<<"SR "<<i<<"0\n";
@@ -1308,15 +1348,22 @@ void MaySyncYield()
 			std::cout<<"Event Type "<<type[j]<<"\n";
 			for(int k=0;k<3;k++){
 				
+				//std::cout<<eventpt[k]<<" :::: "<<SRs[i][j][k]*scale<<"\n";
 				std::cout<<eventpt[k]<<" :::: "<<SRs[i][j][k]<<"\n";
 			
 			}
 		}
 	}
 	
-	
-	
-	
+	/*
+	TFile *Bplots = new TFile("BaselineWJetsYields.root","RECREATE");
+	Bplots->cd();
+	HT_Yield->Write();
+	MET_Yield->Write();
+	MTmin_Yield->Write();
+	NJet_Yield->Write();
+	NBJet_Yield->Write();
+	*/
 
 	
 	
