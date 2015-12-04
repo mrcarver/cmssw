@@ -1,6 +1,7 @@
 <use   name="clhep"/>
 <use   name="CondFormats/L1TObjects"/>
 <use   name="CondFormats/DataRecord"/>
+<use   name="CondFormats/BTauObjects"/>
 <use   name="CondFormats/JetMETObjects"/>
 <use   name="DataFormats/Candidate"/>
 <use   name="DataFormats/Common"/>

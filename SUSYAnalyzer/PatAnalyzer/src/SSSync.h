@@ -146,7 +146,7 @@ private:
 	
 	BTagCalibration *calib;
 	BTagCalibrationReader *reader;
-	TH2F *btagEff;
+	TH2D *btagEff[3];
 	
 	double PUarray[60] = {1.0, 3.153000427291265, 2.4535501340758543, 2.353696182351581, 2.3718057802881676, 
 						  2.3508262193470397, 2.291773427755106, 2.129929297304804, 1.9422796094930384, 
@@ -205,6 +205,8 @@ private:
     double _looseD0Mu;
     double _looseD0E;
 	double _weight;
+	double _PUweight;
+	double _BTagweight;
     
     double _jetPtCut;
     double _jetEtaCut;
@@ -304,6 +306,9 @@ private:
     int _PFHT800;
 	double _hltHT;
 	double _L1HT;
+	
+	int _isPromptFinalState[nLeptonsMax];
+	int _fromHardProcessFinalState[nLeptonsMax];
 	
 	int _Mu17Mu8;
 	int _Mu17TkMu8;

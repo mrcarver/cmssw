@@ -123,7 +123,8 @@ OnTheFlyCorrections::getCorrections(float rawpt, float raweta, float rawnomupt, 
   float l1corrpt   = rawnomupt*corrections.front(); // l1fastjet corrections were pushed pack first
   float fullcorrpt = rawnomupt*corrections.back();  // full corrections are the last in the vector
 
-  if (fullcorrpt < 10.)     return corr;        // skip all jets that have corrected pt below 10 GeV
+  //if (fullcorrpt < 10.)     return corr;        // skip all jets that have corrected pt below 10 GeV
+  if (fullcorrpt < 15.)     return corr;        // skip all jets that have corrected pt below 15 GeV
 
   // the corretions for the MET are the difference between l1fastjet and the full corrections on the jet!
   

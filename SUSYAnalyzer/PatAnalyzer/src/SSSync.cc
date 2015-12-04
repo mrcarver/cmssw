@@ -184,6 +184,8 @@ void SSSync::beginJob()
 	
 	
 	outputTree->Branch("_weight", &_weight , "_weight/D");
+	outputTree->Branch("_PUweight", &_PUweight , "_PUweight/D");
+	outputTree->Branch("_BTagweight", &_BTagweight , "_BTagweight/D");
 	
 	
     outputTree->Branch("_nLeptons", &_nLeptons, "_nLeptons/I");///
@@ -213,6 +215,8 @@ void SSSync::beginJob()
     
     outputTree->Branch("_origin", &_origin, "_origin[8]/I");
     outputTree->Branch("_originReduced", &_originReduced, "_originReduced[8]/I");
+	outputTree->Branch("_isPromptFinalState", &_isPromptFinalState, "_isPromptFinalState[8]/I");
+	outputTree->Branch("_fromHardProcessFinalState", &_fromHardProcessFinalState, "_fromHardProcessFinalState[8]/I");
     
     outputTree->Branch("_PVchi2", &_PVchi2, "_PVchi2/D");
     outputTree->Branch("_PVerr", &_PVerr, "_PVerr[3]/D");
@@ -340,9 +344,9 @@ void SSSync::beginJob()
     
     bool isData = !(Sample=="ElectronsMC");
 	
-	std::string GT = "Summer15_25nsV2_MC";
+	std::string GT = "Summer15_25nsV6_MC";
 	if(isData)
-		GT = "Summer15_25nsV5_DATA";
+		GT = "Summer15_25nsV6_DATA";
 	
     fMetCorrector = new OnTheFlyCorrections(GT, isData); //isData = true
 	
@@ -367,10 +371,15 @@ void SSSync::beginJob()
                              "central");//
 							 
 	
-	//TFile *file = new TFile("/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_14/src/SUSYAnalyzer/PatAnalyzer/test/btageff__ttbar_powheg_pythia8_25ns.root","read");
-	//btagEff = new TH2F("btagEff","",15,0,15,7,0,2.6);
-	//btagEff->Read("h2_BTaggingEff_csv_med_Eff_c");
-	//file->Close();
+	TFile *file = new TFile("/lfs/scratch/mrcarver/Fall15AnalysisCode/CMSSW_7_4_14/src/SUSYAnalyzer/PatAnalyzer/test/btageff__ttbar_powheg_pythia8_25ns.root","read");
+	const char *fl[3] = {"b","c","udsg"};
+	for(int i=0;i<3;i++){
+		
+		btagEff[i] = new TH2D(Form("btagEff_%s",fl[i]),"",15,0,15,7,0,2.6);
+		btagEff[i]->Read(Form("h2_BTaggingEff_csv_med_Eff_%s",fl[i]));
+	
+	}
+	file->Close();
 	
 }
 
@@ -497,7 +506,11 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		//std::cout << "\n\nTrigger " << trigNames.triggerName(i) << 
     	//  ": " << (trigResults->accept(i) ? "PASS" : "fail (or not run)") 
     	 // << std::endl;
-	  		/*
+	  		
+			
+			
+		//// Comment here for MC //////
+		/*
 	    //get prescale info from hltConfig_
 		//std::vector<int> *prescales, *l1prescales;
 		if(debug) std::cout<<"0.2.0.0\n";
@@ -506,7 +519,6 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		//prescales->push_back( triggerPrescalesH_.isValid() ? detailedPrescaleInfo.second : -1 );
 		//prescales->push_back( detailedPrescaleInfo.second  );
 	  //	std::cout<<" HLT prescale = "<<detailedPrescaleInfo.second<<"\n";
-	  
 		// save l1 prescale values in standalone vector
 		std::vector <int> l1prescalevals;
 		for( size_t varind = 0; varind < detailedPrescaleInfo.first.size(); varind++ ){
@@ -518,10 +530,9 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		size_t minind = std::distance(std::begin(l1prescalevals), result);
 		// sometimes there are no L1s associated with a HLT. In that case, this branch stores -1 for the l1prescale
 		//l1prescales->push_back( minind < l1prescalevals.size() ? l1prescalevals.at(minind) : -1 );
-		*/
 		//std::cout<<" L1 prescale = "<<l1prescalevals.at(minind)<<"\n";
 	      
-	  if(debug) std::cout<<PathName<<"\n";
+	    if(debug) std::cout<<PathName<<"\n";
 	  	//int Prescale = 1;
 		//if(triggerPrescalesH_.isValid() && minind)
 		//int	Prescale = detailedPrescaleInfo.second * l1prescalevals.at(minind);
@@ -531,7 +542,11 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		//std::cout<<PathName<<" passed!\n";
 		//std::pair<int,int> prescale = hltConfig_.prescaleValues(iEvent,iEventSetup,trigNames.triggerName(i));
 		//std::cout<<PathName<<" L1 prescale = "<<prescale.first<<" and HLT = "<<prescale.second<<"\n";
-	  	for(int z=0;z<3;z++){
+	  	
+		//// End comment here fro MC ////
+		*/
+		
+		for(int z=0;z<3;z++){
 			
 			
 			if(PathName.Contains(DiLepHTTrigNames[z])){
@@ -938,6 +953,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	
 	
 	_weight = 1;
+	_PUweight = 1;
+	_BTagweight = 1;
 	if(Sample=="ElectronsMC"){//============Individual Event Weight=============
 	edm::Handle<GenEventInfoProduct> pdfvariables;
 	iEvent.getByLabel("generator",pdfvariables);
@@ -952,7 +969,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	if(_n_PV > 59)
 		aindex = 59;
 		
-	_weight *= PUarray[aindex];
+	//_weight *= PUarray[aindex];
+	_PUweight = PUarray[aindex];
     
 	}
 	
@@ -1113,6 +1131,14 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		if(iM->genParticle() && iM->genParticle()->mother(0)){
 		
 		
+		_isPromptFinalState[leptonCounter] = 0;
+		_fromHardProcessFinalState[leptonCounter] = 0;
+		if(Sample=="ElectronsMC" && iM->genParticle()){
+		
+			_isPromptFinalState[leptonCounter] = iM->genParticle()->isPromptFinalState();
+			_fromHardProcessFinalState[leptonCounter] = iM->genParticle()->fromHardProcessFinalState();
+		
+		}
 		
 		moms.push_back(iM->genParticle()->mother(0));
 		for(int i=0;i<30;i++){
@@ -1396,8 +1422,18 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 		if(debug) std::cout<<"e mc1\n";
 		const reco::GenParticle *mc = iE->genParticle();
 		_origin[leptonCounter] = -1;
-		//if(mc)
+		//if(mc){
 		//	_origin[leptonCounter] = GPM.origin(mc);
+		//}
+		
+		_isPromptFinalState[leptonCounter] = 0;
+		_fromHardProcessFinalState[leptonCounter] = 0;
+		if(Sample=="ElectronsMC" && mc){
+		
+			_isPromptFinalState[leptonCounter] = mc->isPromptFinalState();
+			_fromHardProcessFinalState[leptonCounter] = mc->fromHardProcessFinalState();
+		
+		}
 			
 		if(debug) std::cout<<"e mc2\n";
 		_originReduced[leptonCounter] = GPM.originReduced(_origin[leptonCounter]);
@@ -1513,7 +1549,7 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	//std::cout<<"jet cleaning\n";
 	double PMC[2] = {1,1}, PData[2] = {1,1};
 	double ptbins[19] = {20.,25.,30.,35.,40.,45.,50.,60.,70.,80.,90.,100.,120.,150.,200.,300.,400.,600.,1000000.};
-	
+	/*
 	double bTageffs[7][17] = {{0.498440,0.564021,0.610909,0.632182,0.628327,0.674033,0.662796,0.664053,0.675163,0.681013,0.676228,0.678714,0.687691,0.695168,0.667931,0.605706,0.530881},
 							  {0.518034,0.582882,0.628564,0.652494,0.651326,0.667326,0.683174,0.687201,0.697793,0.701271,0.698518,0.700552,0.707651,0.709330,0.682399,0.625348,0.553085},
 							  {0.488457,0.555124,0.601580,0.625985,0.625929,0.641381,0.657951,0.667800,0.676599,0.681218,0.681516,0.682655,0.682393,0.682125,0.646767,0.596776,0.520092},
@@ -1521,14 +1557,15 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 							  {0.425729,0.495264,0.542952,0.576627,0.576082,0.576421,0.596198,0.602617,0.606897,0.614185,0.608507,0.604401,0.603599,0.568326,0.525934,0.484535,0.409251},
 							  {0.330925,0.399433,0.448948,0.480190,0.477676,0.485342,0.504022,0.501825,0.507183,0.511612,0.501227,0.495817,0.504509,0.468249,0.422269,0.382096,0.345576},
 							  {0.061321,0.081894,0.095642,0.105105,0.105836,0.110704,0.115588,0.115834,0.119451,0.123472,0.117514,0.122229,0.129296,0.120606,0.124337,0.121655,0.200000}};
-	
-	
+	*/
+	if(debug) std::cout<<"6\n";
     for(unsigned int i = 0 ; i < SelectedJets.size() ;i++ ){
         _jetEta[_n_Jets] = SelectedJets[i]->eta();
         _jetPhi[_n_Jets] = SelectedJets[i]->phi();
 		
         _jetPt[_n_Jets] = SelectedJets[i]->pt();
 		
+		int flavor = SelectedJets[i]->hadronFlavour();//b-5,c-4,uds-0;
 		
 		if(Dov1v3Corrections){
 		
@@ -1557,8 +1594,28 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
 	   
 	   }
 	   
-	  
-	   double JetSF = reader->eval(BTagEntry::FLAV_B, _jetEta[_n_Jets], _jetPt[_n_Jets]);
+	  if(debug) std::cout<<"7\n";
+	   double JetSF = 1.0, JetEffs = 1.0;
+	   
+	    if(!flavor){
+			 if(debug) std::cout<<"7.1\n";
+	   		JetSF = 1;//reader->eval(BTagEntry::FLAV_B, _jetEta[_n_Jets], _jetPt[_n_Jets]);//entry b-0, c-1, uds-2
+			 if(debug) std::cout<<"7.2, JetSF = "<<JetSF<<", pt = "<<_jetPt[_n_Jets]<<", eta = "<<_jetEta[_n_Jets]<<"\n";
+			JetEffs = btagEff[2]->GetBinContent(pbin,ebin);
+		}
+		else if(flavor == 4){
+		 if(debug) std::cout<<"7.3\n";
+			JetSF = reader->eval(BTagEntry::FLAV_C, _jetEta[_n_Jets], _jetPt[_n_Jets]);//entry b-0, c-1, uds-2
+			 if(debug) std::cout<<"7.4\n";
+			JetEffs = btagEff[1]->GetBinContent(pbin,ebin);
+		}
+		else{
+			 if(debug) std::cout<<"7.5\n";
+			JetSF = reader->eval(BTagEntry::FLAV_B, _jetEta[_n_Jets], _jetPt[_n_Jets]);//entry b-0, c-1, uds-2
+			 if(debug) std::cout<<"7.6\n";
+			JetEffs = btagEff[0]->GetBinContent(pbin,ebin);
+		}
+	   
 	
         //TLorentzVector jt; jt.SetPtEtaPhiM(_jetPt[_n_Jets],_jetEta[_n_Jets],_jetPhi[_n_Jets],0);
        // double dR1 = ((TLorentzVector *)_leptonP4->At(_index1))->DeltaR( jt );
@@ -1569,12 +1626,12 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
         _csv[_n_Jets] = SelectedJets[i]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
 		
 		if(_csv[_n_Jets] > 0.89){
-			PMC[0] *= bTageffs[ebin][pbin];
-			PData[0] *= JetSF*bTageffs[ebin][pbin];
+			PMC[0] *= JetEffs;//bTageffs[ebin][pbin];
+			PData[0] *= JetEffs;//JetSF*bTageffs[ebin][pbin];
 		}
 		else{
-			PMC[1] *= (1-bTageffs[ebin][pbin]);
-			PData[1] *= (1-(JetSF*bTageffs[ebin][pbin]));
+			PMC[1] *= (1-JetEffs);//bTageffs[ebin][pbin]);
+			PData[1] *= (1-(JetSF*JetEffs));//bTageffs[ebin][pbin]));
 		}
 		
 		//if(SelectedJets[i]->pt() > 40)
@@ -1592,7 +1649,8 @@ void SSSync::analyze(const edm::Event& iEvent, const edm::EventSetup& iEventSetu
     }
 	
 	
-	_weight *= (PData[0]*PData[1])/(PMC[0]*PMC[1]);
+	//_weight *= (PData[0]*PData[1])/(PMC[0]*PMC[1]);
+	_BTagweight = (PData[0]*PData[1])/(PMC[0]*PMC[1]);
 	
 	if(debug) std::cout<<"8";
 	

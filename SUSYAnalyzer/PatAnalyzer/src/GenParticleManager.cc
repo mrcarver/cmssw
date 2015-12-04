@@ -3,6 +3,8 @@
 using namespace std;
 const GenParticle* GenParticleManager::getMother(const GenParticle *p)
 {
+
+	//std::cout<<"gm1\n";
     
     if( p->numberOfMothers() == 0 )//
     {
@@ -252,6 +254,8 @@ std::vector<const GenParticle*> GenParticleManager::getAllMothers(const GenParti
     moms.push_back(p);
     counter++;
     
+	//std::cout<<"gam1\n";
+	
     const GenParticle* mom = getMother(p);
     while( mom && mom->pdgId() == p->pdgId() )
     {
@@ -350,8 +354,11 @@ int GenParticleManager::origin(const GenParticle *p)
 {
     if( !p ) return N_U_L_L ;
     
+	//std::cout<<"fuckyou1\n";
+	
     std::vector<const GenParticle*> moms = getAllMothers(p);
     
+	//std::cout<<"fuckyou2\n";
     if( comesFromBoson(moms) )
     {
         if( comesFromBMeson(moms) )

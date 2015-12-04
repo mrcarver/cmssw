@@ -57,6 +57,9 @@ int SR(int nbjets, float met, int njets, float HT, int analysis){///analysis = 0
 
 int GetNewSignalRegion(int nbjets, float met, int njets, float HT, float mTmin, int ept){
 
+	if(met < 50)
+		return 0;
+
 	if(ept == 0){
 	
 	int sr = 1;
@@ -81,6 +84,7 @@ int GetNewSignalRegion(int nbjets, float met, int njets, float HT, float mTmin, 
 	}
 	
 	if(ept == 1){
+	
 	
 	int First6 [2][2][2] = {{{1,2},{3,4}},{{3,5},{3,6}}};//[MET][jets][HT]
 	
@@ -530,18 +534,30 @@ void MaySyncYield()
 	//int NumEvents[9] = {0};
 	//Double_t SampleScales[9] = {0};
 	//int WhichSample = 5;
-	FILE *EvtYield = fopen("FuckYieldstexts.txt","w");
-	FILE *EvtYieldHL = fopen("EvtYieldHL.txt","w");
+	//FILE *EvtYield = fopen("FuckYieldstexts.txt","w");
+	//FILE *EvtYieldHL = fopen("EvtYieldHL.txt","w");
+	FILE *EventDump = fopen("ObsEventList.txt","w");
+	
+	TString dataSamples[3] = {"DM","DE","ME"};
+	
+	std::vector<std::pair<unsigned long, unsigned long>> duplicates;
+	
+	for(int samp=0;samp<3;samp++){
+	
+	
+	TString fileToUse = "/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/FullSelectionTuples/Data/"+dataSamples[samp]+"_v3v4_1p28_Full.root";
 	
 	
 	int evs = 0;
-    	std::cout<<"\n\n";
+   	std::cout<<"\n\n";
 
 	
 	TH1F *TotalEvents = new TH1F("TotalEvents","Total Events",5,0,5);
 	
+	TFile *hfiles = new TFile(fileToUse,"READ");//
+	
 	//TFile *hfiles = new TFile("file:MaySyncOutput.root","READ");
-	TFile *hfiles = new TFile("file:TTW_sync_V2_PUBtagWeight.root","READ");//
+	//TFile *hfiles = new TFile("file:TTW_sync_V2_PUBtagWeight.root","READ");//
 	//TFile *hfiles = new TFile("file:TTW_sync_oldJetId.root","READ");//
 	//TFile *hfiles = new TFile("file:ttw_testofElectrons.root","READ");//
 	//TFile *hfiles = new TFile("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/WJetsToLNu_Full.root","READ");//
@@ -562,7 +578,10 @@ void MaySyncYield()
 	TotalEvents->SetBinContent(1,evs);
 	
     TChain *outputTree=new TChain("SyncExercise/SSSyncTree");
-	outputTree->Add("file:TTW_sync_V2_PUBtagWeight.root");
+	
+	outputTree->Add(fileToUse);
+	
+	//outputTree->Add("file:TTW_sync_V2_PUBtagWeight.root");
 	//outputTree->Add("file:TTW_sync_oldJetId.root");
 	//outputTree->Add("file:ttw_testofElectrons.root");
 	//outputTree->Add("/cms/data/store/user/t2/users/mrcarver/Fall15AnalysisTuples/MC/WJetsToLNu_Full.root");
@@ -750,7 +769,6 @@ void MaySyncYield()
 			
 			}
  
-
 			if(dr) continue;
 			
 			if(_csv[i] > 0.890)
@@ -768,7 +786,7 @@ void MaySyncYield()
 		
 		float pTcutFlav[2] = {15.0,10.0};
 		
-		for(unsigned int j=0;j<_nLeptons;j++){
+		for(int j=0;j<_nLeptons;j++){
 		
 			((TLorentzVector*)_leptonP4->At(j))->SetPtEtaPhiM(_selectedLeptonPt[j],_selectedLeptonEta[j],_selectedLeptonPhi[j],0);
 		
@@ -812,7 +830,7 @@ void MaySyncYield()
 		for(int i = 0 ; i < _n_Jets ;i++ ){
 		
 			bool ok = true;
-			for(int j=0;j<JetIndex.size();j++){
+			for(unsigned int j=0;j<JetIndex.size();j++){
 			
 				if(JetIndex[j] == i)
 					ok = false;
@@ -1239,17 +1257,28 @@ void MaySyncYield()
 		//int Analysis = 1;///analysis = 0 for low pt and 1 for high pt
 		//int SignalRegion = SR(nCBJets,_met,nCJets,CleanedHT,Analysis);
 		
-		if(B0){//got to baseline
+		bool dupEvent = false;
 		
+		for(unsigned int de=0;de<duplicates.size();de++){
+		
+			if(_lumiBlock == duplicates[de].first && _eventNb == duplicates[de].second)
+				dupEvent = true;
+		
+		}
+		
+		if(B0 && !dupEvent){//got to baseline
+		
+			std::pair<unsigned long,unsigned long> eve(_lumiBlock,_eventNb);
+			duplicates.push_back(eve);
+			
 			
 			int ept = 0, etype = 0;
 			
 			float mTmin = _mt[Pairs[GPairIndex[finalPair]].first];
 			if(_mt[Pairs[GPairIndex[finalPair]].second] < _mt[Pairs[GPairIndex[finalPair]].first])
 				mTmin = _mt[Pairs[GPairIndex[finalPair]].second];
-			
-			int SignalRegion = GetHHSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin);
-			
+				
+		
 			if(_eventNb == 332739 && _lumiBlock == 1006)
 				std::cout<<"Final Pair pT = "<<((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt()<<" and "<<((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt()<<"\n";
 			
@@ -1271,37 +1300,31 @@ void MaySyncYield()
 			
 			//}
 			
-			//if(SRs[0][GPairType[finalPair]][ept])
-			//	std::cout<<"filled something\n";
-			
-			
-			//if(ept == 0)
-			//	SRYields[ept]->Fill(GetLLSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin));
-			//else if(ept == 1)
-			//	SRYields[ept]->Fill(GetHLSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin));
-			//else if(ept == 2)
-			//	SRYields[ept]->Fill(GetHHSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin));
+		
 			
 			if(_eventNb == 332739 && _lumiBlock == 1006)
 				std::cout<<"Ok here and all vars = "<<nCBJets<<","<<_met<<","<<nCJets<<","<<CleanedHT<<","<<mTmin<<","<<ept<<"\n";
 				
 			SRYields[ept]->Fill(GetNewSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin,ept));
 			
-			int HLSR = GetNewSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin,ept);
+			int SignalRegion = GetNewSignalRegion(nCBJets, _met, nCJets, CleanedHT, mTmin,ept);
 			
 			
 			if(_eventNb == 332739 && _lumiBlock == 1006)
 				std::cout<<"Ok past the fill\n";
+				
 			
-			if(ept > 1) fprintf(EvtYield,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+			int sbins[3] = {32+26,32,0};
+			
+			if(SignalRegion){ fprintf(EventDump,Form("%1lu %9lu %12lu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
 																											 _pdgids[Pairs[GPairIndex[finalPair]].first], ((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt(), 
 																											 _pdgids[Pairs[GPairIndex[finalPair]].second],((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt(), 
-																											 nCJets, nCBJets, _met, CleanedHT, SignalRegion) );
-																											 
-			if(ept == 1) fprintf(EvtYieldHL,Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
-																											 _pdgids[Pairs[GPairIndex[finalPair]].first], ((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt(), 
-																											 _pdgids[Pairs[GPairIndex[finalPair]].second],((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt(), 
-																											 nCJets, nCBJets, _met, CleanedHT, HLSR+32) );
+																											 nCJets, nCBJets, _met, CleanedHT, SignalRegion+sbins[ept]) );
+			}																								 
+			//if(ept == 1) fprintf(EvtYieldHL,Form("%1lu %9lu %12lu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", _runNb, _lumiBlock, _eventNb, looseout.size(), 
+			//																								 _pdgids[Pairs[GPairIndex[finalPair]].first], ((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].first))->Pt(), 
+			//																								 _pdgids[Pairs[GPairIndex[finalPair]].second],((TLorentzVector*)_leptonP4->At(Pairs[GPairIndex[finalPair]].second))->Pt(), 
+			//																								 nCJets, nCBJets, _met, CleanedHT, HLSR+32) );
 			
 			if(SigReg )
 				SRs[SigReg][GPairType[finalPair]][ept] += _weight;//++;*_weight;//*scale
@@ -1316,16 +1339,17 @@ void MaySyncYield()
 		
     }//event loop
 	
+	
+	}//sample loop
+	
 	const char* type[3] = {"ee","em","mm"};
 	const char*	eventpt[3] = {"LL","HL","HH"};
-	int nbins[3] = {8,25,32};
-	
-	/*
-    
+	int nbins[3] = {8,26,32};
+
 	TString fileOutName = "Fuck_Yields.root";
 	TFile *out = new TFile(fileOutName,"RECREATE");
 	
-	
+	/*
 	for(int i=0;i<3;i++){
 		for(int j=1;j<nbins[i]+1;j++){
 			
@@ -1333,15 +1357,15 @@ void MaySyncYield()
 	
 		}
 	}
-	
+	*/
 	
 	out->cd();
 	SRYields[0]->Write();
 	SRYields[1]->Write();
 	SRYields[2]->Write();
 	
-	*/
 	
+	/*
 	for(int i=0;i<4;i++){
 		std::cout<<"SR "<<i<<"0\n";
 		for(int j=0;j<3;j++){
@@ -1354,7 +1378,7 @@ void MaySyncYield()
 			}
 		}
 	}
-	
+	*/
 	/*
 	TFile *Bplots = new TFile("BaselineWJetsYields.root","RECREATE");
 	Bplots->cd();
