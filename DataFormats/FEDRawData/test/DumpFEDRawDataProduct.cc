@@ -35,7 +35,6 @@ namespace test{
       dumpPayload_=pset.getUntrackedParameter<bool>("dumpPayload",false);
       for (std::vector<int>::iterator i=ids.begin(); i!=ids.end(); i++) 
 	FEDids_.insert(*i);
-      consumes<FEDRawDataCollection>(label_);
     }
 
  
