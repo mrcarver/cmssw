@@ -51,6 +51,7 @@
 #include "CondFormats/L1TObjects/interface/L1TMuonOverlapParams.h"
 #include "CondFormats/L1TObjects/interface/L1TMuonGlobalParams.h"
 #include "CondFormats/L1TObjects/interface/L1TMuonBarrelParams.h"
+#include "CondFormats/L1TObjects/interface/L1TMuonEndcapParams.h"
 
 #include "CondFormats/L1TObjects/interface/L1TUtmAlgorithm.h"
 #include "CondFormats/L1TObjects/interface/L1TUtmBin.h"
@@ -97,6 +98,8 @@ namespace CondFormats_L1TObjects {
 
     L1TMuonBarrelParams dummy18;
     std::vector<L1TMuonBarrelParams::Node> dummy18a;
+	
+	L1TMuonEndcapParams dummy20;
 
 
     L1TUtmAlgorithm dummy19a;
