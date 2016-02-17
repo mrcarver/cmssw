@@ -54,11 +54,23 @@ L1TMuonEndcapParamsESProducer::L1TMuonEndcapParamsESProducer(const edm::Paramete
    // data is being produced
    setWhatProduced(this);
    // Firmware version
-   unsigned fwVersion = iConfig.getParameter<unsigned>("PT_assignment_version");
-   m_params.SetVersion(fwVersion);
+   unsigned Version = iConfig.getParameter<unsigned>("PT_assignment_version");
+   m_params.SetPtAssignVersion(Version);
    
-   int PBits = iConfig.getParameter<int>("NumPhiBits");
-   m_params.SetNumPhiBits(PBits);
+   int S1MatchWindow = iConfig.getParameter<int>("St1PhiMatchWindow");
+   m_params.SetSt1PhiMatchWindow(S1MatchWindow);
+   
+   int S2MatchWindow = iConfig.getParameter<int>("St2PhiMatchWindow");
+   m_params.SetSt2PhiMatchWindow(S2MatchWindow);
+   
+   int S3MatchWindow = iConfig.getParameter<int>("St3PhiMatchWindow");
+   m_params.SetSt3PhiMatchWindow(S3MatchWindow);
+   
+   int S4MatchWindow = iConfig.getParameter<int>("St4PhiMatchWindow");
+   m_params.SetSt4PhiMatchWindow(S4MatchWindow);
+   
+   std::string XmlPtDir = iConfig.getParameter<std::string>("XmlPtDir");
+   m_params.SetXmlPtTreeDir(XmlPtDir);
 
 
 }

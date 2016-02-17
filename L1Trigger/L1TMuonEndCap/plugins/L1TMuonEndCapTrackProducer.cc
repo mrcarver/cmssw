@@ -60,6 +60,11 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
   std::vector<TriggerPrimitive> tester;
   //std::vector<InternalTrack> FoundTracks;
   
+  const L1TMuonEndcapParamsRcd& emtfParamsRcd = es.get<L1TMuonEndcapParamsRcd>();
+  emtfParamsRcd.get(emtfParamsHandle);
+  const L1TMuonEndcapParams& emtfParams = *emtfParamsHandle.product();
+  
+  
   
   //////////////////////////////////////////////
   ///////// Make Trigger Primitives ////////////
@@ -179,7 +184,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
   //////////////////////////////////
 
 
-  MatchingOutput Mout = PhiMatching(Sout);
+  MatchingOutput Mout = PhiMatching(Sout, emtfParams);
   MO[SectIndex] = Mout;
 
   /////////////////////////////////
@@ -213,38 +218,22 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
  BTrack FourBest[4];//ok
  std::vector<BTrack> PTemp[12] = PTracks;
  std::vector<BTrack> AllTracks;
- int windex[4] = {-1,-1,-1,-1};
 
-
-
- for(int i=0;i<4;i++){
 
  	for(int j=0;j<36;j++){
 
-
-			if(!PTemp[j/3][j%3].phi)//no track
-				continue;
-				
-			if(PTemp[j/3][j%3].phi)
-				AllTracks.push_back(PTemp[j/3][j%3]);
-
-			if((windex[0] == j) || (windex[1] == j) || (windex[2] == j) || (windex[3] == j))//already picked
-				continue;
-
-			if(PTracks[j/3][j%3].winner.Rank() > FourBest[i].winner.Rank()){
-
-				FourBest[i] = PTemp[j/3][j%3];
-				windex[i] = j;
-
-			}
+		if(PTemp[j/3][j%3].phi)
+			AllTracks.push_back(PTemp[j/3][j%3]);
 
  	}
-}
+
+
 
   ///////////////////////////////////
   /// Make Internal track if ////////
   /////// tracks are found //////////
   ///////////////////////////////////
+
 
   for(unsigned int fbest=0;fbest<AllTracks.size();fbest++){
 
@@ -319,9 +308,9 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 		}
 		tempTrack.phis = ps;
 		tempTrack.thetas = ts;
-
-		float xmlpt = CalculatePt(tempTrack,es);
+		float xmlpt = CalculatePt(tempTrack,es,emtfParams);
 		tempTrack.pt = xmlpt*1.4;
+		std::cout<<"track "<<fbest<<" pt = "<<tempTrack.pt<<"\n";
 		//FoundTracks->push_back(tempTrack);
 
 		CombAddress = (me2address<<4) | me1address;

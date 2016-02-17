@@ -21,22 +21,31 @@ class L1TMuonEndcapParams {
 
 public:
 
- 	void SetNumPhiBits(int phiBits){NumPhiBits_ = phiBits;};
-	void SetVersion(unsigned version){version_ = version;};
+	void SetPtAssignVersion(unsigned version){version_ = PtAssignVersion_;};
+	void SetSt1PhiMatchWindow(int window){PhiMatchWindowSt1_ = window;};
+	void SetSt2PhiMatchWindow(int window){PhiMatchWindowSt2_ = window;};
+	void SetSt3PhiMatchWindow(int window){PhiMatchWindowSt3_ = window;};
+	void SetSt4PhiMatchWindow(int window){PhiMatchWindowSt4_ = window;};
+	void SetXmlPtTreeDir(std::string dir){XmlPtTreeDir_ = dir;};
 	
-	int GetPhiBits() const {return NumPhiBits_;};
-	unsigned GetVersion(){return version_;};
+	unsigned GetPtAssignVersion(){return PtAssignVersion_;};
+	int GetSt1PhiMatchWindow() const {return PhiMatchWindowSt1_;};
+	int GetSt2PhiMatchWindow() const {return PhiMatchWindowSt2_;};
+	int GetSt3PhiMatchWindow() const {return PhiMatchWindowSt3_;};
+	int GetSt4PhiMatchWindow() const {return PhiMatchWindowSt4_;};
+	std::string GetXmlPtTreeDir() const {return XmlPtTreeDir_;};
 	
 	
-	L1TMuonEndcapParams() { version_=1; }
+	L1TMuonEndcapParams() { PtAssignVersion_=1; }
    ~L1TMuonEndcapParams() {}
 
 	void print(std::ostream&) const;
 
 private:
 	
-  unsigned version_;
-  int NumPhiBits_;
+  unsigned PtAssignVersion_;
+  int PhiMatchWindowSt1_, PhiMatchWindowSt2_, PhiMatchWindowSt3_, PhiMatchWindowSt4_;
+  std::string XmlPtTreeDir_;
 
   COND_SERIALIZABLE;
 };

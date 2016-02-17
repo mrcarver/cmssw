@@ -15,6 +15,8 @@
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "L1Trigger/CSCCommonTrigger/interface/CSCTriggerGeometry.h"
+#include "CondFormats/DataRecord/interface/L1TMuonEndcapParamsRcd.h"
+#include "CondFormats/L1TObjects/interface/L1TMuonEndcapParams.h"
 //add this bobby
 
 Forest forest[16];
@@ -31,7 +33,7 @@ int doComp = true;
 int makeLUT_ = false; 
 int dumpExamples = false;
 
-int whichScheme = 3;
+//int whichScheme = 3;
 
 //ofstream file("LUT.dat",ios::out);
 
@@ -203,9 +205,9 @@ float getNLBdPhi(float dPhi, int bits, int max=512)
 int getNLBdPhiBin(float dPhi, int bits, int max=512)
 {
   int dPhiBin_= (1<<bits)-1; 
-  float sign_ = 1;
-  if (dPhi<0)
-    sign_ = -1;
+  //float sign_ = 1;
+  //if (dPhi<0)
+ //   sign_ = -1;
   dPhi = fabs(dPhi);
   
   if (max==256)
@@ -340,9 +342,9 @@ float getCLCT(float clct)
 float getdTheta(float dTheta)
 {
   float dTheta_ = 0;
-  float sign_ = 1;
-  if (dTheta<0)
-    sign_ = -1;
+  //float sign_ = 1;
+  //if (dTheta<0)
+  //  sign_ = -1;
   
   if (dTheta<=-3)
     dTheta_ = 0;
@@ -369,10 +371,10 @@ float getdTheta(float dTheta)
 float getdEta(float deta)
 {
   float deta_ = 0;
-  float sign_ = 1;
+  //float sign_ = 1;
 
-  if (deta<0)
-    sign_ = -1;
+  //if (deta<0)
+  //  sign_ = -1;
   
   //deta = fabs(deta);
 
@@ -414,16 +416,16 @@ float getEta(float eta, int bits=5)
 
 int getEtaInt(float eta, int bits=5)
 {
-  float eta_ = 0;
-  float sign_ = 1;
-  if (eta<0)
-    sign_ = -1;
+  //float eta_ = 0;
+  //float sign_ = 1;
+  //if (eta<0)
+  //  sign_ = -1;
 
   if (bits>5) bits = 5;
   int shift = 5 - bits;
   int etaInt = (fabs(eta) - 0.9)*(32.0/(1.6))-0.5;
   etaInt = (etaInt>>shift);
-  eta_ = 0.9 + (etaInt + 0.5)*(1.6/32.0);
+  //eta_ = 0.9 + (etaInt + 0.5)*(1.6/32.0);
   return (etaInt);
 }
 
@@ -442,7 +444,7 @@ float getEtafromBin(int etaBin, int bits=5)
 }
 
 
-float getPt(unsigned long Address)
+float getPt(unsigned long Address, const L1TMuonEndcapParams& emtfParams)
 {
   bool verbose = false;
 
@@ -450,20 +452,31 @@ float getPt(unsigned long Address)
 	/// Mode Variables ////
 	///////////////////////
   int ModeVariables[13][6];
-  int ModeBits[13][6];
+  //int ModeBits[13][6];
   
   for (int i=0;i<13;i++)
     for (int j=0;j<6;j++)
       {
-        if (whichScheme == 3)
-          {
+        //if (whichScheme == 3)
+          //{
             ModeVariables[i][j] = ModeVariables_Scheme3[i][j];
-          }
+          //}
       }
   
   const char *dir="";
-  if (whichScheme == 3)
+  //if (whichScheme == 3)
     dir = dirSchemeC;
+	
+  std::string newDir = emtfParams.GetXmlPtTreeDir();
+  
+  
+  //"L1Trigger/L1TMuon/data/emtf_luts/ModeVariables_v1_dTheta/trees";
+  
+  std::ostringstream ss; 
+  ss << "L1Trigger/L1TMuon/data/emtf_luts/" <<newDir <<"/trees";
+  
+  std::cout<<"new dir = "<<newDir<<"\n";
+  dir = ss.str().c_str();
   
   int dphi[6] = {-999,-999,-999,-999,-999,-999}, deta[6] = {-999,-999,-999,-999,-999,-999};
 	int clct[4] = {-999,-999,-999,-999}, cscid[4] = {-999,-999,-999,-999};
@@ -921,7 +934,7 @@ float getPt(unsigned long Address)
 	return MpT;
 }
 
-void makeLUT()
+void makeLUT(const L1TMuonEndcapParams& emtfParams)
 {
   //ofstream file2("LUT_text.dat",ios::out);
   std::ofstream PtLUT("LUT_AlexFormat.dat");
@@ -935,7 +948,7 @@ void makeLUT()
         //unsigned long mode = 0x3;
         unsigned long address =  i;//(i + (mode << 26));
         
-        float BDTPt1 = fabs(getPt(address));
+        float BDTPt1 = fabs(getPt(address, emtfParams));
 
         if (BDTPt1>140.0) BDTPt1 = 139.9999;
                             
@@ -974,7 +987,7 @@ void makeLUT()
 			//std::cout<<"FourWords 0-3 = "<<(FourWords[0]&511)<<","<<(FourWords[1]&511)<<","<<(FourWords[2]&511)<<","<<(FourWords[3]&511)<<"\n";
 			
 			//std::cout<<"FullWord = "<<FullWord<<"\n";
-			FullWord |= (FourWords[3] &  511) << 32+9;
+			FullWord |= (FourWords[3] &  511) << (32+9);
 			//std::cout<<"FourWords[3] << 32+9 = "<<((FourWords[3] &  511) << 32+9)<<" and FullWord = "<<FullWord<<"\n";
 			FullWord |= (FourWords[2] &  511) << 32;
 			//std::cout<<"FourWords[2] << 32+9 = "<<((FourWords[2] &  511) << 32)<<" and FullWord = "<<FullWord<<"\n";
@@ -1061,33 +1074,15 @@ void makeLUT()
 }
 
 //float CalculatePt(L1TMuon::InternalTrack track){
-float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///add this bobby
+float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, const L1TMuonEndcapParams& emtfParams ){///add this bobby/
   edm::ESHandle<CSCGeometry> cscGeometry;///add this bobby
 	es.get<MuonGeometryRecord>().get(cscGeometry);///add this bobby
   
   if (makeLUT_)
-    makeLUT();
+    makeLUT(emtfParams);
   
 	bool verbose = false;
 
-  ///////////////////////
-	/// Mode Variables ////
-	///////////////////////
-  int ModeVariables[13][6];
-  int ModeBits[13][6];
-  
-  for (int i=0;i<13;i++)
-    for (int j=0;j<6;j++)
-      {
-        if (whichScheme == 3)
-          {
-            ModeVariables[i][j] = ModeVariables_Scheme3[i][j];
-          }
-      }
-  
-  const char *dir="";
-  if (whichScheme == 3)
-    dir = dirSchemeC;
 
 	int dphi[6] = {-999,-999,-999,-999,-999,-999}, deta[6] = {-999,-999,-999,-999,-999,-999};
 	int clct[4] = {-999,-999,-999,-999}, cscid[4] = {-999,-999,-999,-999};
@@ -1362,12 +1357,12 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///a
 	  {
 
       int dPhi12Sign = 1;
-      int CLCT1Sign = 1;
-      int CLCT2Sign = 1;
+      //int CLCT1Sign = 1;
+      //int CLCT2Sign = 1;
       
       if (dPhi12<0) dPhi12Sign = -1;
-      if (CLCT1<0) CLCT1Sign = -1;
-      if (CLCT2<0) CLCT2Sign = -1;
+      //if (CLCT1<0) CLCT1Sign = -1;
+      //if (CLCT2<0) CLCT2Sign = -1;
       
       // Make Pt LUT Address
       int dPhi12_ = fabs(dPhi12);
@@ -1440,7 +1435,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///a
 	  {
       // signed full precision dPhi12
       int dPhi14Sign = 1;
-      int dEta14Sign = 1;
+      //int dEta14Sign = 1;
       int CLCT1Sign = 1;
       int CLCT4Sign = 1;
       
@@ -1593,12 +1588,12 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///a
     {
       int dPhi12Sign = 1;
       int dPhi23Sign = 1;
-      int dPhi34Sign = 1;
+      //int dPhi34Sign = 1;
       int CLCT1Sign = 1;
       
       if (dPhi12<0) dPhi12Sign = -1;
       if (dPhi23<0) dPhi23Sign = -1;
-      if (dPhi34<0) dPhi34Sign = -1;
+      //if (dPhi34<0) dPhi34Sign = -1;
       if (CLCT1<0) CLCT1Sign = -1;
       
       // Make Pt LUT Address
@@ -1699,7 +1694,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///a
     {
       int dPhi23Sign = 1;
       int dPhi34Sign = 1;
-      int dEta24Sign = 1;
+      //int dEta24Sign = 1;
       int CLCT2Sign = 1;
       
       if (dPhi23<0) dPhi23Sign = -1;
@@ -1768,7 +1763,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///a
       Address += ( Mode_ & ((1<<4)-1))   << (0+7+5+6+1+1+1+5);
     }
   
-  return getPt(Address);
+  return getPt(Address, emtfParams);
 }
 
 
