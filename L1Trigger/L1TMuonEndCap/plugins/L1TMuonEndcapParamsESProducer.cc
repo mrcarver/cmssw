@@ -22,6 +22,7 @@
 #include "CondFormats/DataRecord/interface/L1TMuonEndcapParamsRcd.h"
 
 #include "FWCore/ParameterSet/interface/FileInPath.h"
+#include "TXMLEngine.h"
 
 // class declaration
 
@@ -53,25 +54,24 @@ L1TMuonEndcapParamsESProducer::L1TMuonEndcapParamsESProducer(const edm::Paramete
    //the following line is needed to tell the framework what
    // data is being produced
    setWhatProduced(this);
-   // Firmware version
-   unsigned Version = iConfig.getParameter<unsigned>("PT_assignment_version");
-   m_params.SetPtAssignVersion(Version);
+ 
+   std::string fName = iConfig.getParameter<edm::FileInPath>("configXMLFile").fullPath();
    
-   int S1MatchWindow = iConfig.getParameter<int>("St1PhiMatchWindow");
-   m_params.SetSt1PhiMatchWindow(S1MatchWindow);
+   TXMLEngine* xml = new TXMLEngine();
+   XMLDocPointer_t xmldoc = xml->ParseFile(fName.c_str());
    
-   int S2MatchWindow = iConfig.getParameter<int>("St2PhiMatchWindow");
-   m_params.SetSt2PhiMatchWindow(S2MatchWindow);
+   XMLNodePointer_t mainnode = xml->DocGetRootElement(xmldoc);
+   XMLAttrPointer_t attr = xml->GetFirstAttr(mainnode);
    
-   int S3MatchWindow = iConfig.getParameter<int>("St3PhiMatchWindow");
-   m_params.SetSt3PhiMatchWindow(S3MatchWindow);
+   m_params.SetXmlPtTreeDir(xml->GetAttrValue(attr));
+   m_params.SetPtAssignVersion(xml->GetIntAttr(mainnode,"PT_assignment_version"));
+   m_params.SetSt1PhiMatchWindow(xml->GetIntAttr(mainnode,"St1PhiMatchWindow"));
+   m_params.SetSt2PhiMatchWindow(xml->GetIntAttr(mainnode,"St2PhiMatchWindow"));
+   m_params.SetSt3PhiMatchWindow(xml->GetIntAttr(mainnode,"St3PhiMatchWindow"));
+   m_params.SetSt4PhiMatchWindow(xml->GetIntAttr(mainnode,"St4PhiMatchWindow"));
    
-   int S4MatchWindow = iConfig.getParameter<int>("St4PhiMatchWindow");
-   m_params.SetSt4PhiMatchWindow(S4MatchWindow);
-   
-   std::string XmlPtDir = iConfig.getParameter<std::string>("XmlPtDir");
-   m_params.SetXmlPtTreeDir(XmlPtDir);
-
+   xml->FreeDoc(xmldoc);
+   delete xml;
 
 }
 
@@ -95,6 +95,7 @@ L1TMuonEndcapParamsESProducer::produce(const L1TMuonEndcapParamsRcd& iRecord)
 
    pEMTFParams = boost::shared_ptr<L1TMuonEndcapParams>(new L1TMuonEndcapParams(m_params));
    return pEMTFParams;
+   
 }
 
 //define this as a plug-in

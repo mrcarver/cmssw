@@ -21,7 +21,7 @@ class L1TMuonEndcapParams {
 
 public:
 
-	void SetPtAssignVersion(unsigned version){version_ = PtAssignVersion_;};
+	void SetPtAssignVersion(unsigned version){PtAssignVersion_ = version;};
 	void SetSt1PhiMatchWindow(int window){PhiMatchWindowSt1_ = window;};
 	void SetSt2PhiMatchWindow(int window){PhiMatchWindowSt2_ = window;};
 	void SetSt3PhiMatchWindow(int window){PhiMatchWindowSt3_ = window;};

@@ -97,7 +97,7 @@ int ModeVariables_Scheme3[13][6] =
     {0,3,5,20,-999,-999}            // 15
   };
 //const char *dirSchemeC = "L1Trigger/L1EndcapMuonTrackFinder/plugins/ModeVariables/trees";
-const char *dirSchemeC = "L1Trigger/L1TMuon/data/emtf_luts/ModeVariables_v1_dTheta/trees";
+//const char *dirSchemeC = "L1Trigger/L1TMuon/data/emtf_luts/ModeVariables_v1_dTheta/trees";
 
 //------------------------------------------------//
 
@@ -465,17 +465,11 @@ float getPt(unsigned long Address, const L1TMuonEndcapParams& emtfParams)
   
   const char *dir="";
   //if (whichScheme == 3)
-    dir = dirSchemeC;
+  //  dir = dirSchemeC;
 	
   std::string newDir = emtfParams.GetXmlPtTreeDir();
-  
-  
-  //"L1Trigger/L1TMuon/data/emtf_luts/ModeVariables_v1_dTheta/trees";
-  
   std::ostringstream ss; 
   ss << "L1Trigger/L1TMuon/data/emtf_luts/" <<newDir <<"/trees";
-  
-  std::cout<<"new dir = "<<newDir<<"\n";
   dir = ss.str().c_str();
   
   int dphi[6] = {-999,-999,-999,-999,-999,-999}, deta[6] = {-999,-999,-999,-999,-999,-999};
