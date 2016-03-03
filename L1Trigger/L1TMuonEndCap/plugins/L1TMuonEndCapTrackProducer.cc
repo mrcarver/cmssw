@@ -229,7 +229,8 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   /////// tracks are found //////////
   /////////////////////////////////// 
   
-  std::vector<l1t::RegionalMuonCand> holder,tester1;
+  std::vector<l1t::RegionalMuonCand> tester1;
+  std::vector<std::pair<int,l1t::RegionalMuonCand>> holder;
 
   for(unsigned int fbest=0;fbest<AllTracks.size();fbest++){
 
@@ -248,6 +249,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		int sector = -1;
 		bool ME13 = false;
 		int me1address = 0, me2address = 0, CombAddress = 0, mode = 0;
+		int ebx = 20, sebx = 20;
 
 		for(std::vector<ConvertedHit>::iterator A = AllTracks[fbest].AHits.begin();A != AllTracks[fbest].AHits.end();A++){
 
@@ -255,7 +257,16 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 				int station = A->TP().detId<CSCDetId>().station();
 				int id = A->TP().getCSCData().cscID;
-				int trknm = A->TP().getCSCData().trknmb;
+				int trknm = A->TP().getCSCData().trknmb;//A->TP().getCSCData().bx
+				
+				
+				if(A->TP().getCSCData().bx < ebx){
+					sebx = ebx;
+					ebx = A->TP().getCSCData().bx;
+				}
+				else if(A->TP().getCSCData().bx < sebx){
+					sebx = A->TP().getCSCData().bx;
+				}
 
 				tempTrack.addStub(A->TP());
 				ps.push_back(A->Phi());
@@ -318,9 +329,12 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
         //int bx = 0;
 		float theta_angle = (AllTracks[fbest].theta*0.2851562 + 8.5)*(3.14159265359/180);
 		float eta = (-1)*log(tan(theta_angle/2));
+		std::pair<int,l1t::RegionalMuonCand> outPair(ebx,outCand);
+		//outPair.first = ebx;
+		//outPair.second = outCand;
 		
 		if(!ME13 && fabs(eta) > 1.1)
-			holder.push_back(outCand);
+			holder.push_back(outPair);
 			//OutputCands->push_back(bx, outCand);
 	}
   }
@@ -328,15 +342,15 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 for(unsigned int h=0;h<holder.size();h++){
 
-	int bx = 0;
-	int sector = holder[h].processor();
-	if(holder[h].trackFinderType() == 3)
+	int bx = holder[h].first - 6;
+	int sector = holder[h].second.processor();
+	if(holder[h].second.trackFinderType() == 3)
 		sector += 6;
 
 	for(int sect=0;sect<12;sect++){
 	
 		if(sector == sect)
-			OutputCands->push_back(bx,holder[h]);
+			OutputCands->push_back(bx,holder[h].second);
 		
 	}
 }
