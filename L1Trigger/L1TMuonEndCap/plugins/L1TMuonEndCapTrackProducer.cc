@@ -335,25 +335,27 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		
 		if(!ME13 && fabs(eta) > 1.1)
 			holder.push_back(outPair);
-			//OutputCands->push_back(bx, outCand);
 	}
   }
+  
+OutputCands->setBXRange(-2,2);
 
+for(int sect=0;sect<12;sect++){
 
-for(unsigned int h=0;h<holder.size();h++){
+	for(unsigned int h=0;h<holder.size();h++){
 
-	int bx = holder[h].first - 6;
-	int sector = holder[h].second.processor();
-	if(holder[h].second.trackFinderType() == 3)
-		sector += 6;
-
-	for(int sect=0;sect<12;sect++){
+		int bx = holder[h].first - 6;
+		int sector = holder[h].second.processor();
+		if(holder[h].second.trackFinderType() == 3)
+			sector += 6;
 	
-		if(sector == sect)
-			OutputCands->push_back(bx,holder[h].second);
+		if(sector == sect){
+			OutputCands->insert(bx,h,holder[h].second);
+		}
 		
 	}
 }
+
 
 //ev.put( FoundTracks, "DataITC");
 ev.put( OutputCands, "EMTF");
