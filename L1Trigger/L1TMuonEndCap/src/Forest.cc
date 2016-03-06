@@ -111,6 +111,20 @@ Tree* Forest::getTree(unsigned int i)
         return 0;
     }
 }
+/*
+void Forest::setTrees(EndCapForest *Forest){
+
+
+	trees = std::vector<Tree*>(Forest->size());
+	for(unsigned int i=0;i<Forest->size();i++){
+	
+		
+		trees[i] = Forest->getTree(i);
+	
+	}	
+
+
+}*/
 
 //////////////////////////////////////////////////////////////////////////
 // ______________________Various_Helpful_Functions______________________//

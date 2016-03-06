@@ -20,6 +20,7 @@
 
 #include "CondFormats/L1TObjects/interface/L1TMuonEndcapParams.h"
 #include "CondFormats/DataRecord/interface/L1TMuonEndcapParamsRcd.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest.h"
 
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "TXMLEngine.h"
@@ -54,24 +55,28 @@ L1TMuonEndcapParamsESProducer::L1TMuonEndcapParamsESProducer(const edm::Paramete
    //the following line is needed to tell the framework what
    // data is being produced
    setWhatProduced(this);
- 
-   std::string fName = iConfig.getParameter<edm::FileInPath>("configXMLFile").fullPath();
+
+   m_params.SetPtAssignVersion(iConfig.getParameter<int>("PtAssignVersion"));
+   m_params.SetSt1PhiMatchWindow(iConfig.getParameter<int>("St1MatchWindow"));
+   m_params.SetSt2PhiMatchWindow(iConfig.getParameter<int>("St2MatchWindow"));
+   m_params.SetSt3PhiMatchWindow(iConfig.getParameter<int>("St3MatchWindow"));
+   m_params.SetSt4PhiMatchWindow(iConfig.getParameter<int>("St4MatchWindow"));
    
-   TXMLEngine* xml = new TXMLEngine();
-   XMLDocPointer_t xmldoc = xml->ParseFile(fName.c_str());
    
-   XMLNodePointer_t mainnode = xml->DocGetRootElement(xmldoc);
-   XMLAttrPointer_t attr = xml->GetFirstAttr(mainnode);
+   int allowedModes[11] = {3,5,9,6,10,12,7,11,13,14,15};
+   std::vector<std::pair<int,EndCapForest*>> Forests;
+   for(int modes=0;modes<11;modes++){
    
-   m_params.SetXmlPtTreeDir(xml->GetAttrValue(attr));
-   m_params.SetPtAssignVersion(xml->GetIntAttr(mainnode,"PT_assignment_version"));
-   m_params.SetSt1PhiMatchWindow(xml->GetIntAttr(mainnode,"St1PhiMatchWindow"));
-   m_params.SetSt2PhiMatchWindow(xml->GetIntAttr(mainnode,"St2PhiMatchWindow"));
-   m_params.SetSt3PhiMatchWindow(xml->GetIntAttr(mainnode,"St3PhiMatchWindow"));
-   m_params.SetSt4PhiMatchWindow(xml->GetIntAttr(mainnode,"St4PhiMatchWindow"));
+   		EndCapForest *forest = new EndCapForest();
+		std::stringstream ss;
+		ss << "L1Trigger/L1TMuon/data/emtf_luts/ModeVariables_v1_dTheta/trees/" << allowedModes[modes];
+		forest->loadForestFromXML(ss.str().c_str(),64);
+		std::pair<int,EndCapForest*> outPair(allowedModes[modes],forest);
+		Forests.push_back(outPair);
    
-   xml->FreeDoc(xmldoc);
-   delete xml;
+   }
+   m_params.SetPtForests(Forests);
+   
 
 }
 

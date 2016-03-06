@@ -310,6 +310,7 @@ for(int SectIndex=0;SectIndex<12;SectIndex++){//perform TF on all 12 sectors
 		tempTrack.thetas = ts;
 		float xmlpt = CalculatePt(tempTrack,es,emtfParams);
 		tempTrack.pt = xmlpt*1.4;
+		std::cout<<"pt = "<<tempTrack.pt<<"\n";
 		//FoundTracks->push_back(tempTrack);
 
 		CombAddress = (me2address<<4) | me1address;

@@ -5,6 +5,7 @@
 
 #include "L1Trigger/L1TMuonEndCap/interface/Tree.h"
 #include "L1Trigger/L1TMuonEndCap/interface/LossFunctions.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest.h"
 
 class Forest
 {
@@ -52,6 +53,7 @@ class Forest
         void predictEvent(Event* e, unsigned int trees);
 
         Tree* getTree(unsigned int i);
+		//void  setTrees(EndCapForest *forest);
 
     private:
 

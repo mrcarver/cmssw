@@ -1,19 +1,19 @@
-// Node.h
+// L1TMuEndCapNode.h
 
-#ifndef ADD_NODE
-#define ADD_NODE
+#ifndef ADD_EndCapNODE
+#define ADD_EndCapNODE
 
 #include <string>
 #include <vector>
-#include "L1Trigger/L1TMuonEndCap/interface/Event.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapEvent.h"
 #include "CondFormats/Serialization/interface/Serializable.h"
 
-class Node
+class EndCapNode
 {
     public:
-        Node();
-        Node(std::string cName);
-        ~Node();
+        EndCapNode();
+        EndCapNode(std::string cName);
+        ~EndCapNode();
 
         std::string getName();
         void setName(std::string sName);
@@ -21,14 +21,14 @@ class Node
         Double_t getErrorReduction();
         void setErrorReduction(Double_t sErrorReduction);
 
-        Node * getLeftDaughter();
-        void setLeftDaughter(Node *sLeftDaughter);
+        EndCapNode * getLeftDaughter();
+        void setLeftDaughter(EndCapNode *sLeftDaughter);
 
-        Node * getRightDaughter();
-        void setRightDaughter(Node *sLeftDaughter);
+        EndCapNode * getRightDaughter();
+        void setRightDaughter(EndCapNode *sLeftDaughter);
 
-        Node * getParent();
-        void setParent(Node *sParent);
+        EndCapNode * getParent();
+        void setParent(EndCapNode *sParent);
 
         Double_t getSplitValue();
         void setSplitValue(Double_t sSplitValue);
@@ -48,21 +48,19 @@ class Node
         Int_t getNumEvents();
         void setNumEvents(Int_t sNumEvents);
 
-        std::vector< std::vector<Event*> >& getEvents();
-        void setEvents(std::vector< std::vector<Event*> >& sEvents);
+        std::vector< std::vector<EndCapEvent*> >& getEvents();
+        void setEvents(std::vector< std::vector<EndCapEvent*> >& sEvents);
 
-        void calcOptimumSplit();
-        void filterEventsToDaughters();
-        Node* filterEventToDaughter(Event* e);
-        void listEvents();
         void theMiracleOfChildBirth();
+		
+		EndCapNode* filterEventToDaughter(EndCapEvent* e);
  
     private:
 	std::string name;
 
-        Node *leftDaughter;
-        Node *rightDaughter;
-        Node *parent;
+        EndCapNode *leftDaughter;
+        EndCapNode *rightDaughter;
+        EndCapNode *parent;
 
         Double_t splitValue;
         Int_t splitVariable;
@@ -74,7 +72,7 @@ class Node
         Double_t fitValue;
         Int_t numEvents;
 
-        std::vector< std::vector<Event*> > events;
+        std::vector< std::vector<EndCapEvent*> > events;
 		
 		COND_SERIALIZABLE;
 };

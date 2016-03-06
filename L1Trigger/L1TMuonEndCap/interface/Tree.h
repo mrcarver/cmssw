@@ -10,6 +10,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "CondFormats/Serialization/interface/Serializable.h"
 
 
 //class Node;
@@ -48,12 +49,16 @@ class Tree
 
         void getSplitValues(std::vector<std::vector<Double_t>>& v);
         void getSplitValuesRecursive(Node* node, std::vector<std::vector<Double_t>>& v);
+		
+	
 
     private:
         Node *rootNode;
         std::list<Node*> terminalNodes;
         Int_t numTerminalNodes;
         Double_t rmsError;
+		
+		COND_SERIALIZABLE;
 };
 
 #endif

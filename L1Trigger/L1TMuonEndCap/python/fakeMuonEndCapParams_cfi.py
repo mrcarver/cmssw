@@ -10,7 +10,11 @@ emtfParamsSource = cms.ESSource(
 ##EMTF ESProducer. Fills CondFormats from XML files.
 emtfParams = cms.ESProducer(
 	"L1TMuonEndcapParamsESProducer",
-   configXMLFile = cms.FileInPath("L1Trigger/L1TMuon/data/emtf_config/EMTF_XML_Config.xml"),
+   PtAssignVersion = cms.int32(1),
+   St1MatchWindow = cms.int32(15),
+   St2MatchWindow = cms.int32(15),
+   St3MatchWindow = cms.int32(7),
+   St4MatchWindow = cms.int32(7)
 )
 
 

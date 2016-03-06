@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
-// ---------------------------Event.h------------------------------------
+// ---------------------------EndCapEvent.h------------------------------------
 //////////////////////////////////////////////////////////////////////////
 
-#ifndef ADD_EVENT
-#define ADD_EVENT
+#ifndef ADD_EndCapEVENT
+#define ADD_EndCapEVENT
 
 #include "TMath.h"
 #include <vector>
@@ -14,7 +14,7 @@
 // ----------------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 
-struct Event
+struct EndCapEvent
 {
 
     Double_t trueValue;
@@ -30,25 +30,10 @@ struct Event
     Int_t id;    
     std::vector<Double_t> data;         
 
-    bool operator< (const Event &rhs) const
+    bool operator< (const EndCapEvent &rhs) const
     {
         return data[sortingIndex] < rhs.data[sortingIndex];
     }
-
-    void outputEvent()
-    {
-        std::cout << "trueValue = " << trueValue << std::endl;
-        std::cout << "predictedValue = " << predictedValue << std::endl;
-        std::cout << "id = " << id << std::endl;
-        for(unsigned int i=0; i<data.size(); i++)
-        {
-            std::cout << "x"<< i << "=" << data[i] << ", ";
-        }
-        std::cout << std::endl;
-     
-    }
-  
-    void resetPredictedValue(){ predictedValue = 0; }
 	
 	COND_SERIALIZABLE;
 };

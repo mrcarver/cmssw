@@ -17,10 +17,11 @@
 #include "L1Trigger/CSCCommonTrigger/interface/CSCTriggerGeometry.h"
 #include "CondFormats/DataRecord/interface/L1TMuonEndcapParamsRcd.h"
 #include "CondFormats/L1TObjects/interface/L1TMuonEndcapParams.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest.h"
 //add this bobby
 
-Forest forest[16];
-int ForestLoad[16] = {0};
+//Forest forest[16];
+//int ForestLoad[16] = {0};
 
 const Double_t ptscale[31] =  { 0,
                  1.5,   2.0,   2.5,   3.0,   3.5,   4.0,
@@ -463,14 +464,14 @@ float getPt(unsigned long Address, const L1TMuonEndcapParams& emtfParams)
           //}
       }
   
-  const char *dir="";
+  //const char *dir="";
   //if (whichScheme == 3)
   //  dir = dirSchemeC;
 	
-  std::string newDir = emtfParams.GetXmlPtTreeDir();
-  std::ostringstream ss; 
-  ss << "L1Trigger/L1TMuon/data/emtf_luts/" <<newDir <<"/trees";
-  dir = ss.str().c_str();
+  //std::string newDir = emtfParams.GetXmlPtTreeDir();
+  //std::ostringstream ss; 
+  //ss << "L1Trigger/L1TMuon/data/emtf_luts/" <<newDir <<"/trees";
+  //dir = ss.str().c_str();
   
   int dphi[6] = {-999,-999,-999,-999,-999,-999}, deta[6] = {-999,-999,-999,-999,-999,-999};
 	int clct[4] = {-999,-999,-999,-999}, cscid[4] = {-999,-999,-999,-999};
@@ -825,14 +826,25 @@ float getPt(unsigned long Address, const L1TMuonEndcapParams& emtfParams)
     //if (!forest[mode])
     // forest[mode] = new Forest();
 		//const char *dir = "L1Trigger/L1EndcapMuonTrackFinder/plugins/ModeVariables/trees";
-		std::stringstream ss;
-    ss << dir << "/" << mode;//
+	//	std::stringstream ss;
+    //ss << dir << "/" << mode;//
 
-    if (ForestLoad[mode]==0)
-      {
-        forest[mode].loadForestFromXML(ss.str().c_str(),64);
-        ForestLoad[mode] = 1;
-      }
+	EndCapForest *ForestToUse = new EndCapForest();
+	for(unsigned int m=0;m<emtfParams.getPtForests().size();m++){
+		
+		if(emtfParams.getPtForests()[m].first == mode)
+			ForestToUse = emtfParams.getPtForests()[m].second;
+	
+	}
+
+    //if (ForestLoad[mode]==0)
+      //{
+       // forest[mode].loadForestFromXML(ss.str().c_str(),64);
+		
+		
+		
+      //  ForestLoad[mode] = 1;
+      //}
     
 		std::vector<Double_t> Data;
 		Data.push_back(1.0);
@@ -849,14 +861,15 @@ float getPt(unsigned long Address, const L1TMuonEndcapParams& emtfParams)
         std::cout<<"Data["<<i<<"] = "<<Data[i]<<"\n";
 		}
 		
-		Event *event = new Event();
+		EndCapEvent *event = new EndCapEvent();
 		event->data = Data;
 		
 		//std::vector<Event*> vevent;
 		//vevent.push_back(event);
 		
 		//forest[mode].predictEvents(vevent,64);
-		forest[mode].predictEvent(event,64);
+		//forest[mode].predictEvent(event,64);
+		ForestToUse->predictEvent(event,64);
     
     
 		//float OpT = vevent[0]->predictedValue;
