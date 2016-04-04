@@ -16,7 +16,7 @@
 
 #include "CondFormats/Serialization/interface/Serializable.h"
 #include "CondFormats/L1TObjects/interface/LUT.h"
-#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest_helper.h"
 
 class L1TMuonEndcapParams {
 
@@ -27,14 +27,14 @@ public:
 	void SetSt2PhiMatchWindow(int window){PhiMatchWindowSt2_ = window;};
 	void SetSt3PhiMatchWindow(int window){PhiMatchWindowSt3_ = window;};
 	void SetSt4PhiMatchWindow(int window){PhiMatchWindowSt4_ = window;};
-	void SetPtForests(std::vector<std::pair<int,EndCapForest*>> forests){Forests_ = forests;};
+	void SetPtForests(std::vector<std::pair<int,EndCapSubForest*>> forests){Forests_ = forests;};
 	
 	unsigned GetPtAssignVersion(){return PtAssignVersion_;};
 	int GetSt1PhiMatchWindow() const {return PhiMatchWindowSt1_;};
 	int GetSt2PhiMatchWindow() const {return PhiMatchWindowSt2_;};
 	int GetSt3PhiMatchWindow() const {return PhiMatchWindowSt3_;};
 	int GetSt4PhiMatchWindow() const {return PhiMatchWindowSt4_;};
-	std::vector<std::pair<int,EndCapForest*>> getPtForests() const {return Forests_;};
+	std::vector<std::pair<int,EndCapSubForest*>> getPtForests() const {return Forests_;};
 	
 	
 	L1TMuonEndcapParams() { PtAssignVersion_=1; }
@@ -46,7 +46,7 @@ private:
 	
   unsigned PtAssignVersion_;
   int PhiMatchWindowSt1_, PhiMatchWindowSt2_, PhiMatchWindowSt3_, PhiMatchWindowSt4_;
-  std::vector<std::pair<int,EndCapForest*>> Forests_;
+  std::vector<std::pair<int,EndCapSubForest*>> Forests_;
 
   COND_SERIALIZABLE;
 };

@@ -17,7 +17,7 @@
 #include "L1Trigger/CSCCommonTrigger/interface/CSCTriggerGeometry.h"
 #include "CondFormats/DataRecord/interface/L1TMuonEndcapParamsRcd.h"
 #include "CondFormats/L1TObjects/interface/L1TMuonEndcapParams.h"
-#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest_helper.h"
 //add this bobby
 
 //Forest forest[16];
@@ -829,7 +829,7 @@ float getPt(unsigned long Address, const L1TMuonEndcapParams& emtfParams)
 	//	std::stringstream ss;
     //ss << dir << "/" << mode;//
 
-	EndCapForest *ForestToUse = new EndCapForest();
+	EndCapSubForest *ForestToUse = new EndCapSubForest();
 	for(unsigned int m=0;m<emtfParams.getPtForests().size();m++){
 		
 		if(emtfParams.getPtForests()[m].first == mode)

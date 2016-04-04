@@ -23,7 +23,7 @@ class EndCapForest
 
         EndCapTree* getTree(unsigned int i);
 
-    private:
+    protected:
 
         std::vector< std::vector<EndCapEvent*> > events;
         std::vector< std::vector<EndCapEvent*> > subSample;

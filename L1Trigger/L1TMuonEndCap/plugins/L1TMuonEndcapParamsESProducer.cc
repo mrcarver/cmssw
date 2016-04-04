@@ -20,7 +20,7 @@
 
 #include "CondFormats/L1TObjects/interface/L1TMuonEndcapParams.h"
 #include "CondFormats/DataRecord/interface/L1TMuonEndcapParamsRcd.h"
-#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest.h"
+#include "CondFormats/L1TObjects/interface/L1TMuEndCapForest_helper.h"
 
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "TXMLEngine.h"
@@ -64,14 +64,14 @@ L1TMuonEndcapParamsESProducer::L1TMuonEndcapParamsESProducer(const edm::Paramete
    
    
    int allowedModes[11] = {3,5,9,6,10,12,7,11,13,14,15};
-   std::vector<std::pair<int,EndCapForest*>> Forests;
+   std::vector<std::pair<int,EndCapSubForest*>> Forests;
    for(int modes=0;modes<11;modes++){
    
-   		EndCapForest *forest = new EndCapForest();
+   		EndCapSubForest *forest = new EndCapSubForest();
 		std::stringstream ss;
 		ss << "L1Trigger/L1TMuon/data/emtf_luts/ModeVariables_v1_dTheta/trees/" << allowedModes[modes];
 		forest->loadForestFromXML(ss.str().c_str(),64);
-		std::pair<int,EndCapForest*> outPair(allowedModes[modes],forest);
+		std::pair<int,EndCapSubForest*> outPair(allowedModes[modes],forest);
 		Forests.push_back(outPair);
    
    }
