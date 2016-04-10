@@ -21,7 +21,7 @@ process.source = cms.Source('PoolSource',
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5))
 
 # PostLS1 geometry used
-process.load('Configuration.Geometry.GeometryExtended2016_cff')
+process.load('Configuration.Geometry.GeometryExtended2016Reco_cff')
 ############################
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
@@ -29,27 +29,19 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 process.GlobalTag.toGet = cms.VPSet(
  cms.PSet(
-		  record  = cms.string("L1TMuonEndcapParamsRcd"),
-		  tag	  = cms.string("L1TMuonEndcapParams_Stage2v0_hlt"),
-		  connect = cms.string("frontier://FrontierPrep/CMS_CONDITIONS")
-		 )
+	 record  = cms.string("L1TMuonEndcapParamsRcd"),
+	 tag	 = cms.string("L1TMuonEndcapParams_Stage2v0_hlt"),
+	 connect = cms.string("frontier://FrontierPrep/CMS_CONDITIONS")
+	)
 ) 
 
 ####Event Setup Producer
 #process.load('L1Trigger.L1TMuonEndCap.fakeMuonEndCapParams_cfi')
 #process.esProd = cms.EDAnalyzer("EventSetupRecordDataGetter",
 #   toGet = cms.VPSet(
-	  #cms.PSet(record = cms.string('L1TMuonEndcapParamsRcd'),
-	#		   data = cms.vstring('L1TMuonEndcapParams'))
-			   
-#	   cms.PSet(
-#		   record  = cms.string("L1TMuonEndcapParamsRcd"),
-#		   tag     = cms.string("L1TMuonEndcapParams_Stage2v0_hlt"),
-#		   connect = cms.string("frontier://FrontierPrep/CMS_CONDITIONS"),
-#		   data = cms.vstring('L1TMuonEndcapParams')
-#		  )
-#				   ),
-	 
+#	cms.PSet(record = cms.string('L1TMuonEndcapParamsRcd'),
+#			data = cms.vstring('L1TMuonEndcapParams'))
+#				),    
 #   verbose = cms.untracked.bool(True)
 #)
 
@@ -58,22 +50,15 @@ process.load('L1Trigger.L1TMuonEndCap.simMuonEndCapDigis_cfi')
 process.load("Configuration.StandardSequences.RawToDigi_cff")
 process.load("Configuration.StandardSequences.L1Emulator_cff")
 
-process.L1ReEmulSeq = cms.Sequence(process.L1Emulator
-                                   + process.ecalDigis
-                                   + process.hcalDigis
-                                   + process.gtDigis
-                                   + process.gtEvmDigis
-                                   + process.csctfDigis
-                                   + process.dttfDigis
-								   + process.RawToDigi
-								   # + process.simL1Emulator
+process.L1ReEmulSeq = cms.Sequence(process.csctfDigis
+                                   + process.simCscTriggerPrimitiveDigis
                                    )
 
 process.dumpED = cms.EDAnalyzer("EventContentAnalyzer")
 process.dumpES = cms.EDAnalyzer("PrintEventSetupContent")
 
-process.L1TMuonSeq = cms.Sequence( #process.esProd          
-                                   #+ 
+process.L1TMuonSeq = cms.Sequence( #process.esProd +   
+									       
 								   process.simEmtfDigis 
                                    #+ process.dumpED
                                    #+ process.dumpES
