@@ -38,6 +38,7 @@ using namespace L1TMuon;
 L1TMuonEndCapTrackProducer::L1TMuonEndCapTrackProducer(const PSet& p) {
 
   inputTokenCSC = consumes<CSCCorrelatedLCTDigiCollection>(p.getParameter<edm::InputTag>("CSCInput"));
+  isData = p.getParameter<bool>("isData");
   
   produces<l1t::RegionalMuonCandBxCollection >("EMTF");
 }
@@ -100,7 +101,6 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
 		//TriggerPrimitiveRef tpref(out,tp - out.cbegin());
 
 		tester.push_back(*tp);
-
 		//std::cout<<"\ntrigger prim found station:"<<tp->detId<CSCDetId>().station()<<std::endl;
       }
 
@@ -118,7 +118,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   //////////////////////////////////////////////////////
 
 
- 	std::vector<ConvertedHit> ConvHits = PrimConv(tester,SectIndex);
+ 	std::vector<ConvertedHit> ConvHits = PrimConv(tester,SectIndex,isData);
 	CHits[SectIndex] = ConvHits;
 
 
@@ -317,6 +317,12 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 			}
 
 		}
+		
+		if(isData){
+		  ebx -= 2;
+		  sebx -= 2;
+		}
+		
 		tempTrack.phis = ps;
 		tempTrack.thetas = ts;
 
@@ -330,11 +336,11 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 		l1t::RegionalMuonCand outCand = MakeRegionalCand(xmlpt*1.4,AllTracks[fbest].phi,AllTracks[fbest].theta,
 														         charge,mode,CombAddress,sector);
-        // NOTE: assuming that all candidates come from the central BX:
-        //int bx = 0;
+        
+		
 		float theta_angle = (AllTracks[fbest].theta*0.2851562 + 8.5)*(3.14159265359/180);
 		float eta = (-1)*log(tan(theta_angle/2));
-		std::pair<int,l1t::RegionalMuonCand> outPair(sebx,outCand);
+		std::pair<int,l1t::RegionalMuonCand> outPair(ebx,outCand);
 		
 		if(!ME13 && fabs(eta) > 1.1)
 			holder.push_back(outPair);
