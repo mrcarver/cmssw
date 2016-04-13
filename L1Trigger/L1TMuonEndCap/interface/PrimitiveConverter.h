@@ -311,7 +311,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	///////////////////////////////////////////////////////
 	
 	
-	if(Id > 9 && strip < 128){
+	if(Id > 9){
 		Id -= 9;strip += 128;
 	}
 	
