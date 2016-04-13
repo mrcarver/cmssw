@@ -34,15 +34,18 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	int station = Det.station(), chamber = Det.chamber(), ring = Det.ring(), wire = C3.getCSCData().keywire, sector = Det.triggerSector(), strip = C3.getCSCData().strip; 
 	int pattern = C3.getPattern(), Id = C3.Id(), quality = C3.getCSCData().quality, BX = C3.getCSCData().bx, endcap = Det.endcap();
 	
-	
-	if(station == 1 && ring == 1 && strip > 127)
+	bool r4 = false;
+	if(station == 1 && ring == 1 && strip > 127){
+	  r4 = true;
 	  ring = 4;
+	}
 		
 	if(ring == 4){Id += 9;}
 
 	//if(endcap == 1 && sector == 1)//
 	if(SectIndex ==  (endcap - 1)*6 + sector - 1)
 	{
+	
 		
 	//if(verbose){
 	// 	std::cout<<"\n\nSECTOR "<<SectIndex<<"\n\n";
@@ -310,6 +313,10 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	/////////   Converted TP's around code   //////////////
 	///////////////////////////////////////////////////////
 	
+	
+	//if(r4){
+		std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", sector "<<SectIndex<<"\n";
+	//}
 	
 	if(Id > 9 && strip < 128){
 		Id -= 9;strip += 128;

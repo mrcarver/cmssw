@@ -955,7 +955,7 @@ void makeLUT()//
 }
 
 //float CalculatePt(L1TMuon::InternalTrack track){
-float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///add this bobby
+float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int realMode){///add this bobby
   edm::ESHandle<CSCGeometry> cscGeometry;///add this bobby
 	es.get<MuonGeometryRecord>().get(cscGeometry);///add this bobby
   
@@ -1041,6 +1041,8 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es){///a
 		}
 	}
 	
+	
+	mode = realMode;
 	if(verbose) std::cout<<"\nMode = "<<mode<<std::endl; 
 	
 	//////////////////////////////////////////////////
