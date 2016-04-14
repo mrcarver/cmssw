@@ -196,7 +196,6 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		fph = PhInit[SectIndex][station][Id - 1] + ph_tmp;
 	}
 	
-	
 	ph_hit = phLow + phShift + (PhDisp[SectIndex][LUTi]>>1);
 	
 	////////////////////////
@@ -300,10 +299,20 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//applying ph_offsets
-	if(sub == 1)
+	if(sub == 1){
+		if(ring == 4)
+			Id -= 9;
+			
 		zhit = ph_hit + ph_offsetss[station-1][Id-1][pz];
-	else
+		//std::cout<<"\nph_offsetss["<<station-1<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsetss[station-1][Id-1][pz]<<"\n";
+	}
+	else{
+		if(ring == 4)
+			Id -= 9;
+			
 		zhit = ph_hit + ph_offsetss[station][Id-1][pz];
+		//std::cout<<"\nph_offsetss["<<station-1<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsetss[station-1][Id-1][pz]<<"\n";
+	}
 		
 		
 		
@@ -315,7 +324,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//if(r4){
-		std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", sector "<<SectIndex<<"\n";
+	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<"\n";
 	//}
 	
 	if(Id > 9 && strip < 128){
