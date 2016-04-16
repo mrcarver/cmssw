@@ -51,6 +51,7 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
 
   //fprintf (write,"12345\n"); //<-- part of printing text file to send verilog code, not needed if George's package is included
 
+	//std::cout<<"starting EMTF on run number "<<ev.id().run()<<" and event number "<<ev.id().event()<<"\n";
 
   //std::auto_ptr<L1TMuon::InternalTrackCollection> FoundTracks (new L1TMuon::InternalTrackCollection);
   std::auto_ptr<l1t::RegionalMuonCandBxCollection > OutputCands (new l1t::RegionalMuonCandBxCollection);
@@ -84,7 +85,7 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
   //////////////////////////////////////////////
   ///////// Get Trigger Primitives /////////////  Retrieve TriggerPrimitives from the event record: Currently does nothing because we don't take RPC's
   //////////////////////////////////////////////
-std::cout<<"bx,endcap,sector,subsector,station,valid(1),quality,pattern,wire,cscid,bend(0),strip\n";
+//std::cout<<"bx,endcap,sector,subsector,station,valid(1),quality,pattern,wire,cscid,bend(0),strip\n";
  // auto tpsrc = _tpinputs.cbegin();
   //auto tpend = _tpinputs.cend();
  // for( ; tpsrc != tpend; ++tpsrc ) {
@@ -99,7 +100,7 @@ std::cout<<"bx,endcap,sector,subsector,station,valid(1),quality,pattern,wire,csc
 		//TriggerPrimitiveRef tpref(out,tp - out.cbegin());
 
 		tester.push_back(*tp);
-		
+		/*
 		//std::cout<<"tpbx = "<<tp->getCSCData().bx<<"\n";
 		chamberDist->Fill(tp->detId<CSCDetId>().chamber());
 		
@@ -121,7 +122,7 @@ std::cout<<"bx,endcap,sector,subsector,station,valid(1),quality,pattern,wire,csc
 			std::cout<<" ring = 4\n";
 		else
 			std::cout<<"\n";
-
+		*/
       }
 
      }
@@ -199,7 +200,6 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   ///////// Match ph patterns ////// Loops over each sorted pattern and then loops over all possible triggerprimitives which could have made the pattern
   ////// to segment inputs ///////// and matches the associated full precision triggerprimitives to the detected pattern.
   //////////////////////////////////
-
 
   MatchingOutput Mout = PhiMatching(Sout);
   MO[SectIndex] = Mout;
@@ -341,13 +341,13 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		
 		int RTM = 0;
 		if(tempTrack.rank & 32)
-			RTM |= 8;
+			RTM |= 1;//1
 		if(tempTrack.rank & 8)
-			RTM |= 4;
+			RTM |= 2;//2
 		if(tempTrack.rank & 2)
-			RTM |= 2;
+			RTM |= 4;//4
 		if(tempTrack.rank & 1)
-			RTM |= 1;
+			RTM |= 8;//8
 		tempTrack.phis = ps;
 		tempTrack.thetas = ts;
 
@@ -367,12 +367,20 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		l1t::RegionalMuonCand outCand = MakeRegionalCand(xmlpt*1.4,AllTracks[fbest].phi,AllTracks[fbest].theta,
 														         charge,tempTrack.rank,CombAddress,sector);
 																 
-		std::cout<<"track mode = "<<mode<<", rank to mode = "<<RTM<<", hwQual = "<<outCand.hwQual()<<", pt = "<<tempTrack.pt<<"\n";
+		
         // NOTE: assuming that all candidates come from the central BX:
         //int bx = 0;
 		float theta_angle = (AllTracks[fbest].theta*0.2851562 + 8.5)*(3.14159265359/180);
 		float eta = (-1)*log(tan(theta_angle/2));
+		if(sector > 5)
+			eta *= -1;
+			
+		float fphi = (AllTracks[fbest].phi*0.0166666) + (sector%6)*60.0 + 13.0;
+    	fphi *= M_PI / 180.0;
+		
 		std::pair<int,l1t::RegionalMuonCand> outPair(sebx,outCand);
+		
+		//std::cout<<"track mode = "<<mode<<", rank to mode = "<<RTM<<", hwQual = "<<outCand.hwQual()<<", pt = "<<tempTrack.pt<<", sebx = "<<sebx<<", eta ="<<eta<<", phi = "<<fphi<<", sector = "<<sector<<"\n";
 		
 		if(!ME13 && fabs(eta) > 1.1)
 			holder.push_back(outPair);
@@ -406,7 +414,7 @@ ev.put( OutputCands, "EMTF");
 
 void L1TMuonEndCapTrackProducer::beginJob()
 {
-		chamberDist = fs->make<TH1F>("chamber","",37,0,37);
+		//chamberDist = fs->make<TH1F>("chamber","",37,0,37);
 }
 void L1TMuonEndCapTrackProducer::endJob()
 {

@@ -285,9 +285,16 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	int zhit = -99, pz = -99;
 	std::vector<int> zonecontribution; //Each hit could go in more than one zone so we make a vector which stores all the zones for which this hit will contribute
 
+	if(ring == 4){
+		Id -= 9;
+		
+		if(strip < 128)
+			strip += 128;
+	}
+	
 	
 	//determination of zone contribution
-	if((phzvl & 1) && (Id < 4)){pz=0;zonecontribution.push_back(0);}
+	if((phzvl & 1) && (Id < 4 || Id > 9)){pz=0;zonecontribution.push_back(0);}
 	if((phzvl & 2) && (Id < 4)){pz=1;zonecontribution.push_back(1);}
 	if((phzvl & 1) && (Id > 3) && (station > 2)){pz=0;zonecontribution.push_back(1);}
 	if((phzvl & 1) && (Id > 3) && (Id < 7) && (station == 1)){pz=0;zonecontribution.push_back(2);}
@@ -298,25 +305,21 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	if((phzvl & 2) && (Id > 3) && (station < 3)){pz=1;zonecontribution.push_back(3);}
 	
 	
-	if(ring == 4){
-		Id -= 9;
-	}
 	
 	//applying ph_offsets
 	if(sub == 1){
 		zhit = ph_hit + ph_offsetss[station-1][Id-1][pz];
-		//std::cout<<"\nph_offsetss["<<station-1<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsetss[station-1][Id-1][pz]<<"\n";
+		//std::cout<<"\nph_hit = "<<ph_hit<<" and ph_offsetss["<<station-1<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsetss[station-1][Id-1][pz]<<"\n";
 	}
 	else{
 			
 		zhit = ph_hit + ph_offsetss[station][Id-1][pz];
-		//std::cout<<"\nph_offsetss["<<station-1<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsetss[station-1][Id-1][pz]<<"\n";
+		//std::cout<<"\nph_hit = "<<ph_hit<<" and ph_offsetss["<<station<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsetss[station][Id-1][pz]<<"\n";
 	}
+	
+	
 		
-	if(ring == 4 && strip < 128){
-		strip += 128;
-	}	
-		
+	
 		
 	///////////////////////////////////////////////////////
 	//////// set vector of ConvertedHits to move //////////
@@ -325,7 +328,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//if(r4){
-	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<"\n";
+	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", chamber = "<<chamber<<" strip = "<<strip<<", wire = "<<wire<<", bx = "<<BX<<"\n";
 	//}
 	
 	
@@ -339,14 +342,15 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 
 	if(Hit.Theta() != -999 && Hit.Phi() > 0){//if theta is valid
 		ConvHits.push_back(Hit);
-		/*if(verbose){	
-			std::cout<<"Phzvl() = "<<Hit.Phzvl()<<", ph_hit = "<<Hit.Ph_hit()<<", station = "<<Hit.Station()<<" and id = "<<Hit.Id()<<std::endl;
-			std::cout<<"strip = "<<strip<<", wire = "<<wire<<" and zhit = "<<zhit<<std::endl;
-			std::cout<<"\n\nIn Zones: ";
-			for(std::vector<int>::iterator in = zonecontribution.begin();in!=zonecontribution.end();in++){
-				std::cout<<" "<<*in<<" ";
-			}
-		}*/
+		//if(verbose){	
+			//std::cout<<"Phzvl() = "<<Hit.Phzvl()<<", ph_hit = "<<Hit.Ph_hit()<<", station = "<<Hit.Station()<<" and id = "<<Hit.Id()<<std::endl;
+			//std::cout<<"strip = "<<strip<<", wire = "<<wire<<" and zhit = "<<zhit<<std::endl;
+			//std::cout<<"In Zones: ";
+			//for(std::vector<int>::iterator in = zonecontribution.begin();in!=zonecontribution.end();in++){
+			//	std::cout<<" "<<*in<<" ";
+			//}
+			//std::cout<<"\n\n";
+		//}
 	}	
 	
 	
