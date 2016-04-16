@@ -9,10 +9,10 @@ SUSY_HLT_HT_DoubleEle = cms.EDAnalyzer("SUSY_HLT_DoubleEle_Hadronic",
   TriggerResults = cms.InputTag('TriggerResults','','HLT'), #to use with test sample
   #TriggerResults = cms.InputTag('TriggerResults','','HLT'),
   HLTProcess = cms.string('HLT'),
-  TriggerPath = cms.string('HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v'),
+  TriggerPath = cms.string('HLT_DoubleEle8_CaloIdM_GsfTrackIdM_Mass8_PFHT300_v'),
   TriggerPathAuxiliaryForElectron = cms.string('HLT_PFHT800_v'),
   TriggerPathAuxiliaryForHadronic = cms.string('HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v'),
-  TriggerFilter = cms.InputTag('hltDoubleEle8Mass8Filter', '', 'HLT'), #the last filter in the path
+  TriggerFilter = cms.InputTag('hltDoubleEle8CaloIdMGsfTrackIdMInvMass8Filter', '', 'HLT'), #the last filter in the path
   PtThrJet = cms.untracked.double(40.0),
   EtaThrJet = cms.untracked.double(3.0)
 )
@@ -26,16 +26,16 @@ SUSY_HLT_HT250_DoubleEle = cms.EDAnalyzer("SUSY_HLT_DoubleEle_Hadronic",
   TriggerResults = cms.InputTag('TriggerResults','','HLT'), #to use with test sample
   #TriggerResults = cms.InputTag('TriggerResults','','HLT'),
   HLTProcess = cms.string('HLT'),
-  TriggerPath = cms.string('HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT250_v'),
+  TriggerPath = cms.string('HLT_DoubleEle8_CaloIdM_GsfTrackIdM_Mass8_PFHT250_v'),
   TriggerPathAuxiliaryForElectron = cms.string('HLT_PFHT800_v'),
   TriggerPathAuxiliaryForHadronic = cms.string('HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v'),
-  TriggerFilter = cms.InputTag('hltDoubleEle8Mass8Filter', '', 'HLT'), #the last filter in the path
+  TriggerFilter = cms.InputTag('hltDoubleEle8CaloIdMGsfTrackIdMInvMass8Filter', '', 'HLT'), #the last filter in the path
   PtThrJet = cms.untracked.double(40.0),
   EtaThrJet = cms.untracked.double(3.0)
 )
 
 SUSY_HLT_HT_DoubleEle_POSTPROCESSING = cms.EDAnalyzer("DQMGenericClient",
-    subDirs        = cms.untracked.vstring("HLT/SUSYBSM/HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v"),
+    subDirs        = cms.untracked.vstring("HLT/SUSYBSM/HLT_DoubleEle8_CaloIdM_GsfTrackIdM_Mass8_PFHT300_v"),
     verbose        = cms.untracked.uint32(2), # Set to 2 for all messages
     resolution     = cms.vstring(""),
     efficiency     = cms.vstring(
@@ -45,7 +45,7 @@ SUSY_HLT_HT_DoubleEle_POSTPROCESSING = cms.EDAnalyzer("DQMGenericClient",
 )
 
 SUSY_HLT_HT250_DoubleEle_POSTPROCESSING = cms.EDAnalyzer("DQMGenericClient",
-    subDirs        = cms.untracked.vstring("HLT/SUSYBSM/HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT250_v"),
+    subDirs        = cms.untracked.vstring("HLT/SUSYBSM/HLT_DoubleEle8_CaloIdM_GsfTrackIdM_Mass8_PFHT250_v"),
     verbose        = cms.untracked.uint32(2), # Set to 2 for all messages
     resolution     = cms.vstring(""),
     efficiency     = cms.vstring(
