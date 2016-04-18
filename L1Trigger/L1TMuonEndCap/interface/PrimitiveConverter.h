@@ -204,38 +204,42 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		
 	int index = -999;
 	int th_corr = -999;	
+	bool thverbose = false;
 	
 	if(station == 1){
 	
+		//std::cout<<"\nstation 1 id = "<<Id<<"\n";
 		int idl = Id;
-		if(Id < 4)//
-			idl += 9;
+		//if(Id < 4)//
+		//	idl += 9;
 		
 		th_tmp = St1ThLUT[sub-1][SectIndex][idl -1][wire];
-		//if(verbose) std::cout<<"\n\nth_tmpr = "<<th_tmp<<"\n\n";
+		if(thverbose) std::cout<<"\n\nth_tmpr1["<<sub-1<<"]["<<SectIndex<<"]["<<idl-1<<"]["<<wire<<"] = "<<th_tmp<<"\n\n";
 	}
 	else{
 		th_tmp = ThLUT[station-2][SectIndex][Id-1][wire];
-		//if(verbose) std::cout<<"\n\nth_tmpr = "<<th_tmp<<"\n\n";
+		if(thverbose) std::cout<<"\n\nth_tmpr = "<<th_tmp<<"\n\n";
 	}
 	
 	
 	th = th_tmp + ThInit[SectIndex][LUTi];
-	//if(verbose) std::cout<<"ThInit = "<<ThInit[SectIndex][LUTi]<<"\n";
+	
 	
 	if(station == 1 && (ring == 1 || ring == 4) /*&& endcap == 1*/){
 	
 		index = (wire>>4)*32 + (eightstrip>>4);
+		//std::cout<<"index = "<<index<<", 8s = "<<eightstrip<<"\n";
 		
 		if(Id > 3){
 			th_corr = THCORR[sub-1][SectIndex][Id-10][index];
-			//if(verbose) std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
+			if(thverbose) std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
 		}
 		else{
 			th_corr = THCORR[sub-1][SectIndex][Id-1][index];
-			//if(verbose) std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
+			if(thverbose) std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
 		}
 		
+		//if(ph_reverse) std::cout<<"\nph_reverse\n";
 		
 		if(ph_reverse) th_corr = -th_corr;
 		
@@ -246,9 +250,10 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		
 		if(th_tmp < th_coverage){
 		
-			if(ring == 1){LUTi += 9;}  //change because new Verilog3 sp_tf treats ME11b with LUT's of ME11a
+			//if(ring == 1){LUTi += 9;}  //change because new Verilog3 sp_tf treats ME11b with LUT's of ME11a
 			
 			th = th_tmp + ThInit[SectIndex][LUTi];
+			if(thverbose) std::cout<<"ThInit = "<<ThInit[SectIndex][LUTi]<<"\n";
 		}
 		else{th = -999;}
  
@@ -347,7 +352,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 			//std::cout<<"strip = "<<strip<<", wire = "<<wire<<" and zhit = "<<zhit<<std::endl;
 			//std::cout<<"In Zones: ";
 			//for(std::vector<int>::iterator in = zonecontribution.begin();in!=zonecontribution.end();in++){
-			//	std::cout<<" "<<*in<<" ";
+			//  std::cout<<" "<<*in<<" ";
 			//}
 			//std::cout<<"\n\n";
 		//}
