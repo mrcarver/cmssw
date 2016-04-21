@@ -364,7 +364,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 		int charge = getCharge(phis[0],phis[1],phis[2],phis[3],mode);
 
-		l1t::RegionalMuonCand outCand = MakeRegionalCand(xmlpt*1.4,AllTracks[fbest].phi,AllTracks[fbest].theta,
+		l1t::RegionalMuonCand outCand = MakeRegionalCand(xmlpt,AllTracks[fbest].phi,AllTracks[fbest].theta,
 														         charge,tempTrack.rank,CombAddress,sector);
 																 
 		
@@ -380,7 +380,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		
 		std::pair<int,l1t::RegionalMuonCand> outPair(sebx,outCand);
 		
-		//std::cout<<"track mode = "<<mode<<", rank to mode = "<<RTM<<", hwQual = "<<outCand.hwQual()<<", pt = "<<tempTrack.pt<<", sebx = "<<sebx<<", eta ="<<eta<<", phi = "<<fphi<<", sector = "<<sector<<"\n";
+		//std::cout<<"track mode = "<<mode<<", rank to mode = "<<RTM<<", hwQual = "<<outCand.hwQual()<<", xmlpt = "<<xmlpt<<", scaled pt = "<<tempTrack.pt<<", hwPt = "<<outCand.hwPt()<<", sebx = "<<sebx<<", eta ="<<eta<<", phi = "<<fphi<<", sector = "<<sector<<"\n";
 		
 		if(!ME13 && fabs(eta) > 1.1)
 			holder.push_back(outPair);

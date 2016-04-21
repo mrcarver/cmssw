@@ -9,6 +9,7 @@
 
 #include "L1Trigger/L1TMuonEndCap/interface/EmulatorClasses.h"
 #include "L1Trigger/L1TMuonEndCap/interface/PhThLUTs.h"
+//#include "L1Trigger/L1TMuonEndCap/interface/FRLUT.h"
 
 		     
 int ph_offsetss[5][9][3] = {{{2,2,-99},{20,20,-99},{39,39,-99},{2,-99,-99},{21,-99,-99},{39,-99,-99},{4,-99,-99},{23,-99,-99},{42,-99,-99}},
@@ -333,10 +334,17 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//if(r4){
-	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", chamber = "<<chamber<<" strip = "<<strip<<", wire = "<<wire<<", bx = "<<BX<<"\n";
+	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", zhit = "<<zhit<<", endcap = "<<endcap<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", chamber = "<<chamber<<" strip = "<<strip<<", wire = "<<wire<<", bx = "<<BX<<", pattern = "<<pattern<<"\n";
 	//}
 	
+	if(station != 1)
+		sub = 1;
+		
+	//std::cout<<"proper FR[0] = "<<FRLUT[endcap-1][sector-1][station-1][sub-1][Id-1]<<"\n";
 	
+	if(station != 1)
+		sub = 0;
+
 	
 	ConvertedHit Hit;
 
