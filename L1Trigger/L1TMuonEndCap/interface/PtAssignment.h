@@ -13,7 +13,7 @@
 
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
-#include "L1Trigger/CSCCommonTrigger/interface/CSCTriggerGeometry.h"
+#include "L1Trigger/CSCCommonTrigger/interface/CSCTriggerGeometry.h"//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -430,9 +430,26 @@ int getEtaInt(float eta, int bits=5)
   int etaInt = (fabs(eta) - 0.9)*(32.0/(1.6))-0.5;
   etaInt = (etaInt>>shift);
   if(etaInt > 31){etaInt = 31;}
-  
   /* eta_ = 0.9 + (etaInt + 0.5)*(1.6/32.0); */
   return (etaInt);
+}
+
+int getEtaIntFromTheta(int theta, int bits=5){
+
+
+	int Theta = theta & 124;
+	float theta_angle = (Theta*0.2874016 + 8.5)*(3.14159265359/180);
+	float eta = (-1)*log(tan(theta_angle/2));
+	
+	
+	int Eta = getEtaInt(eta, bits);
+
+
+	return Eta;
+
+
+
+
 }
 
 float getEtafromBin(int etaBin, int bits=5)
@@ -945,11 +962,348 @@ void makeLUT()
   if (true)
     for (unsigned long i=0;  i<=((1<<30)-1); i++)
       {
-        //int mode_inv =              (i >> (30-4)) & ((1<<4)-1);
+        int mode_inv =              (i >> (30-4)) & ((1<<4)-1);
         //unsigned long mode_inv = 0x3;
-        unsigned long address =  i;//(i + (mode_inv << 26));
+        unsigned long Address =  i;//(i + (mode_inv << 26));
+		unsigned long addressToSend = 0;
+		if(mode_inv == 15){//1-2-3-4
+		
+		
+			//get variables
+			int dPhi12   =	(Address >> (0)) & ((1<<7)-1);
+      		int dPhi23   =	(Address >> (0+7)) & ((1<<5)-1);
+      		int dPhi34   =  (Address >> (0+7+5)) & ((1<<6)-1);
+      		int sign23   =  (Address >> (0+7+5+6)) & ((1<<1)-1);
+      		int sign34   =  (Address >> (0+7+5+6+1)) & ((1<<1)-1);
+      		int FR1      =  (Address >> (0+7+5+6+1+1)) & ((1<<1)-1);
+      		int TrackEta =  (Address >> (0+7+5+6+1+1+1)) & ((1<<5)-1);
+				
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi12 		& ((1<<7)-1)) << 0;
+      		addressToSend |= ( dPhi23 		& ((1<<5)-1)) << (0+7);
+      		addressToSend |= ( dPhi34 		& ((1<<6)-1)) << (0+7+5);
+      		addressToSend |= ( sign23 & ((1<<1)-1)) << (0+7+5+6);
+      		addressToSend |= ( sign34 & ((1<<1)-1)) << (0+7+5+6+1);
+      		addressToSend |= ( FR1          & ((1<<1)-1)) << (0+7+5+6+1+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+7+5+6+1+1+1);
+      		addressToSend |= ( mode_inv 	& ((1<<4)-1)) << (0+7+5+6+1+1+1+5);
+		
+		}
+		
+		if(mode_inv == 14){//2-3-4
+		
+			//get variables
+			int dPhi23    =  (Address >> (0)) & ((1<<7)-1);
+      		int dPhi34    =  (Address >> (0+7)) & ((1<<6)-1);
+      		int sign23    =  (Address >> (0+7+6)) & ((1<<1)-1);
+      		int sign34    =  (Address >> (0+7+6+1)) & ((1<<1)-1);
+      		int dTheta24  =  (Address >> (0+7+6+1+1)) & ((1<<3)-1);
+      		int CLCT2     =  (Address >> (0+7+5+1+1+3)) & ((1<<2)-1);
+      		int CLCT2Sign =  (Address >> (0+7+6+1+1+3+2)) & ((1<<1)-1);
+      		int TrackEta  =  (Address >> (0+7+6+1+1+3+2+1)) & ((1<<5)-1);
+			
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi23 	 	  & ((1<<7)-1)) << (0);
+      		addressToSend |= ( dPhi34    	  & ((1<<6)-1)) << (0+7);
+      		addressToSend |= ( sign23   & ((1<<1)-1)) << (0+7+6);
+      		addressToSend |= ( sign34   & ((1<<1)-1)) << (0+7+6+1);
+      		addressToSend |= ( dTheta24  	  & ((1<<3)-1)) << (0+7+6+1+1);
+      		addressToSend |= ( CLCT2     	  & ((1<<2)-1)) << (0+7+6+1+1+3);
+      		addressToSend |= ( CLCT2Sign 	  & ((1<<1)-1)) << (0+7+6+1+1+3+2);
+      		addressToSend |= ( thetaToSend    & ((1<<5)-1)) << (0+7+6+1+1+3+2+1);
+      		addressToSend |= ( mode_inv  	  & ((1<<4)-1)) << (0+7+6+1+1+3+2+1+5);
+		
+		}
+		
+		if(mode_inv == 13){//1-3-4
+		
+			//get variables
+			int dPhi13 =    (Address >> (0)) & ((1<<7)-1);
+      		int dPhi34 =    (Address >> (0+7)) & ((1<<5)-1);
+      		int sign13 =    (Address >> (0+7+5)) & ((1<<1)-1);
+      		int sign34 =    (Address >> (0+7+5+1)) & ((1<<1)-1);
+      		int dTheta14 =  (Address >> (0+7+5+1+1)) & ((1<<3)-1);
+      		int CLCT1  =    (Address >> (0+7+5+1+1+3)) & ((1<<2)-1);
+      		int CLCT1Sign = (Address >> (0+7+5+1+1+3+2)) & ((1<<1)-1);
+      		int FR1 =       (Address >> (0+7+5+1+1+3+2+1)) & ((1<<1)-1);
+      		int TrackEta =  (Address >> (0+7+5+1+1+3+2+1+1)) & ((1<<5)-1);
+			
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi13 		 & ((1<<7)-1)) << (0);
+      		addressToSend |= ( dPhi34 		 & ((1<<6)-1)) << (0+7);
+      		addressToSend |= ( sign13  & ((1<<1)-1)) << (0+7+5);
+      		addressToSend |= ( sign34  & ((1<<1)-1)) << (0+7+5+1);
+      		addressToSend |= ( dTheta14 	 & ((1<<3)-1)) << (0+7+5+1+1);
+      		addressToSend |= ( CLCT1  		 & ((1<<2)-1)) << (0+7+5+1+1+3);
+      		addressToSend |= ( CLCT1Sign 	 & ((1<<1)-1)) << (0+7+5+1+1+3+2);
+      		addressToSend |= ( FR1  		 & ((1<<1)-1)) << (0+7+5+1+1+3+2+1);
+      		addressToSend |= ( thetaToSend   & ((1<<5)-1)) << (0+7+5+1+1+3+2+1+1);
+      		addressToSend |= ( mode_inv 	 & ((1<<4)-1)) << (0+7+5+1+1+3+2+1+1+5);
+		
+		}
+		
+		if(mode_inv == 11){//1-2-4
+		
+			//get variables
+			int dPhi12 =    (Address >> (0)) & ((1<<7)-1);
+      		int dPhi24 =    (Address >> (0+7)) & ((1<<5)-1);
+      		int sign12 =    (Address >> (0+7+5)) & ((1<<1)-1);
+      		int sign24 =    (Address >> (0+7+5+1)) & ((1<<1)-1);
+      		int dTheta14 =  (Address >> (0+7+5+1+1)) & ((1<<3)-1);
+      		int CLCT1  =    (Address >> (0+7+5+1+1+3)) & ((1<<2)-1);
+      		int CLCT1Sign = (Address >> (0+7+5+1+1+3+2)) & ((1<<1)-1);
+      		int FR1 =       (Address >> (0+7+5+1+1+3+2+1)) & ((1<<1)-1);
+      		int TrackEta =  (Address >> (0+7+5+1+1+3+2+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi12 		& ((1<<7)-1)) << (0);
+      		addressToSend |= ( dPhi24 		& ((1<<5)-1)) << (0+7);
+      		addressToSend |= ( sign12 & ((1<<1)-1)) << (0+7+5);
+      		addressToSend |= ( sign24 & ((1<<1)-1)) << (0+7+5+1);
+      		addressToSend |= ( dTheta14 	& ((1<<3)-1)) << (0+7+5+1+1);
+      		addressToSend |= ( CLCT1  		& ((1<<2)-1)) << (0+7+5+1+1+3);
+      		addressToSend |= ( CLCT1Sign 	& ((1<<1)-1)) << (0+7+5+1+1+3+2);
+      		addressToSend |= ( FR1  		& ((1<<1)-1)) << (0+7+5+1+1+3+2+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+7+5+1+1+3+2+1+1);
+      		addressToSend |= ( mode_inv 	& ((1<<4)-1)) << (0+7+5+1+1+3+2+1+1+5);
+		
+		}
+		
+		if(mode_inv == 7){//1-2-3
+		
+			//get variables
+			int dPhi12 =   (Address >> (0)) & ((1<<7)-1);
+      		int dPhi23 =   (Address >> (0+7)) & ((1<<5)-1);
+      		int sign12 =   (Address >> (0+7+5)) & ((1<<1)-1);
+      		int sign23 =   (Address >> (0+7+5+1)) & ((1<<1)-1);
+      		int dTheta13 = (Address >> (0+7+5+1+1)) & ((1<<3)-1);
+      		int CLCT1  =   (Address >> (0+7+5+1+1+3)) & ((1<<2)-1);
+      		int CLCT1Sign= (Address >> (0+7+5+1+1+3+2)) & ((1<<1)-1);
+      		int FR1 =      (Address >> (0+7+5+1+1+3+2+1)) & ((1<<1)-1);
+      		int TrackEta = (Address >> (0+7+5+1+1+3+2+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi12 		 & ((1<<7)-1)) << (0);
+      		addressToSend |= ( dPhi23 		 & ((1<<5)-1)) << (0+7);
+      		addressToSend |= ( sign12  & ((1<<1)-1)) << (0+7+5);
+      		addressToSend |= ( sign23  & ((1<<1)-1)) << (0+7+5+1);
+      		addressToSend |= ( dTheta13 	 & ((1<<3)-1)) << (0+7+5+1+1);
+      		addressToSend |= ( CLCT1  		 & ((1<<2)-1)) << (0+7+5+1+1+3);
+      		addressToSend |= ( CLCT1Sign 	 & ((1<<1)-1)) << (0+7+5+1+1+3+2);
+      		addressToSend |= ( FR1  		 & ((1<<1)-1)) << (0+7+5+1+1+3+2+1);
+      		addressToSend |= ( thetaToSend   & ((1<<5)-1)) << (0+7+5+1+1+3+2+1+1);
+      		addressToSend |= ( mode_inv 	 & ((1<<4)-1)) << (0+7+5+1+1+3+2+1+1+5);
+		
+		}
+		
+		if(mode_inv == 12){//3-4
+		
+			//get variables
+			int dPhi34 =   (Address >> (0))   & ((1<<9)-1);
+      		int sign34 =   (Address >> (0+9)) & ((1<<1)-1);
+      		int dTheta34 = (Address >> (0+9+1)) & ((1<<3)-1);
+      		int CLCT3  =   (Address >> (0+9+1+3)) & ((1<<2)-1);
+      		int CLCT3Sign= (Address >> (0+9+1+3+2)) & ((1<<1)-1);
+      		int CLCT4  =   (Address >> (0+9+1+3+2+1)) & ((1<<2)-1);
+      		int CLCT4Sign= (Address >> (0+9+1+3+2+1+2)) & ((1<<1)-1);
+      		int FR3 =      (Address >> (0+9+1+3+2+1+2+1)) & ((1<<1)-1);
+      		int FR4 =      (Address >> (0+9+1+3+2+1+2+1+1)) & ((1<<1)-1);
+      		int TrackEta = (Address >> (0+9+1+3+2+1+2+1+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi34 		& ((1<<9)-1)) << (0);
+      		addressToSend |= ( sign34 & ((1<<1)-1)) << (0+9);
+      		addressToSend |= ( dTheta34 	& ((1<<3)-1)) << (0+9+1);
+      		addressToSend |= ( CLCT3  		& ((1<<2)-1)) << (0+9+1+3);
+      		addressToSend |= ( CLCT3Sign 	& ((1<<1)-1)) << (0+9+1+3+2);
+      		addressToSend |= ( CLCT4  		& ((1<<2)-1)) << (0+9+1+3+2+1);
+      		addressToSend |= ( CLCT4Sign 	& ((1<<1)-1)) << (0+9+1+3+2+1+2);
+      		addressToSend |= ( FR3  		& ((1<<1)-1)) << (0+9+1+3+2+1+2+1);
+      		addressToSend |= ( FR4  		& ((1<<1)-1)) << (0+9+1+3+2+1+2+1+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+9+1+3+2+1+2+1+1+1);
+      		addressToSend |= ( mode_inv 	& ((1<<4)-1)) << (0+9+1+3+2+1+2+1+1+1+5);
+		
+		}
+		
+		if(mode_inv == 10){//2-4
+		
+			//get variables
+			int dPhi24 =   (Address >> (0))   & ((1<<9)-1);
+      		int sign24 =   (Address >> (0+9)) & ((1<<1)-1);
+      		int dTheta24 = (Address >> (0+9+1)) & ((1<<3)-1);
+      		int CLCT2  =   (Address >> (0+9+1+3)) & ((1<<2)-1);
+      		int CLCT2Sign= (Address >> (0+9+1+3+2)) & ((1<<1)-1);
+      		int CLCT4  =   (Address >> (0+9+1+3+2+1)) & ((1<<2)-1);
+      		int CLCT4Sign= (Address >> (0+9+1+3+2+1+2)) & ((1<<1)-1);
+      		int FR2 =      (Address >> (0+9+1+3+2+1+2+1)) & ((1<<1)-1);
+      		int FR4 =      (Address >> (0+9+1+3+2+1+2+1+1)) & ((1<<1)-1);
+      		int TrackEta = (Address >> (0+9+1+3+2+1+2+1+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi24 		& ((1<<9)-1)) << (0);
+      		addressToSend |= ( sign24 & ((1<<1)-1)) << (0+9);
+      		addressToSend |= ( dTheta24 	& ((1<<3)-1)) << (0+9+1);
+      		addressToSend |= ( CLCT2  		& ((1<<2)-1)) << (0+9+1+3);
+      		addressToSend |= ( CLCT2Sign 	& ((1<<1)-1)) << (0+9+1+3+2);
+      		addressToSend |= ( CLCT4  		& ((1<<2)-1)) << (0+9+1+3+2+1);
+      		addressToSend |= ( CLCT4Sign 	& ((1<<1)-1)) << (0+9+1+3+2+1+2);
+      		addressToSend |= ( FR2  		& ((1<<1)-1)) << (0+9+1+3+2+1+2+1);
+      		addressToSend |= ( FR4  		& ((1<<1)-1)) << (0+9+1+3+2+1+2+1+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+9+1+3+2+1+2+1+1+1);
+      		addressToSend |= ( mode_inv 	& ((1<<4)-1)) << (0+9+1+3+2+1+2+1+1+1+5);
+		
+		}
+		
+		if(mode_inv == 6){//2-3
+		
+			//get variables
+			int dPhi23 =   (Address >> (0))   & ((1<<9)-1);
+      		int sign23 =   (Address >> (0+9)) & ((1<<1)-1);
+      		int dTheta23 = (Address >> (0+9+1)) & ((1<<3)-1);
+      		int CLCT2  =   (Address >> (0+9+1+3)) & ((1<<2)-1);
+      		int CLCT2Sign= (Address >> (0+9+1+3+2)) & ((1<<1)-1);
+      		int CLCT3  =   (Address >> (0+9+1+3+2+1)) & ((1<<2)-1);
+      		int CLCT3Sign= (Address >> (0+9+1+3+2+1+2)) & ((1<<1)-1);
+      		int FR2 =      (Address >> (0+9+1+3+2+1+2+1)) & ((1<<1)-1);
+      		int FR3 =      (Address >> (0+9+1+3+2+1+2+1+1)) & ((1<<1)-1);
+      		int TrackEta = (Address >> (0+9+1+3+2+1+2+1+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi23 			& ((1<<9)-1)) << (0);
+      		addressToSend |= ( sign23   	& ((1<<1)-1)) << (0+9);
+      		addressToSend |= ( dTheta23 		& ((1<<3)-1)) << (0+9+1);
+      		addressToSend |= ( CLCT2  			& ((1<<2)-1)) << (0+9+1+3);
+      		addressToSend |= ( CLCT2Sign 		& ((1<<1)-1)) << (0+9+1+3+2);
+      		addressToSend |= ( CLCT3  			& ((1<<2)-1)) << (0+9+1+3+2+1);
+      		addressToSend |= ( CLCT3Sign 		& ((1<<1)-1)) << (0+9+1+3+2+1+2);
+      		addressToSend |= ( FR2  			& ((1<<1)-1)) << (0+9+1+3+2+1+2+1);
+      		addressToSend |= ( FR3  			& ((1<<1)-1)) << (0+9+1+3+2+1+2+1+1);
+      		addressToSend |= ( thetaToSend  	& ((1<<5)-1)) << (0+9+1+3+2+1+2+1+1+1);
+      		addressToSend |= ( mode_inv 		& ((1<<4)-1)) << (0+9+1+3+2+1+2+1+1+1+5);
+		
+		}
+		
+		if(mode_inv == 9){//1-4
+		
+			//get variables
+			int dPhi14 =   (Address >> (0))   & ((1<<9)-1);
+      		int sign14 =   (Address >> (0+9)) & ((1<<1)-1);
+      		int dTheta14 = (Address >> (0+9+1)) & ((1<<3)-1);
+      		int CLCT1  =   (Address >> (0+9+1+3)) & ((1<<2)-1);
+      		int CLCT1Sign= (Address >> (0+9+1+3+2)) & ((1<<1)-1);
+      		int CLCT4  =   (Address >> (0+9+1+3+2+1)) & ((1<<2)-1);
+      		int CLCT4Sign= (Address >> (0+9+1+3+2+1+2)) & ((1<<1)-1);
+      		int FR1 =      (Address >> (0+9+1+3+2+1+2+1)) & ((1<<1)-1);
+      		int FR4 =      (Address >> (0+9+1+3+2+1+2+1+1)) & ((1<<1)-1);
+      		int TrackEta = (Address >> (0+9+1+3+2+1+2+1+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi14 		& ((1<<9)-1)) << (0);
+      		addressToSend |= ( sign14 & ((1<<1)-1)) << (0+9);
+      		addressToSend |= ( dTheta14 	& ((1<<3)-1)) << (0+9+1);
+      		addressToSend |= ( CLCT1  		& ((1<<2)-1)) << (0+9+1+3);
+      		addressToSend |= ( CLCT1Sign 	& ((1<<1)-1)) << (0+9+1+3+2);
+      		addressToSend |= ( CLCT4  		& ((1<<2)-1)) << (0+9+1+3+2+1);
+      		addressToSend |= ( CLCT4Sign 	& ((1<<1)-1)) << (0+9+1+3+2+1+2);
+      		addressToSend |= ( FR1  		& ((1<<1)-1)) << (0+9+1+3+2+1+2+1);
+      		addressToSend |= ( FR4  		& ((1<<1)-1)) << (0+9+1+3+2+1+2+1+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+9+1+3+2+1+2+1+1+1);
+      		addressToSend |= ( mode_inv  	& ((1<<4)-1)) << (0+9+1+3+2+1+2+1+1+1+5);
+		
+		}
+		
+		if(mode_inv == 5){//1-3
+		
+			//get variables
+			int dPhi13 	  = (Address >> (0))   & ((1<<9)-1);
+      		int sign13 	  = (Address >> (0+9)) & ((1<<1)-1);
+      		int dTheta13  = (Address >> (0+9+1)) & ((1<<3)-1);
+      		int CLCT1  	  = (Address >> (0+9+1+3)) & ((1<<2)-1);
+      		int CLCT1Sign = (Address >> (0+9+1+3+2)) & ((1<<1)-1);
+      		int CLCT3  	  = (Address >> (0+9+1+3+2+1)) & ((1<<2)-1);
+      		int CLCT3Sign = (Address >> (0+9+1+3+2+1+2)) & ((1<<1)-1);
+      		int FR1 	  = (Address >> (0+9+1+3+2+1+2+1)) & ((1<<1)-1);
+      		int FR3 	  = (Address >> (0+9+1+3+2+1+2+1+1)) & ((1<<1)-1);
+      		int TrackEta  = (Address >> (0+9+1+3+2+1+2+1+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi13 	    & ((1<<9)-1)) << (0);
+      		addressToSend |= ( sign13 & ((1<<1)-1)) << (0+9);
+      		addressToSend |= ( dTheta13 	& ((1<<3)-1)) << (0+9+1);
+      		addressToSend |= ( CLCT1  	    & ((1<<2)-1)) << (0+9+1+3);
+      		addressToSend |= ( CLCT1Sign 	& ((1<<1)-1)) << (0+9+1+3+2);
+      		addressToSend |= ( CLCT3  	    & ((1<<2)-1)) << (0+9+1+3+2+1);
+      		addressToSend |= ( CLCT3Sign    & ((1<<1)-1)) << (0+9+1+3+2+1+2);
+      		addressToSend |= ( FR1  	    & ((1<<1)-1)) << (0+9+1+3+2+1+2+1);
+      		addressToSend |= ( FR3  	    & ((1<<1)-1)) << (0+9+1+3+2+1+2+1+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+9+1+3+2+1+2+1+1+1);
+      		addressToSend |= ( mode_inv     & ((1<<4)-1)) << (0+9+1+3+2+1+2+1+1+1+5);
+		
+		}
+		
+		if(mode_inv == 3){//1-2
+		
+			//get variables
+			int dPhi12 	  = (Address >> (0))   & ((1<<9)-1);
+      		int sign12 	  = (Address >> (0+9)) & ((1<<1)-1);
+      		int dTheta12  = (Address >> (0+9+1)) & ((1<<3)-1);
+      		int CLCT1  	  = (Address >> (0+9+1+3)) & ((1<<2)-1);
+      		int CLCT1Sign = (Address >> (0+9+1+3+2)) & ((1<<1)-1);
+      		int CLCT2  	  = (Address >> (0+9+1+3+2+1)) & ((1<<2)-1);
+      		int CLCT2Sign = (Address >> (0+9+1+3+2+1+2)) & ((1<<1)-1);
+      		int FR1 	  = (Address >> (0+9+1+3+2+1+2+1)) & ((1<<1)-1);
+      		int FR2       = (Address >> (0+9+1+3+2+1+2+1+1)) & ((1<<1)-1);
+      		int TrackEta  = (Address >> (0+9+1+3+2+1+2+1+1+1)) & ((1<<5)-1);
+
+			//change track theta/eta bits
+			int thetaToSend = getEtaIntFromTheta(TrackEta<<2,5);
+				
+			//Form proper address that the xmls expect
+			addressToSend |= ( dPhi12 	 	& ((1<<9)-1)) << (0);
+      		addressToSend |= ( sign12 & ((1<<1)-1)) << (0+9);
+      		addressToSend |= ( dTheta12  	& ((1<<3)-1)) << (0+9+1);
+      		addressToSend |= ( CLCT1  	 	& ((1<<2)-1)) << (0+9+1+3);
+      		addressToSend |= ( CLCT1Sign 	& ((1<<1)-1)) << (0+9+1+3+2);
+      		addressToSend |= ( CLCT2  	 	& ((1<<2)-1)) << (0+9+1+3+2+1);
+      		addressToSend |= ( CLCT2Sign 	& ((1<<1)-1)) << (0+9+1+3+2+1+2);
+      		addressToSend |= ( FR1  	 	& ((1<<1)-1)) << (0+9+1+3+2+1+2+1);
+      		addressToSend |= ( FR2  	 	& ((1<<1)-1)) << (0+9+1+3+2+1+2+1+1);
+      		addressToSend |= ( thetaToSend  & ((1<<5)-1)) << (0+9+1+3+2+1+2+1+1+1);
+      		addressToSend |= ( mode_inv 	& ((1<<4)-1)) << (0+9+1+3+2+1+2+1+1+1+5);
+		}
+		
         
-        float BDTPt1 = fabs(getPt(address));
+        float BDTPt1 = fabs(getPt(addressToSend));
 
         if (BDTPt1>200.0) BDTPt1 = 200.0;
                             
@@ -1420,10 +1774,10 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign13_ = dPhi13Sign > 0 ? 1 : 0;
       int dTheta13_ = getdTheta(dTheta13);
       int CLCT1_ = getCLCT(CLCT1);
-      int CLCT1Sign_ = CLCT1Sign > 0 ? 1 : 0;
+      int CLCT1Sign_ = CLCT1_ > 0 ? 1 : 0;
       CLCT1_ = abs(CLCT1_);
       int CLCT3_ = getCLCT(CLCT3);
-      int CLCT3Sign_ = CLCT3Sign > 0 ? 1 : 0;
+      int CLCT3Sign_ = CLCT3_ > 0 ? 1 : 0;
       CLCT3_ = abs(CLCT3_);   
       int FR1_ = FR1;
       int FR3_ = FR3;
@@ -1461,10 +1815,10 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign14_ = dPhi14Sign > 0 ? 1 : 0;
       int dTheta14_ = getdTheta(dTheta14);
       int CLCT1_ = getCLCT(CLCT1);
-      int CLCT1Sign_ = CLCT1Sign > 0 ? 1 : 0;
+      int CLCT1Sign_ = CLCT1_ > 0 ? 1 : 0;
       CLCT1_ = abs(CLCT1_);
       int CLCT4_ = getCLCT(CLCT4);
-      int CLCT4Sign_ = CLCT4Sign > 0 ? 1 : 0;
+      int CLCT4Sign_ = CLCT4_ > 0 ? 1 : 0;
       CLCT4_ = abs(CLCT4_);
       int FR1_ = FR1;
       int FR4_ = FR4;
@@ -1499,10 +1853,10 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign23_ = dPhi23Sign > 0 ? 1 : 0;
       int dTheta23_ = getdTheta(dTheta23);
       int CLCT2_ = getCLCT(CLCT2);
-      int CLCT2Sign_ = CLCT2Sign > 0 ? 1 : 0;
+      int CLCT2Sign_ = CLCT2_ > 0 ? 1 : 0;
       CLCT2_ = abs(CLCT2_);
       int CLCT3_ = getCLCT(CLCT3);
-      int CLCT3Sign_ = CLCT3Sign > 0 ? 1 : 0;
+      int CLCT3Sign_ = CLCT3_ > 0 ? 1 : 0;
       CLCT3_ = abs(CLCT3_);
       int FR2_ = FR2;
       int FR3_ = FR3;
@@ -1537,13 +1891,13 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign24_ = dPhi24Sign > 0 ? 1 : 0;
       int dTheta24_ = getdTheta(dTheta24);
       int CLCT2_ = getCLCT(CLCT2);
-      int CLCT2Sign_ = CLCT2Sign > 0 ? 1 : 0;
+      int CLCT2Sign_ = CLCT2_ > 0 ? 1 : 0;
       CLCT2_ = abs(CLCT2_);
       int CLCT4_ = getCLCT(CLCT4);
-      int CLCT4Sign_ = CLCT4Sign > 0 ? 1 : 0;
+      int CLCT4Sign_ = CLCT4_ > 0 ? 1 : 0;
       CLCT4_ = abs(CLCT4_);
       int FR2_ = FR2;
-      int FR3_ = FR3;
+      int FR4_ = FR4;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
       
@@ -1555,7 +1909,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       Address += ( CLCT4_  & ((1<<2)-1))    << (0+9+1+3+2+1);
       Address += ( CLCT4Sign_ & ((1<<1)-1)) << (0+9+1+3+2+1+2);
       Address += ( FR2_  & ((1<<1)-1))      << (0+9+1+3+2+1+2+1);
-      Address += ( FR3_  & ((1<<1)-1))      << (0+9+1+3+2+1+2+1+1);
+      Address += ( FR4_  & ((1<<1)-1))      << (0+9+1+3+2+1+2+1+1);
       Address += ( eta_  & ((1<<5)-1))      << (0+9+1+3+2+1+2+1+1+1);
       Address += ( Mode_ & ((1<<4)-1))      << (0+9+1+3+2+1+2+1+1+1+5);
 	  }
@@ -1574,10 +1928,10 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign34_ = dPhi34Sign > 0 ? 1 : 0;
       int dTheta34_ = getdTheta(dTheta34);
       int CLCT3_ = getCLCT(CLCT3);
-      int CLCT3Sign_ = CLCT3Sign > 0 ? 1 : 0;
+      int CLCT3Sign_ = CLCT3_ > 0 ? 1 : 0;
       CLCT3_ = abs(CLCT3_);
       int CLCT4_ = getCLCT(CLCT4);
-      int CLCT4Sign_ = CLCT4Sign > 0 ? 1 : 0;
+      int CLCT4Sign_ = CLCT4_ > 0 ? 1 : 0;
       CLCT4_ = abs(CLCT4_);
       int FR3_ = FR3;
       int FR4_ = FR4;
@@ -1617,7 +1971,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign23_ = dPhi23Sign > 0 ? 1 : 0;
       int dTheta13_ = getdTheta(dTheta13);
       int CLCT1_ = getCLCT(CLCT1);
-      int CLCT1Sign_ = CLCT1Sign > 0 ? 1 : 0;
+      int CLCT1Sign_ = CLCT1_ > 0 ? 1 : 0;
       CLCT1_ = abs(CLCT1_);
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
@@ -1652,7 +2006,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign24_ = dPhi24Sign > 0 ? 1 : 0;
       int dTheta14_ = getdTheta(dTheta14);
       int CLCT1_ = getCLCT(CLCT1);
-      int CLCT1Sign_ = CLCT1Sign > 0 ? 1 : 0;
+      int CLCT1Sign_ = CLCT1_ > 0 ? 1 : 0;
       CLCT1_ = abs(CLCT1_);
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
@@ -1686,7 +2040,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign34_ = dPhi34Sign > 0 ? 1 : 0;
       int dTheta14_ = getdTheta(dTheta14);
       int CLCT1_ = getCLCT(CLCT1);
-      int CLCT1Sign_ = CLCT1Sign > 0 ? 1 : 0;
+      int CLCT1Sign_ = CLCT1_ > 0 ? 1 : 0;
       CLCT1_ = abs(CLCT1_);
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
@@ -1723,7 +2077,7 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int sign34_ = dPhi34Sign > 0 ? 1 : 0;
       int dTheta24_ = getdTheta(dTheta24);
       int CLCT2_ = getCLCT(CLCT2);
-      int CLCT2Sign_ = CLCT2Sign > 0 ? 1 : 0;
+      int CLCT2Sign_ = CLCT2_ > 0 ? 1 : 0;
       CLCT2_ = abs(CLCT2_);
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
@@ -1748,6 +2102,8 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       if (dPhi12<0) dPhi12Sign = -1;
       if (dPhi23<0) dPhi23Sign = -1;
       if (dPhi34<0) dPhi34Sign = -1;
+	  
+	  //std::cout<<dPhi12Sign<<" "<<dPhi23Sign<<" "<<dPhi34Sign<<"  ->  ";
       
       if (dPhi12Sign==-1 && dPhi23Sign==-1 && dPhi34Sign==-1)
         { dPhi12Sign=1;dPhi23Sign=1;dPhi34Sign=1;}
@@ -1757,6 +2113,8 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
         { dPhi12Sign=1;dPhi23Sign=1;dPhi34Sign=-1;}
       else if (dPhi12Sign==-1 && dPhi23Sign==1 && dPhi34Sign==-1)
         { dPhi12Sign=1;dPhi23Sign=-1;dPhi34Sign=1;}
+		
+	  //std::cout<<dPhi12Sign<<" "<<dPhi23Sign<<" "<<dPhi34Sign<<"  ->  ";
       
       // Make Pt LUT Address
       int dPhi12_ = getNLBdPhiBin(dPhi12, 7, 512);
@@ -1778,8 +2136,11 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       Address += ( Mode_ & ((1<<4)-1))   << (0+7+5+6+1+1+1+5);
     }
 
+ //std::cout<<"address = "<<Address<<"\n";
+
   (*_xmlpt_address) = Address;
   return getPt(Address);
+ 
 }
 
 
