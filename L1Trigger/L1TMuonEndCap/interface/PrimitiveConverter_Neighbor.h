@@ -153,19 +153,39 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	////////////////////////////
 	
 	int LUTi = -999;
+	int nId = Id;
+	if(IsNeighbor){
+		
+		if(station < 2){
+		
+			nId = 9 + Id/3;
+			if(ring == 4)
+				nId ++;
+		
+		}
+		else{
+			int xx = Id;
+			if(xx > 6)
+				xx = 6;
+				
+			nId =  9 + xx/3;
+			
+		}
+		
+	}
 	switch(station)
 	{
 		case 1: 
 			switch(sub)
 			{
-				case 1: LUTi = Id - 1;break;
-				case 2: LUTi = 15 + Id;break;
+				case 1: LUTi = nId - 1;break;
+				case 2: LUTi = 15 + nId;break;
 				default:;//std::cout<<"Sub is out of range"<<std::endl;
 			}
 			break;
-		case 2: LUTi = 27 + Id;break;
-		case 3: LUTi = 38 + Id;break;
-		case 4: LUTi = 49 + Id;break;
+		case 2: LUTi = 27 + nId;break;
+		case 3: LUTi = 38 + nId;break;
+		case 4: LUTi = 49 + nId;break;
 		default:;//std::cout<<"station is out of range"<<std::endl;
 	}
 	
@@ -246,6 +266,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		fph = Ph_Init_Neighbor[SectIndex][station][phInitIndex - 1] + ph_tmp;
 	}
 	
+	//std::cout<<"pl = "<<phLow<<", ps = "<<phShift<<", ph disp = "<<Ph_Disp_Neighbor[SectIndex][LUTi]<<", >>1 = "<<(Ph_Disp_Neighbor[SectIndex][LUTi]>>1)<<", LUTi = "<<LUTi<<"\n";
 	ph_hit = phLow + phShift + (Ph_Disp_Neighbor[SectIndex][LUTi]>>1);
 	
 	////////////////////////
@@ -274,7 +295,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		
 		
 		th_tmp = Th_LUT_St1_Neighbor[sub-1][SectIndex][idl -1][wire];
-		//if(verbose) std::cout<<"\n\nth_tmpr = "<<th_tmp<<"\n\n";
+		//std::cout<<"\n\nth_tmpr = "<<th_tmp<<"\n\n";
 	}
 	else{
 	
@@ -291,7 +312,8 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	th = th_tmp + Th_Init_Neighbor[SectIndex][LUTi];
-	//if(verbose) std::cout<<"Th_Init_Neighbor[ = "<<Th_Init_Neighbor[SectIndex][LUTi]<<"\n";
+	int rth = th;
+	//std::cout<<"Th_Init_Neighbor[ = "<<Th_Init_Neighbor[SectIndex][LUTi]<<"\n";
 	
 	if(station == 1 && (ring == 1 || ring == 4) /*&& endcap == 1*/){
 	
@@ -310,16 +332,21 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		//}
 		//else{
 			th_corr = Th_Corr_Neighbor[sub-1][SectIndex][corrIndex-1][index];
-			//if(verbose) std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
+			//std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
 		//}
 		
 		
 		if(ph_reverse) th_corr = -th_corr;
 		
+		//std::cout<<"th_tmp = "<<th_tmp<<"\n";
 		
 		th_tmp += th_corr;                  //add correction to th_tmp
+		//std::cout<<"th_tmp = "<<th_tmp<<"\n";
+		if(th_tmp < 0)
+			th_tmp = 0;
 		th_tmp &= 0x3f;                     //keep only lowest 6 bits
-		
+		//std::cout<<"th_tmp = "<<th_tmp<<"\n";
+		//std::cout<<"coverage = "<<th_coverage<<"\n";
 		
 		if(th_tmp < th_coverage){
 		
@@ -327,7 +354,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 			
 			th = th_tmp + Th_Init_Neighbor[SectIndex][LUTi];
 		}
-		else{th = -999;}
+		else{th = rth;}//was -999
  
 	}
 	
@@ -389,12 +416,12 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	//applying ph_offsets
 	if(sub == 1){
 		zhit = ph_hit + ph_offsets_neighbor[station-1][phOffIndex-1][pz];
-		//std::cout<<"\nph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station-1<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station-1][Id-1][pz]<<"\n";
+		//std::cout<<"\nph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station-1<<"]["<<phOffIndex-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station-1][phOffIndex-1][pz]<<"\n";
 	}
 	else{
 			
 		zhit = ph_hit + ph_offsets_neighbor[station][phOffIndex-1][pz];
-		//std::cout<<"\nph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station<<"]["<<Id-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station][Id-1][pz]<<"\n";
+		//std::cout<<"ph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station<<"]["<<phOffIndex-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station][phOffIndex-1][pz]<<"\n";
 	}
 	
 	
@@ -407,8 +434,8 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	///////////////////////////////////////////////////////
 	
 	
-	//if(ring == 4){
-		std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
+	//if(SectIndex == 8){
+	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	//}
 	
 	/* if(station != 1) */

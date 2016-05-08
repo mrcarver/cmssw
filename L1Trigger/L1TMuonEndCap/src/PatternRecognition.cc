@@ -123,9 +123,7 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
 			ranka[zone][k] = qc;
 		}
  	}
- 
- 
- 
+
  	
  	QualityOutput qout;
 	qout.rank = ranka;
@@ -165,7 +163,7 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
 	 for(int zz=0;zz<4;zz++){
  	   for(int z = 0;z<192;z++){//was 128
 	
-		if((out.rank)[zz][z]){std::cout<<"Zone: "<<zz<<"::new "<<(z+1)<<": "<<(out.layer)[zz][z]<<", "<<(out.straightness)[zz][z]<<", "<<(out.rank)[zz][z]<<" ";std::cout<<"\n\n";}//changing zones to Merged
+		if((out.rank)[zz][z] && ((out.layer)[zz][z] || (out.straightness)[zz][z])){std::cout<<"Found Pattern Zone: "<<zz<<"::new "<<(z+1)<<": "<<(out.layer)[zz][z]<<", "<<(out.straightness)[zz][z]<<", "<<(out.rank)[zz][z]<<" ";std::cout<<"\n\n";}//changing zones to Merged
   
   	   }
 	 }
