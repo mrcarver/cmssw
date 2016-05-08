@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "L1Trigger/L1TMuonEndCap/interface/PrimitiveConverter.h"
+#include "L1Trigger/L1TMuonEndCap/interface/PrimitiveConverter_Neighbor.h"
 #include "L1Trigger/L1TMuonEndCap/interface/BXAnalyzer.h"
 #include "L1Trigger/L1TMuonEndCap/interface/ZoneCreation.h"
 #include "L1Trigger/L1TMuonEndCap/interface/PatternRecognition.h"
@@ -219,7 +219,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
   PatternOutput Test = DeleteDuplicatePatterns(Pout);
 
-  PrintQuality(Test.detected);
+  //PrintQuality(Test.detected);
 
 
   ///////////////////////////////
