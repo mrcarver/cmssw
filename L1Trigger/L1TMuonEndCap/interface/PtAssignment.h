@@ -2136,7 +2136,6 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       Address += ( Mode_ & ((1<<4)-1))   << (0+7+5+6+1+1+1+5);
     }
 
- //std::cout<<"address = "<<Address<<"\n";
 
   (*_xmlpt_address) = Address;
   return getPt(Address);
