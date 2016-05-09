@@ -451,6 +451,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	Hit.SetTP(C3);
 	Hit.SetZhit(zhit);
 	Hit.SetZoneContribution(zonecontribution);
+	Hit.SetSectorIndex(SectIndex);
 
 	if(Hit.Theta() != -999 && Hit.Phi() > 0){//if theta is valid
 		ConvHits.push_back(Hit);
