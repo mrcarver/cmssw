@@ -70,9 +70,6 @@ public:
   ///////////////////////////////////////
   
   
-  edm::Service<TFileService> fs;
-  
-  TH1F *trackPhi[2], *trackPt[2], *trackEta[2], *trackMode[2];
   
   const float ptscale[33] = { 
   	-1.,   0.0,   1.5,   2.0,   2.5,   3.0,   3.5,   4.0,
@@ -84,7 +81,6 @@ public:
 private:
 
   edm::EDGetTokenT<CSCCorrelatedLCTDigiCollection> inputTokenCSC;
-  edm::EDGetTokenT<std::vector<reco::GenParticle>> inputTokenGen;
   
 };
 

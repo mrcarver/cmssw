@@ -503,20 +503,6 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 			holder.push_back(outPair);
 			thisTrack.set_isGMT( 1 );
 			
-			
-			trackPt[0]->Fill(genPt);
-			trackPhi[0]->Fill(genPhi);
-			trackEta[0]->Fill(genEta);//
-			trackMode[0]->Fill(mode);
-			
-			if(mode == 11 || mode > 12){
-			
-				trackPt[1]->Fill(genPt);
-				trackPhi[1]->Fill(genPhi);
-				trackEta[1]->Fill(genEta);
-				trackMode[1]->Fill(mode);
-			
-			}
 		}
 		OutputTracks->push_back( thisTrack );
 	}
@@ -552,15 +538,7 @@ ev.put( OutputCands, "EMTF");
 void L1TMuonEndCapTrackProducer::beginJob()
 {
 
-	trackPt[0] = fs->make<TH1F>("trackPt","",20,0,100);
-	trackPhi[0] = fs->make<TH1F>("trackPhi","",35,-3.5,3.5);
-	trackEta[0] = fs->make<TH1F>("trackEta","",50,-2.5,2.5);
-	trackMode[0] = fs->make<TH1F>("trackMode","",16,0,16);
 	
-	trackPt[1] = fs->make<TH1F>("trackPt_HQ","",20,0,100);
-	trackPhi[1] = fs->make<TH1F>("trackPhi_HQ","",70,-3.5,3.5);
-	trackEta[1] = fs->make<TH1F>("trackEta_HQ","",50,-2.5,2.5);
-	trackMode[1] = fs->make<TH1F>("trackMode_HQ","",16,0,16);
 
 }
 void L1TMuonEndCapTrackProducer::endJob()
