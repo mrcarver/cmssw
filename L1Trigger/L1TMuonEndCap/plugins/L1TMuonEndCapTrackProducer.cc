@@ -41,7 +41,6 @@ using namespace L1TMuon;
 L1TMuonEndCapTrackProducer::L1TMuonEndCapTrackProducer(const PSet& p) {
 
   inputTokenCSC = consumes<CSCCorrelatedLCTDigiCollection>(p.getParameter<edm::InputTag>("CSCInput"));
-  inputTokenGen = consumes<std::vector<reco::GenParticle>>(p.getParameter<edm::InputTag>("GenInput"));
   
   produces<l1t::RegionalMuonCandBxCollection >("EMTF");
   produces< l1t::EMTFTrackCollection >("EMTF");
@@ -68,24 +67,6 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
   std::vector<TriggerPrimitive> tester;
   //std::vector<InternalTrack> FoundTracks;
   
-  float genPt = 0, genPhi = -5, genEta = -5;
-  
-  edm::Handle<std::vector<reco::GenParticle>> genMuons;
-  ev.getByToken(inputTokenGen,genMuons);
-  
-  
-  for(std::vector<reco::GenParticle>::const_iterator gmi = genMuons->begin();gmi != genMuons->end();gmi++){
-  
-  		//std::cout<<"gen pt = "<<gmi->pt()<<", phi = "<<gmi->phi()<<" and eta = "<<gmi->eta()<<"\n";
-  
-  		if(fabs(gmi->pdgId()) == 13){
-  		genPt = gmi->pt();
- 		genEta = gmi->eta();
-  		genPhi = gmi->phi();
-		
-  	}
-  }
-    
   //////////////////////////////////////////////
   ///////// Make Trigger Primitives ////////////
   //////////////////////////////////////////////
