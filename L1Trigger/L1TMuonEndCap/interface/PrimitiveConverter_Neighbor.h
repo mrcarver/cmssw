@@ -320,11 +320,16 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		index = (wire>>4)*32 + (eightstrip>>4);
 		
 		int corrIndex = Id;
+		//std::cout<<"corrIndex = "<<corrIndex<<"\n";
 		if(corrIndex > 3)
-			corrIndex -= 10;
+			corrIndex -= 9;
+			
+		//std::cout<<"corrIndex = "<<corrIndex<<"\n";
 			
 		if(IsNeighbor && ring == 4)
 			corrIndex++;
+			
+		//std::cout<<"corrIndex = "<<corrIndex<<"\n";
 		
 		//if(Id > 3){
 		//	th_corr = Th_Corr_Neighbor[sub-1][SectIndex][Id-10][index];
@@ -332,7 +337,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		//}
 		//else{
 			th_corr = Th_Corr_Neighbor[sub-1][SectIndex][corrIndex-1][index];
-			//std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
+		//	std::cout<<"\n\nth_corr["<<sub-1<<"]["<<SectIndex<<"]["<<corrIndex-1<<"] = "<<th_corr<<"\n\n";
 		//}
 		
 		
@@ -435,7 +440,9 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//if(SectIndex == 8){
-	//	std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
+		//std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
+	
+		//std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
 	//}
 	
 	/* if(station != 1) */
