@@ -214,12 +214,16 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	eightstrip = 8*strip;
 	int patcor = clctpatcor;
 	
+	//std::cout<<"8strip = "<<eightstrip<<"\n";
+	
 	if(station == 1 || Id > 3){//10 Degree Chambers
 	
 		eightstrip = (eightstrip>>1);
 		patcor = (patcor>>1);
 		if(ring == 4 && strip > 127) eightstrip -= 512;
-	}	
+	}
+	
+	//std::cout<<"8strip = "<<eightstrip<<"\n";	
 	
 	if(clctpatsign) patcor = -patcor;
 	eightstrip += patcor;
@@ -240,6 +244,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	}
 	
 	int phInitIndex = Id;
+	//std::cout<<"phInitIndex = "<<phInitIndex<<" and ph_tmp = "<<ph_tmp<<"\n";
 	
 	if(station == 1){
 	
@@ -252,7 +257,11 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 		}
 		
+		//if(ring == 4)
+		//	phInitIndex -= 9;
+		
 		fph = Ph_Init_Neighbor[SectIndex][sub-1][phInitIndex - 1] + ph_tmp;
+		//std::cout<<"ph init = "<<Ph_Init_Neighbor[SectIndex][sub-1][phInitIndex - 1]<<", index = "<<phInitIndex<<"\n";
 	}
 	else{
 	
@@ -440,9 +449,9 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//if(SectIndex == 8){
-		//std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
+		std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	
-		//std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
+		std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
 	//}
 	
 	/* if(station != 1) */
@@ -453,12 +462,17 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 
 	
 	ConvertedHit Hit;
+	
+	int in = 0;
+	if(IsNeighbor)
+		in = 1;
 
 	Hit.SetValues(fph,th,ph_hit,phzvl,station,sub,Id,quality,pattern,wire,strip,BX);
 	Hit.SetTP(C3);
 	Hit.SetZhit(zhit);
 	Hit.SetZoneContribution(zonecontribution);
 	Hit.SetSectorIndex(SectIndex);
+	Hit.SetNeighbor(in);
 
 	if(Hit.Theta() != -999 && Hit.Phi() > 0){//if theta is valid
 		ConvHits.push_back(Hit);

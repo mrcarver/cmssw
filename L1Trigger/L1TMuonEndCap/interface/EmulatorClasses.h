@@ -53,6 +53,8 @@ class ConvertedHit{
 		
 		void SetZoneContribution(std::vector<int> zonecontribution){_zonecont = zonecontribution;};
 		
+		void SetNeighbor(int neighbor){_isNeighbor = neighbor;};
+		
 		
 		int Phi(){return _ph;};
 		int Theta(){return _th;};
@@ -68,13 +70,14 @@ class ConvertedHit{
 		int Zhit(){return _zhit;};
 		int BX(){return _bx;};
 		int SectorIndex(){return _sectorIndex;};
+		int IsNeighbor(){return _isNeighbor;};
 		TriggerPrimitive TP(){return _tp;};
 		std::vector<int> ZoneContribution(){return _zonecont;};
 		
 		
 	private:
 	
-		int _ph,_th,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex;
+		int _ph,_th,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor;
 		TriggerPrimitive _tp;
 		std::vector<int> _zonecont;
 
