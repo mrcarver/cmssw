@@ -30,7 +30,7 @@ bool neighbor(int endcap,int sector,int SectIndex,int id,int sub,int station){
 	   (SectIndex == 10 && CompIndex == 9) ||
 	   (SectIndex == 11 && CompIndex == 10) ){AdSector = true;}
 	
-	if(AdSector && sub == 1 && station == 1 && (id == 3 || id == 6 || id == 9) )
+	if(AdSector && sub == 2 && station == 1 && (id == 3 || id == 6 || id == 9) )
 		neighbor = true;
 		
 	if(AdSector && station > 1 && (id == 3 || id == 9) )
@@ -249,18 +249,18 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	if(station == 1){
 	
 		int neighborId = Id/3;
-		if(IsNeighbor && sub == 0){
+		int subId = sub;
+		if(IsNeighbor ){
 	
+			subId = 1;
 			phInitIndex = 12 + neighborId;
 			if(ring == 4)
 				phInitIndex++;
 	
 		}
 		
-		//if(ring == 4)
-		//	phInitIndex -= 9;
 		
-		fph = Ph_Init_Neighbor[SectIndex][sub-1][phInitIndex - 1] + ph_tmp;
+		fph = Ph_Init_Neighbor[SectIndex][subId-1][phInitIndex - 1] + ph_tmp;
 		//std::cout<<"ph init = "<<Ph_Init_Neighbor[SectIndex][sub-1][phInitIndex - 1]<<", index = "<<phInitIndex<<"\n";
 	}
 	else{
@@ -290,12 +290,11 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	if(station == 1){
 	
 		
-		//if(Id < 4)//
-		//	idl += 9;
-		
 		int neighborId = Id/3;
-		if(IsNeighbor && sub == 0){
+		int subId = sub;
+		if(IsNeighbor){
 	
+			subId = 1;
 			idl = 12 + neighborId;
 			if(ring == 4)
 				idl++;
@@ -303,7 +302,8 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 		}
 		
 		
-		th_tmp = Th_LUT_St1_Neighbor[sub-1][SectIndex][idl -1][wire];
+		
+		th_tmp = Th_LUT_St1_Neighbor[subId-1][SectIndex][idl -1][wire];
 		//std::cout<<"\n\nth_tmpr = "<<th_tmp<<"\n\n";
 	}
 	else{
@@ -449,9 +449,9 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	
 	
 	//if(SectIndex == 8){
-		std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
+		//std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	
-		std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
+		//std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
 	//}
 	
 	/* if(station != 1) */
