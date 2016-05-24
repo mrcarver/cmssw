@@ -94,6 +94,7 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	if( (SectIndex ==  (endcap - 1)*6 + sector - 1 )  || IsNeighbor )
 	{
 	
+		//if(station != 1) continue;
 		
 	//if(verbose){
 	// 	std::cout<<"\n\nSECTOR "<<SectIndex<<"\n\n";
@@ -337,10 +338,12 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	th = th_tmp + Th_Init_Neighbor[SectIndex][LUTi];
 	int rth = th;
 	//std::cout<<"Th_Init_Neighbor["<<SectIndex<<"]["<<LUTi<<"] = "<<Th_Init_Neighbor[SectIndex][LUTi]<<"\n";
-	
+	//std::cout<<"rtf = "<<rth<<"\n";
 	if(station == 1 && (ring == 1 || ring == 4) /*&& endcap == 1*/){
 	
 		index = (wire>>4)*32 + (eightstrip>>4);
+		
+		//std::cout<<"index = "<<index<<"\n";
 		
 		int corrIndex = Id;
 		int subId = sub;
@@ -357,29 +360,31 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 			
 		//std::cout<<"corrIndex = "<<corrIndex<<"\n";
 		
-		//if(Id > 3){
-		//	th_corr = Th_Corr_Neighbor[sub-1][SectIndex][Id-10][index];
-			//if(verbose) std::cout<<"\n\nth_corr = "<<th_corr<<"\n\n";
-		//}
-		//else{
-			th_corr = Th_Corr_Neighbor[subId-1][SectIndex][corrIndex-1][index];
-			//std::cout<<"th_corr["<<subId-1<<"]["<<SectIndex<<"]["<<corrIndex-1<<"] = "<<th_corr<<"\n";
-		//}
+		
+		th_corr = Th_Corr_Neighbor[subId-1][SectIndex][corrIndex-1][index];
+		//std::cout<<"th_corr["<<subId-1<<"]["<<SectIndex<<"]["<<corrIndex-1<<"]["<<index<<"] = "<<th_corr<<"\n";
 		
 		
-		if(ph_reverse) th_corr = -th_corr;
 		
-		//std::cout<<"th_tmp = "<<th_tmp<<"\n";
+		if(ph_reverse){ th_corr = -th_corr;std::cout<<"PH_REVERSE!\n";}
+		
+		
+		//std::cout<<"th_tmp = "<<th_tmp<<"\n";//
 		
 		th_tmp += th_corr;                  //add correction to th_tmp
 		//std::cout<<"th_tmp = "<<th_tmp<<"\n";
-		if(th_tmp < 0)
+		if(th_tmp < 0 || wire == 0)
 			th_tmp = 0;
+			
+		if(th_tmp > th_coverage)//this is one change that I'm not sure if it does anything good or not
+			th_tmp = th_coverage;
+			
+			
 		th_tmp &= 0x3f;                     //keep only lowest 6 bits
 		//std::cout<<"th_tmp = "<<th_tmp<<"\n";
 		//std::cout<<"coverage = "<<th_coverage<<"\n";
 		
-		if(th_tmp < th_coverage){
+		if(th_tmp <= th_coverage){
 		
 			//if(ring == 1){LUTi += 9;}  //change because new Verilog3 sp_tf treats ME11b with LUT's of ME11a
 			
@@ -466,11 +471,34 @@ std::vector<ConvertedHit> PrimConv(std::vector<TriggerPrimitive> TriggPrim, int 
 	///////////////////////////////////////////////////////
 	
 	
-	//if(SectIndex == 8){
+	//if(SectIndex == 8){//
+	if(station == 1 && ring == 4 && !IsNeighbor && SectIndex == 0){
 		//std::cout<<"phi = "<<fph<<", theta = "<<th<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	
-		//std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
-	//}
+		//std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<" "<<fph<<" "<<th<<"\n12345\n12345\n12345\n12345\n12345\n12345\n12345\n";//Non neighbor
+		
+		/*
+		int FWID = C3.Id()/3;
+		//std::cout<<"Id = "<<C3.Id()<<", FWID = "<<FWID<<"\n";
+			
+		if(station == 2 && C3.Id() == 3)
+			FWID = 4;
+		else if(station == 2)
+			FWID = 5;
+			
+		if(station == 3 && C3.Id() == 3)
+			FWID = 6;
+		else if(station == 3)
+			FWID = 7;
+			
+		if(station == 4 && C3.Id() == 3)
+			FWID = 8;
+		else if(station == 4)//
+			FWID = 9;
+		
+		std::cout<<BX-3<<" "<<endcap<<" 1 "<<sub<<" 5 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<FWID<<" 0 "<<strip<<" "<<fph<<" "<<th<<"\n12345\n12345\n12345\n12345\n12345\n12345\n12345\n";//Neighbor
+		*/
+	}
 	
 	/* if(station != 1) */
 	/* 	sub = 1; */
