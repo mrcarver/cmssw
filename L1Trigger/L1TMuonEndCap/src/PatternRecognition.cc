@@ -34,6 +34,8 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
   	for(int zone=0;zone<4;zone++){
 	
 		
+		//std::cout<<"zone "<<zone<<"\n";
+		//Merged[zone].Print();
   
   		for(int b=0;b<192;b++){//loop over stips of detector zones//was 128 now 192 to accomodate 
   							   //larger phi scale used in neighboring sectors algorithm
@@ -51,7 +53,7 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
 					patt[y].BitShift(63);patt[y].BitShift(b-78);						//////
 				}																		//////
 				else{																	//////
-					patt[y].BitShift(63);patt[y].BitShift(63);patt[y].BitShift(b-141);  //////
+					patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(b-139);  //////
 				}																		//////
 			
 			
@@ -112,7 +114,7 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
 	
 			int qr = ranka_t[zone][k-1], ql = ranka_t[zone][k+1], qc = ranka_t[zone][k];
 			
-			//if(qc && verbose)
+			//if(qc )
 			//	std::cout<<"\n"<<k<<":qc = "<<qc<<" straight: "<<stra[zone][k]<<"  lya: "<<lya[zone][k]<<std::endl; 
 		
 			if(k==0){qr=0;}
@@ -145,9 +147,13 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
  	PatternOutput tmp;
 	std::vector<PatternOutput> output (3,tmp);
 	
-	for(int i=0;i<3;i++)
+	for(int i=0;i<3;i++){
+		
+		//std::cout<<"begin pattern dection on bx group "<<i<<"\n";
+		
 		output[i] = DetectPatterns(Zones[i]);
 		
+	}
 		
  	return output;
  

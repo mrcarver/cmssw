@@ -11,7 +11,7 @@
 
 MatchingOutput PhiMatching(SortingOutput Sout){
 
-	bool verbose = false;
+	bool verbose = true;
 
 	std::vector<ConvertedHit> Thits = Sout.Hits();
 	std::vector<std::vector<Winner>> Winners = Sout.Winners();
@@ -41,13 +41,14 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 			
 			if(Winners[z][w].Rank()){//is there a winner present?	
 			
-				if(verbose) std::cout<<"\n\nWinner position-"<<Winners[z][w].Strip()<<". Zone = "<<z<<std::endl;			
+				if(verbose) std::cout<<"\n\nWinner position-"<<Winners[z][w].Strip()<<". Zone = "<<z<<std::endl;
+				if(verbose) std::cout<<"Number of possible hits to match = "<<Thits.size()<<"\n";			
 				
 				for(std::vector<ConvertedHit>::iterator i = Thits.begin();i != Thits.end();i++){//Possible associated hits
 				
 					//int id = i->Id();
 					
-					if(verbose) std::cout<<"strip = "<<i->Strip()<<", keywire = "<<i->Wire()<<" and zhit-"<<i->Zhit()<<std:: endl;
+					if(verbose) std::cout<<"strip = "<<i->Strip()<<", keywire = "<<i->Wire()<<" and zhit-"<<i->Zhit()<<", bx = "<<i->BX()<<"\n";
 
 					// Unused variable
 					/* bool inzone = 0;///Is the converted hit in the zone we're looking at now? */
@@ -56,20 +57,30 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 					/* 		inzone = 1;//yes */
 					/* } */
 					
+					bool inBXgroup = false;
+					
+					switch(Winners[z][w].BXGroup()){
+					
+					
+						case 1: if(i->BX() > 3 && i->BX() < 7) inBXgroup = true;break;
+						case 2: if(i->BX() > 4 && i->BX() < 8) inBXgroup = true;break;
+						case 3: if(i->BX() > 5 && i->BX() < 9) inBXgroup = true;break;
+						default: inBXgroup = false;
+					
+					
+					
+					}
+					
 					////////////////////////////////////////////////////////////////////////////////////////////
 					/////////////////// Setting the matched hits based on phi //////////////////////////////////
 					////////////////////////////////////////////////////////////////////////////////////////////
 					int setstation = i->Station() - 1;
-					//bool one = ((z == 3) && (i->Station() > 1));                //Zone 3 is handled differently so we
-					//bool two = ((z == 3) && (i->Station() == 1) && (id > 3));   //have this conditions here
 					bool setphi = 0;
-					//if(one || two)
-					//	setstation++;
 					
 					if(verbose)
 						std::cout<<"setstation = "<<setstation<<std::endl;
 					
-					if((fabs((Winners[z][w].Strip()) - i->Zhit()) <= phdiff[setstation]) ){//is close to winner keystrip and in same zone?
+					if((fabs((Winners[z][w].Strip()) - i->Zhit()) <= phdiff[setstation]) && inBXgroup){//is close to winner keystrip and in same zone?
 					
 						if(ph_output[z][w][setstation].Phi() == -999){//has this already been set? no
 						

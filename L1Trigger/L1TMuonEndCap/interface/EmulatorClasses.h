@@ -92,7 +92,7 @@ struct ZonesOutput{
 
 struct QualityOutput{
 
-	Code rank, layer,straightness;
+	Code rank, layer,straightness, bxgroup;
 
 	
 };
@@ -102,6 +102,7 @@ struct PatternOutput{
 
 	QualityOutput detected;
 	std::vector<ConvertedHit> hits;
+	//int bxgroup;
 
 };
 
@@ -121,6 +122,7 @@ class Winner{
 		
 		int Rank(){return _rank;}
 		int Strip(){return _strip;}
+		int BXGroup(){return _bxgroup;}
 		
 		void SetValues(int rank, int strip){
 		
@@ -131,11 +133,17 @@ class Winner{
 		
 			_rank = rank;
 		}
+		
+		void SetBXGroup(int bxgroup){
+		
+			_bxgroup = bxgroup;
+		
+		}
 	
 	private:
 	
 	
-		int _rank, _strip;
+		int _rank, _strip, _bxgroup;
 		
 };
 

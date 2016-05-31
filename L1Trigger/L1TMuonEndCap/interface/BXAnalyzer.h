@@ -32,6 +32,22 @@ std::vector<std::vector<ConvertedHit>> GroupBX(std::vector<ConvertedHit> ConvHit
 			output[1].push_back(*i);
 	}
 	
+	
+	
+	/*for(int i=0;i<3;i++){
+	
+	
+		std::cout<<"output "<<i<<" has the following hits:\n";
+		
+		for(std::vector<ConvertedHit>::iterator it = output[i].begin();it != output[i].end();it++){
+				std::cout<<" station = "<<it->Station()<<", strip = "<<it->Strip()<<"\n";
+		}
+	
+	
+	
+	
+	}*/
+	
 	return output;
 
 }
@@ -40,32 +56,40 @@ std::vector<std::vector<ConvertedHit>> GroupBX(std::vector<ConvertedHit> ConvHit
 PatternOutput DeleteDuplicatePatterns(std::vector<PatternOutput> Pout){
 
 	std::vector<int> tmp (192,0);//was 128
-	std::vector<std::vector<int>> rank (4,tmp), layer(4,tmp),straightness(4,tmp);
+	std::vector<std::vector<int>> rank (4,tmp), layer(4,tmp),straightness(4,tmp),bxgroup(4,tmp);
 	std::vector<ConvertedHit> Hits;
 	
 	for(int i=0;i<3;i++){
 		
 		bool set = 0;
 		
+		
 		for(int zone=0;zone<4;zone++){
 			for(int strip=0;strip<192;strip++){//was 128
 				
-				if(Pout[i].detected.rank[zone][strip] >= rank[zone][strip]){
+				if(Pout[i].detected.rank[zone][strip] > rank[zone][strip]){
 					
 					rank[zone][strip] = Pout[i].detected.rank[zone][strip];
 					layer[zone][strip] = Pout[i].detected.layer[zone][strip];
 					straightness[zone][strip] = Pout[i].detected.straightness[zone][strip];
+					bxgroup[zone][strip] = i+1;
 					set = 1;
 				}
 			}
 		}
 		
-		if(set && (Pout[i].hits.size() > Hits.size())){
+		//if(set) std::cout<<"found pattern\n";
+		
+		if(set ){//&& (Pout[i].hits.size() >= Hits.size())){
 			
 			std::vector<ConvertedHit> test = Pout[i].hits;
 			
 			for(std::vector<ConvertedHit>::iterator it = test.begin();it != test.end();it++){
-				Hits.push_back(*it);
+			  
+			  
+			  	Hits.push_back(*it);
+			
+			  	//std::cout<<"adding hit in station "<<it->Station()<<" with strip = "<<it->Strip()<<"\n";
 			}
 		}
 		
@@ -77,6 +101,7 @@ PatternOutput DeleteDuplicatePatterns(std::vector<PatternOutput> Pout){
 	qout.rank = rank;
 	qout.layer = layer;
 	qout.straightness = straightness;
+	qout.bxgroup = bxgroup;
 	
 	PatternOutput output;
 	
