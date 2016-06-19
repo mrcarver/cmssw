@@ -46,14 +46,14 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
 	
 				bool zona[12] = {false}; //Clear out station presence
 		
-				if((b-15) < 63){ 														//////Due to bug in BitShift function. 
+				if((b-15) < 63){ 														//////Due to bug in BitShift function when shifting by >= field length. 
 					patt[y].BitShift(b-15);			 									//////Can try and fix later before uploading to CMSSW.
 				}																		//////
 				else if((b-15) < 127){													//////
-					patt[y].BitShift(63);patt[y].BitShift(b-78);						//////
+					patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(b-79);						//////
 				}																		//////
 				else{																	//////
-					patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(b-139);  //////
+					patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(63);patt[y].BitShift(1);patt[y].BitShift(b-143);  //////
 				}																		//////
 			
 			
@@ -114,13 +114,15 @@ PhiMemoryImage patterns[PATTERN_SIZE] = {pattern8, pattern9, pattern6, pattern7,
 	
 			int qr = ranka_t[zone][k-1], ql = ranka_t[zone][k+1], qc = ranka_t[zone][k];
 			
-			//if(qc )
-			//	std::cout<<"\n"<<k<<":qc = "<<qc<<" straight: "<<stra[zone][k]<<"  lya: "<<lya[zone][k]<<std::endl; 
+			
 		
 			if(k==0){qr=0;}
 			if(k==191){ql=0;}//was 127
 		
 			if((qc <= ql) || (qc < qr)){qc = 0;}
+			
+			if(qc )
+				std::cout<<"\n"<<k<<":qc = "<<qc<<" straight: "<<stra[zone][k]<<"  lya: "<<lya[zone][k]<<std::endl; 
 		
 			ranka[zone][k] = qc;
 		}

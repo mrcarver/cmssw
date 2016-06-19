@@ -34,19 +34,24 @@ std::vector<std::vector<ConvertedHit>> GroupBX(std::vector<ConvertedHit> ConvHit
 	
 	
 	
-	/*for(int i=0;i<3;i++){
-	
-	
-		std::cout<<"output "<<i<<" has the following hits:\n";
+	for(int i=0;i<3;i++){
 		
 		for(std::vector<ConvertedHit>::iterator it = output[i].begin();it != output[i].end();it++){
-				std::cout<<" station = "<<it->Station()<<", strip = "<<it->Strip()<<"\n";
+			for(std::vector<ConvertedHit>::iterator it2 = it;it2 != output[i].end();it2++){
+			
+				if(it == it2) continue;
+				
+				if(it->Station() == it2->Station() && it->Id() == it2->Id()){
+				
+					it->SetTheta2(it2->Theta());
+					it2->SetTheta2(it->Theta());
+					//std::cout<<"thetas = "<<it2->Theta()<<" and "<<it->Theta()<<"\n";
+				}
+				
+			}
 		}
 	
-	
-	
-	
-	}*/
+	}
 	
 	return output;
 
@@ -80,7 +85,7 @@ PatternOutput DeleteDuplicatePatterns(std::vector<PatternOutput> Pout){
 		
 		//if(set) std::cout<<"found pattern\n";
 		
-		if(set ){//&& (Pout[i].hits.size() >= Hits.size())){
+		if(set ){/*//&& (Pout[i].hits.size() >= Hits.size())){*/
 			
 			std::vector<ConvertedHit> test = Pout[i].hits;
 			
@@ -111,3 +116,37 @@ PatternOutput DeleteDuplicatePatterns(std::vector<PatternOutput> Pout){
 	return output;
 
 }
+
+ std::vector<std::vector<DeltaOutput>> DeleteDuplicatePatterns_Hold( std::vector<std::vector<std::vector<DeltaOutput>>> Dout){
+ 
+ 
+ 	DeltaOutput output;output.SetNull();
+	
+	std::vector<DeltaOutput> o (3,output);
+	std::vector<std::vector<DeltaOutput>> out (4,o);
+	
+	
+	for(int bx=0;bx<3;bx++){
+		for(int bx2=bx+1;bx2<3;bx++){
+	
+			for(int zone=0;zone<4;zone++){
+		
+				for(int win=0;win<3;win++){
+			
+				
+					if(Dout[bx][zone][win].GetMatchOut().Winners()[zone][win].Strip() == Dout[bx2][zone][win].GetMatchOut().Winners()[zone][win].Strip()){
+				
+						
+					
+					}
+				
+				}
+	
+			}
+		
+		}
+	}
+ 
+ 	return out;
+ 
+ }

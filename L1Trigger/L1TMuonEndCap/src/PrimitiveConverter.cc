@@ -279,6 +279,8 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	ph_tmp = ((eightstrip*factor)>>10);
 	int phShift = (ph_tmp>>5);
 	int phLow = 0;
+	
+	//std::cout<<"\nph_tmp = "<<ph_tmp<<"\n";
 
 	if(ph_reverse){
 	
@@ -345,7 +347,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	
 		}
 		
-		//std::cout<<"nid = "<<neighborId<<", idl = "<<idl<<"\n";
+		//std::cout<<"\n\nnid = "<<neighborId<<", idl = "<<idl<<"\n";
 		
 		th_tmp = Th_LUT_St1_Neighbor_[subId-1][SectIndex][idl -1][wire];
 		//std::cout<<"th_tmpr = "<<th_tmp<<"\n";
@@ -394,7 +396,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 		//}
 		//else{
 			th_corr = Th_Corr_Neighbor_[subId-1][SectIndex][corrIndex-1][index];
-			//std::cout<<"th_corr["<<subId-1<<"]["<<SectIndex<<"]["<<corrIndex-1<<"] = "<<th_corr<<"\n";
+			//std::cout<<"th_corr["<<subId-1<<"]["<<SectIndex<<"]["<<corrIndex-1<<"]["<<index<<"] = "<<th_corr<<"\n";
 		//}
 		
 		
@@ -484,7 +486,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	//applying ph_offsets
 	if(sub == 1){
 		zhit = ph_hit + ph_offsets_neighbor[station-1][phOffIndex-1][pz];
-		//std::cout<<"\nph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station-1<<"]["<<phOffIndex-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station-1][phOffIndex-1][pz]<<"\n";
+		//std::cout<<"ph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station-1<<"]["<<phOffIndex-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station-1][phOffIndex-1][pz]<<"\n";
 	}
 	else{
 			

@@ -21,13 +21,13 @@ class ConvertedHit{
 		void SetValues(int phi,int theta,int ph_hit,int phzvl,int station,int sub,int id,int quality,int pattern,int wire,int strip,int BX){
 		
 			_ph = phi;_th = theta;_phit = ph_hit;_phzvl = phzvl;_sta = station;_sub = sub;_id = id;_qual = quality;_patt = pattern;
-			_wire = wire;_strip = strip;_zhit = -999;_bx = BX;
+			_wire = wire;_strip = strip;_zhit = -999;_bx = BX;_th2 = -999;
 		
 		};
 		
 		void SetNull(){
 		
-			_ph = -999;_th = -999;_phit = -999;_phzvl = -999;_sta = -999;_sub = -999;_id = -999;_qual = -999;_patt = 0;
+			_ph = -999;_th = -999;_th2 = -999;_phit = -999;_phzvl = -999;_sta = -999;_sub = -999;_id = -999;_qual = -999;_patt = 0;
 			_wire = -999;_strip = -999;_zhit = -999;
 		};
 		
@@ -47,6 +47,8 @@ class ConvertedHit{
 		
 		void SetTheta(int theta){_th = theta;};
 		
+		void SetTheta2(int theta2){_th2 = theta2;};
+		
 		void SetTP(TriggerPrimitive tp){_tp = tp;};
 		
 		void SetSectorIndex(int sectorIndex){_sectorIndex = sectorIndex;};
@@ -58,6 +60,7 @@ class ConvertedHit{
 		
 		int Phi(){return _ph;};
 		int Theta(){return _th;};
+		int Theta2(){return _th2;};
 		int Ph_hit(){return _phit;};
 		int Phzvl(){return _phzvl;};
 		int Station(){return _sta;};
@@ -77,7 +80,7 @@ class ConvertedHit{
 		
 	private:
 	
-		int _ph,_th,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor;
+		int _ph,_th, _th2,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor;
 		TriggerPrimitive _tp;
 		std::vector<int> _zonecont;
 
@@ -168,6 +171,7 @@ class SortingOutput{
 
 
 typedef std::vector<std::vector<std::vector<std::vector<ConvertedHit>>>> ThOutput;
+typedef std::vector<std::vector<std::vector<std::vector<int>>>> ThOutput2;
 typedef std::vector<std::vector<std::vector<ConvertedHit>>> PhOutput;
 class MatchingOutput{
 
@@ -187,11 +191,19 @@ class MatchingOutput{
 			_segment = segment;
 		}
 		
+		void setM2(ThOutput2 t2){
+		
+			_th_output2 = t2;
+		
+		
+		}
+		
 		
 		
 		std::vector<ConvertedHit> Hits(){return _hits;}; 
 		std::vector<std::vector<Winner>> Winners(){return _winners;};
 		ThOutput ThetaMatch(){return _th_output;};
+		ThOutput2 TMatch2(){return _th_output2;};
 		PhOutput PhiMatch(){return _ph_output;};
 		std::vector<int> Segment(){return _segment;};
 		
@@ -201,6 +213,7 @@ class MatchingOutput{
 		std::vector<ConvertedHit> _hits;
 		std::vector<std::vector<Winner>> _winners;
 		ThOutput _th_output;
+		ThOutput2 _th_output2;
 		PhOutput _ph_output;
 		std::vector<int> _segment;
 	

@@ -12,7 +12,7 @@ Date: 7/29/13
 
 std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 
-	//bool verbose = false;
+	bool verbose = true;
 
 	int larger[12][12] = {{0},{0}}, kill[12] = {0};
 	int exists[12] = {0};
@@ -24,6 +24,7 @@ std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 			for(int d=0;d<4;d++){
 				
 					phi[r][t][d] = Dout[r][t].GetMatchOut().PhiMatch()[r][t][d].Phi();
+					//if(phi[r][t][d] != -999) std::cout<<"phi = "<<phi[r][t][d]<<"\n";
 					id[r][t][d] = Dout[r][t].GetMatchOut().PhiMatch()[r][t][d].Id();
 			}
 		}
@@ -91,6 +92,11 @@ std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 			for(int j=0;j<12;j++){
 			
 				int rankj = Dout[j%4][j/4].GetWinner().Rank();
+				if(ranki && rankj){
+					
+					//std::cout<<"ranki = "<<ranki<<", and rankj = "<<rankj<<"\n";
+				
+				}
 				bool greater = (ranki > rankj);
 				bool equal = (ranki == rankj);
 			
@@ -181,10 +187,10 @@ std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 			
 				BTrack bests;
 				
-				//if(verbose) std::cout<<"Best Rank "<<n<<" = "<<Dout[i%4][i/4].GetWinner().Rank()<<"\n\n";
-				//if(verbose) std::cout<<"Phi = "<<Dout[i%4][i/4].Phi()<<" and Theta = "<<Dout[i%4][i/4].Theta()<<"\n\n";
-				//if(verbose) std::cout<<"Ph Deltas: "<<Dout[i%4][i/4].Deltas()[0][0]<<" "<<Dout[i%4][i/4].Deltas()[0][1]<<"   Th Deltas: "<<Dout[i%4][i/4].Deltas()[1][0]
-				//													     <<" "<<Dout[i%4][i/4].Deltas()[1][1]<<"\n\n";
+				if(verbose) std::cout<<"Best Rank "<<n<<" = "<<Dout[i%4][i/4].GetWinner().Rank()<<"\n\n";
+				if(verbose) std::cout<<"Phi = "<<Dout[i%4][i/4].Phi()<<" and Theta = "<<Dout[i%4][i/4].Theta()<<"\n\n";
+				if(verbose) std::cout<<"Ph Deltas: "<<Dout[i%4][i/4].Deltas()[0][0]<<" "<<Dout[i%4][i/4].Deltas()[0][1]<<"   Th Deltas: "<<Dout[i%4][i/4].Deltas()[1][0]
+																	 <<" "<<Dout[i%4][i/4].Deltas()[1][1]<<"\n\n";
 						
 				bests.winner = Dout[i%4][i/4].GetWinner();
 				bests.phi = Dout[i%4][i/4].Phi();

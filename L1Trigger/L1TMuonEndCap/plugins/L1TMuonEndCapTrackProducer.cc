@@ -127,10 +127,11 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
      }
    //}
   std::vector<ConvertedHit> CHits[NUM_SECTORS];
-  MatchingOutput MO[NUM_SECTORS];
+  //MatchingOutput MO[NUM_SECTORS];
 
 for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 sectors
 
+//if(SectIndex != 2) continue;
 
   //////////////////////////////////////////////////////  Input is raw hit information from
   ///////////////// TP Conversion //////////////////////  Output is vector of Converted Hits
@@ -234,6 +235,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 
   std::vector<PatternOutput> Pout = Patterns(Zout);
+  std::vector<PatternOutput> Pout_Hold = Pout;
 
   PatternOutput Test = DeleteDuplicatePatterns(Pout);
 
@@ -246,15 +248,20 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   ///////////////////////////////
 
   SortingOutput Sout = SortSect(Test);
+  
+  std::vector<SortingOutput> Sout_Hold = SortSect_Hold(Pout_Hold);
 
 
   //////////////////////////////////
   ///////// Match ph patterns ////// Loops over each sorted pattern and then loops over all possible triggerprimitives which could have made the pattern
   ////// to segment inputs ///////// and matches the associated full precision triggerprimitives to the detected pattern.
   //////////////////////////////////
-
+  
   MatchingOutput Mout = PhiMatching(Sout);
-  MO[SectIndex] = Mout;
+  
+  std::vector<MatchingOutput> Mout_Hold = PhiMatching_Hold(Sout_Hold);
+  
+ // MO[SectIndex] = Mout;
 
   /////////////////////////////////
   //////// Calculate delta //////// Once we have matched the hits we calculate the delta phi and theta between all
@@ -262,6 +269,10 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   /////////////////////////////////
 
  std::vector<std::vector<DeltaOutput>> Dout = CalcDeltas(Mout);////
+ 
+ std::vector<std::vector<std::vector<DeltaOutput>>> Dout_Hold = CalcDeltas_Hold(Mout_Hold);
+ 
+ //std::vector<std::vector<DeltaOutput>> Dout_Final = DeleteDuplicatePatterns_Hold(Dout_Hold);
 
 
   /////////////////////////////////
@@ -435,6 +446,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 		tempTrack.phis = ps;
 		tempTrack.thetas = ts;
+		tempTrack.deltas = AllTracks[fbest].deltas;
 
 		// // Before Mulhearn cleanup, May 11
 		// unsigned long xmlpt_address = 0;
@@ -456,6 +468,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 		float theta_angle = l1t::calc_theta_rad_from_int( AllTracks[fbest].theta ); 
 		float eta = l1t::calc_eta_from_theta_rad( theta_angle );
+		
 
 		thisTrack.set_phi_loc_deg  ( l1t::calc_phi_loc_deg( thisTrack.Phi_loc_int() ) );
 		thisTrack.set_phi_loc_rad  ( l1t::calc_phi_loc_rad( thisTrack.Phi_loc_int() ) );

@@ -927,6 +927,15 @@ unsigned long EmtfPtAssignment::calculateAddress( L1TMuon::InternalTrack track, 
     //// Calculate Delta Phi and Eta Combinations ////
     //////////////////////////////////////////////////
 	
+	for(int d=0;d<6;d++){
+	
+		dphi[d] = track.deltas[0][d];
+		deta[d] = track.deltas[1][d];
+	
+	}
+	
+	/*
+	
     if(phis[0] > 0 && phis[1] > 0){ // 1 - 2
       dphi[0] = phis[1] - phis[0];
       deta[0] = etas[1] - etas[0];
@@ -952,7 +961,7 @@ unsigned long EmtfPtAssignment::calculateAddress( L1TMuon::InternalTrack track, 
       deta[5] = etas[3] - etas[2];
     }
 
-
+	*/
     if(verbose){
       if (mode_inv==3) // 1-2
 	{

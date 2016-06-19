@@ -15,6 +15,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 	PhOutput phmatch = Mout.PhiMatch();
 	ThOutput thmatch = Mout.ThetaMatch();
+	ThOutput2 t2 = Mout.TMatch2();
 	
 	/*for comparison only
 	for(int xx=0;xx<4;xx++){
@@ -60,12 +61,18 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 					
 				for(int j=0;j<2;j++){
 						
-					int thi = thmatch[zone][winner][s1][i].Theta();
-					int thj = thmatch[zone][winner][s2][j].Theta();
+					//int thi = thmatch[zone][winner][s1][i].Theta();
+					//int thj = thmatch[zone][winner][s2][j].Theta();
+					
+					int thi = t2[zone][winner][s1][i];
+					int thj = t2[zone][winner][s2][j];
+					
+				//if(thi != -999 || thj != -999) std::cout<<"thi = "<<thi<<" and thj = "<<thj<<"\n";
+					
 					int deltath = thi - thj;
 					
 					
-					if((s1 == 0) && (thi != -999) && (thj != -999)){///need to fix still////
+					if((s1 == 0) && (thi != -999) && (thj != -999)){///need to fix still////???? do you? 6/7/2016
 								
 						if(!i){dth[s2-1][i+j] = deltath;}
 						else{dth[s2-1][i+j+1] = deltath;}
@@ -108,7 +115,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 		for(int l=0;l<4;l++){
 		
-			//if(dth[p][l] != -999 && verbose){std::cout<<"dth["<<p<<"]["<<l<<"] = "<<dth[p][l]<<"\n\n";}
+			//if(dth[p][l] != -999 ){std::cout<<"dth["<<p<<"]["<<l<<"] = "<<dth[p][l]<<" and l = "<<l<<"\n\n";}
 		
 			if(abs(dth[p][l]) < fabs(dtmp[p])){//get best dtheta(i.e. the smallest)
 			
@@ -117,6 +124,8 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 				dtmp[p] = dth[p][l];
 				
 				dtmpi[p] = l;//says which combination of dth is the one to choose (because there are 4 possible as stated above^)
+				
+				//std::cout<<"selected dtmp["<<p<<"] = "<<dtmp[p]<<" and dtmpi = "<<dtmpi[p]<<"\n";
 			}
 		}
 		
@@ -130,8 +139,8 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	}
 	
 	//for(int q=0;q<3;q++){
-	//	if(vmask[q] && verbose)
-	//		std::cout<<"vmask["<<q<<"] = "<<vmask[q]<<std::endl;
+	  //if(vmask[q] && verbose)
+		 // std::cout<<"vmask["<<q<<"] = "<<vmask[q]<<std::endl;
 	//}
 	
 	
@@ -141,7 +150,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 	if( !vstat || (vstat & vmask[1])){vstat |= vmask[1];}
 	
-	///if(vstat && verbose){std::cout<<"vstat = "<<vstat<<std::endl;}
+	//if(vstat && verbose){std::cout<<"vstat = "<<vstat<<std::endl;}
 	
 	if( !vstat || (vstat & vmask[2])){vstat |= vmask[2];}
 	
@@ -167,12 +176,12 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	const unsigned int viindex[2][11] = {{5,4,3,3,2,1,1,0,0,0,0},{5,4,3,5,2,1,5,0,4,3,3}};///index on which entry of vstatindex[11] to choose for both dphi and dtheta
 	
-	std::vector<int> d (2,-999);
+	std::vector<int> d (6,-999);
 	std::vector<std::vector<int>> deltas (2,d);//deltas[0]->dPhi & deltas[1]->dTheta
 	
 
 	
-	for(int c=0;c<11;c++){
+	/*for(int c=0;c<11;c++){
 	
 		if(vstat == vstatindex[c]){
 		
@@ -181,6 +190,14 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 			deltas[1][0] = dtmp[viindex[0][c]];
 			deltas[1][1] = dtmp[viindex[1][c]];
 		}
+	}*/
+	
+	for(int i=0;i<6;i++){
+	
+		//if(dtmp[i] != -999) std::cout<<"dtmp["<<i<<"] = "<<dtmp[i]<<"\n";
+		
+		deltas[0][i] = dphi[i];
+		deltas[1][i] = dtmp[i];
 	}
 	
 	///////////Set Precise Phi&Theta//////////
@@ -193,19 +210,34 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		//for theta, select delta to best station, use dtmpi as index
 		if(dtmp[0] != -999){
 		
-			if(dtmpi[0] < 2)
+			//std::cout<<"in here with dtmpi[0] = "<<dtmpi[0]<<"\n";
+		
+			//if(dtmpi[0] < 2)
+			if(dtmpi[0]%2)
 				id = 1;
 			
 			
-			theta = thmatch[zone][winner][1][id].Theta();
+			/*//std::cout<<"theta 0 = "<<thmatch[zone][winner][1][0].Theta()<<" and theta 1 = "<<thmatch[zone][winner][1][1].Theta()<<"\n";
+			
+			theta = thmatch[zone][winner][1][id].Theta();*/
+			
+			//std::cout<<"theta 0 = "<<t2[zone][winner][1][0]<<" and theta 1 = "<<t2[zone][winner][1][1]<<"\n";
+			
+			theta = t2[zone][winner][1][id];
+			
+			
 		}
 		else if(dtmp[3] != -999){
+		
+			//std::cout<<"in here with dtmpi[3] = "<<dtmpi[3]<<"\n";
 			
 			if(dtmpi[3] > 1)
 				id = 1;
 			
+			//std::cout<<"theta 0 = "<<thmatch[zone][winner][1][0].Theta()<<" and theta 1 = "<<thmatch[zone][winner][1][1].Theta()<<"\n";
 			
-			theta = thmatch[zone][winner][1][id].Theta();
+			//theta = thmatch[zone][winner][1][id].Theta();
+			theta = t2[zone][winner][1][id];
 		}
 		else if(dtmp[4] != -999){
 			
@@ -213,7 +245,8 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 				id = 1;
 			
 			
-			theta = thmatch[zone][winner][1][id].Theta();
+			//theta = thmatch[zone][winner][1][id].Theta();
+			theta = t2[zone][winner][1][id];
 		}
 	
 	}
@@ -223,11 +256,12 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		
 		if(dtmp[1] != -999){
 		
-			if(dtmpi[1] < 2)
+			if(dtmpi[1]%2)
 				id = 1;
 			
 			
-			theta = thmatch[zone][winner][2][id].Theta();
+			//theta = thmatch[zone][winner][2][id].Theta();
+			theta = t2[zone][winner][2][id];
 		}
 		else if(dtmp[5] != -999){
 			
@@ -235,7 +269,8 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 				id = 1;
 			
 			
-			theta = thmatch[zone][winner][2][id].Theta();
+			//theta = thmatch[zone][winner][2][id].Theta();
+			theta = t2[zone][winner][2][id];
 		}
 	}
 	else if(vstat & 8){//ME4 Present but not ME2 or ME3
@@ -243,11 +278,12 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		phi = phmatch[zone][winner][3].Phi();
 		if(dtmp[2] != -999){
 		
-			if(dtmpi[2] < 2)
+			if(dtmpi[2]%2)
 				id = 1;
 			
 			
-			theta = thmatch[zone][winner][3][id].Theta();
+			//theta = thmatch[zone][winner][3][id].Theta();
+			theta = t2[zone][winner][3][id];
 		}
 	}
 	
@@ -256,15 +292,18 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 	int rank = (Mout.Winners()[zone][winner].Rank()<<1);
 	
-	
+	if(rank) std::cout<<"rank = "<<rank<<"\n";
 	///here we separate stations 3 and 4////
 	if(vstat & 8){rank |= 1;}else{rank &= 0x7e;}//if station 4 add to rank, else keep everythign and zero the bit which indicates station 4 is present
+	if(rank) std::cout<<"rank = "<<rank<<"\n";
 	if(vstat & 4){rank |= 2;}else{rank &= 0x7d;}//if station 3 add to rank, else keep everythign and zero the bit which indicates station 3 is present
+	if(rank) std::cout<<"rank = "<<rank<<"\n";
 	if(vstat & 2){rank |= 8;}else{rank &= 0x77;}//if station 2 add to rank, else keep everythign and zero the bit which indicates station 2 is present
+	if(rank) std::cout<<"rank = "<<rank<<"\n";
 	if(vstat & 1){rank |= 32;}else{rank &= 0x5f;}//if station 1 add to rank, else keep everythign and zero the bit which indicates station 1 is present
-	
+	if(rank) std::cout<<"sl rank = "<<rank<<"\n";
 	if(vstat == 0 || vstat == 1 || vstat == 2 || vstat == 4 || vstat == 8){rank = 0;}//removes single, and ME3--ME4 hit combinations
-	
+	if(rank) std::cout<<"last rank = "<<rank<<"\n";
 	DeltaOutput output;
 	Mout.SetPhOut(phmatch);
 	Winner win = Mout.Winners()[zone][winner];
@@ -296,4 +335,28 @@ std::vector<std::vector<DeltaOutput>> CalcDeltas(MatchingOutput Mout){
 	
 	
 	return out;
+}
+
+std::vector<std::vector<std::vector<DeltaOutput>>> CalcDeltas_Hold(std::vector<MatchingOutput> Mout){
+
+	DeltaOutput output;output.SetNull();
+	
+	std::vector<DeltaOutput> o (3,output);
+	std::vector<std::vector<DeltaOutput>> out (4,o);
+	std::vector<std::vector<std::vector<DeltaOutput>>> Output (3,out);
+	
+	for(int bx=0;bx<3;bx++){
+	
+		for(int zone=0;zone<4;zone++){
+	
+			for(int winner=0;winner<3;winner++){
+			
+				Output[bx][zone][winner] = Deltas(Mout[bx], zone, winner);
+			}
+		}
+		
+	}
+
+	return Output;
+
 }
