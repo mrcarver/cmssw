@@ -329,9 +329,9 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 
  ///////////////////////////////////////
- /// Collect Muons from all sectors //// and BX windows and cancel across BXs even though not yet in FW
- /////////////////////////////////////// to see if sub percent kind of effect. If more then I can try to 
-										//FW exactly but it will take a lot more thinking.
+ /// Collect Muons from all sectors //// and BX windows 
+ /////////////////////////////////////// 
+										
  std::vector<BTrack> PTemp[NUM_SECTORS];
  std::vector<BTrack> AllTracks, ATH;
  for (int i=0; i<NUM_SECTORS; i++) PTemp[i] = PTracks[i];

@@ -122,7 +122,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	if(ring == 4){Id += 9;}
 
 	//if(endcap == 1 && sector == 1)//
-	if( (SectIndex ==  (endcap - 1)*6 + sector - 1 ) )// || IsNeighbor )
+	if( (SectIndex ==  (endcap - 1)*6 + sector - 1 ) || IsNeighbor )
 	{
 	
 		
