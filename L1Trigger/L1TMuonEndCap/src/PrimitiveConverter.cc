@@ -122,7 +122,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	if(ring == 4){Id += 9;}
 
 	//if(endcap == 1 && sector == 1)//
-	if( (SectIndex ==  (endcap - 1)*6 + sector - 1 )  || IsNeighbor )
+	if( (SectIndex ==  (endcap - 1)*6 + sector - 1 ) )// || IsNeighbor )
 	{
 	
 		
@@ -504,10 +504,14 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	///////////////////////////////////////////////////////
 	
 	
-	//if(SectIndex == 8){
-		std::cout<<"phi = "<<fph<<", theta = "<<th<<", bx = "<<BX<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
+	//if(SectIndex == 0){
+		//std::cout<<"phi = "<<fph<<", theta = "<<th<<", bx = "<<BX<<", ph_hit = "<<ph_hit<<",zhit = "<<zhit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	
-		//std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
+	
+		//if(C3.Id() > 9)
+		//	std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id() - 9<<" 0 "<<strip<<"\n";
+		//else
+		//	std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
 	//}
 	
 	/* if(station != 1) */
@@ -524,6 +528,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 		in = 1;
 
 	Hit.SetValues(fph,th,ph_hit,phzvl,station,sub,Id,quality,pattern,wire,strip,BX);
+	Hit.AddTheta(th);
 	Hit.SetTP(C3);
 	Hit.SetZhit(zhit);
 	Hit.SetZoneContribution(zonecontribution);

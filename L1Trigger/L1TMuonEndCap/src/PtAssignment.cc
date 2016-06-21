@@ -931,6 +931,8 @@ unsigned long EmtfPtAssignment::calculateAddress( L1TMuon::InternalTrack track, 
 	
 		dphi[d] = track.deltas[0][d];
 		deta[d] = track.deltas[1][d];
+		
+		if(verbose) cout<<"dphi["<<d<<"] = "<<dphi[d]<<" and dth[d] = "<<deta[d]<<"\n";
 	
 	}
 	
@@ -1154,7 +1156,10 @@ unsigned long EmtfPtAssignment::calculateAddress( L1TMuon::InternalTrack track, 
 	// Make Pt LUT Address
 	int dPhi12_ = fabs(dPhi12);
 	int sign12_ = dPhi12Sign > 0 ? 1 : 0;
+	
+	//std::cout<<"dTheta12 = "<<dTheta12;
 	int dTheta12_ = getdTheta(dTheta12);
+	//std::cout<<"dTehta12_ = "<<dTheta12_;
 	int CLCT1_ = getCLCT(CLCT1);
 	int CLCT1Sign_ = CLCT1_ > 0 ? 1 : 0;
 	CLCT1_ = abs(CLCT1_);
@@ -1163,7 +1168,9 @@ unsigned long EmtfPtAssignment::calculateAddress( L1TMuon::InternalTrack track, 
 	CLCT2_ = abs(CLCT2_);
 	int FR1_ = FR1;
 	int FR2_ = FR2;
+	//std::cout<<"TrackEta = "<<TrackEta;
 	int eta_ = getEtaInt(TrackEta, 5);
+	//std::cout<<"eta_ = "<<eta_;
 	int Mode_ = mode_inv;
       
 	Address += ( dPhi12_ & ((1<<9)-1))    << (0);

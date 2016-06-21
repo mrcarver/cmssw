@@ -11,7 +11,7 @@
 
 MatchingOutput PhiMatching(SortingOutput Sout){
 
-	bool verbose = true;
+	bool verbose = false;
 
 	std::vector<ConvertedHit> Thits = Sout.Hits();
 	std::vector<std::vector<Winner>> Winners = Sout.Winners();
@@ -58,11 +58,11 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 					if(verbose) std::cout<<"station = "<<Thits[i].Station()<<", strip = "<<Thits[i].Strip()<<", keywire = "<<Thits[i].Wire()<<" and zhit-"<<Thits[i].Zhit()<<", bx = "<<Thits[i].BX()<<", phi>>5 = "<<(Thits[i].Phi()>>5)<<"\n";
 
 					// Unused variable
-					/* bool inzone = 0;///Is the converted hit in the zone we're looking at now? */
-					/* for(std::vector<int>::iterator znc = Thits[i].ZoneContribution().begin();znc != Thits[i].ZoneContribution().end();znc++){ */
-					/* 	if((*znc) == z) */
-					/* 		inzone = 1;//yes */
-					/* } */
+					/* bool inzone = 0;///Is the converted hit in the zone we're looking at now? 
+					 for(std::vector<int>::iterator znc = Thits[i].ZoneContribution().begin();znc != Thits[i].ZoneContribution().end();znc++){ 
+					  if((*znc) == z) 
+						  inzone = 1;//yes 
+					 } */
 					
 					bool inBXgroup = false;
 					
@@ -92,7 +92,7 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 					//	std::cout<<"Winners[z][w].Strip(): "<<Winners[z][w].Strip()<<" + 1 - Thits[i].Zhit():"<<Thits[i].Zhit()<<" = "<<(Winners[z][w].Strip() + 1) - Thits[i].Zhit()<<". Thits[i].Phi()>>5 = "<<(Thits[i].Phi() >> 5)<<"\n";
 					//}
 					
-					if((fabs(Winners[z][w].Strip() - (Thits[i].Phi()>>5)) <= phdiff[setstation]) && inBXgroup){//is close to winner keystrip and in same zone?
+					if((fabs(Winners[z][w].Strip() - (Thits[i].Phi()>>5)) <= phdiff[setstation]) && inBXgroup /*&& inzone*/){//is close to winner keystrip and in same zone?
 					
 						if(ph_output[z][w][setstation].Phi() == -999){//has this already been set? no
 						
@@ -188,7 +188,7 @@ std::vector<MatchingOutput> PhiMatching_Hold(std::vector<SortingOutput> Sout){
 
 	for(int i=0;i<3;i++){
 	
-		std::cout<<"begin matching on BX group "<<i<<"\n";
+	//	std::cout<<"begin matching on BX group "<<i<<"\n";
 		output[i] = PhiMatching(Sout[i]);
 	
 	}

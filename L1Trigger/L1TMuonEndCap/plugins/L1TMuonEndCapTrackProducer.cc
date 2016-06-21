@@ -66,6 +66,7 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
   std::auto_ptr<l1t::EMTFHitExtraCollection> OutputHits (new l1t::EMTFHitExtraCollection);
 
   std::vector<BTrack> PTracks[NUM_SECTORS];
+  std::vector<BTrack> PTracks_BX[NUM_SECTORS][3];
 
   std::vector<TriggerPrimitive> tester;
   //std::vector<InternalTrack> FoundTracks;
@@ -113,18 +114,54 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
    // ev.getByLabel(*tpsrc,tps);
     auto tp = out.cbegin();
     auto tpend = out.cend();
+	
+	//bool S1 =false;
 
     for( ; tp != tpend; ++tp ) {
       if(tp->subsystem() == 1)
       {
 		//TriggerPrimitiveRef tpref(out,tp - out.cbegin());
 
-		tester.push_back(*tp);
+		//tester.push_back(*tp);
 
 		//std::cout<<"\ntrigger prim found station:"<<tp->detId<CSCDetId>().station()<<std::endl;
       }
 
      }
+	 
+	 for(unsigned int i1=0;i1<out.size();i1++){
+	 
+	 	tester.push_back(out[i1]);
+		
+		//if(out[i1].detId<CSCDetId>().triggerSector() == 1 && out[i1].detId<CSCDetId>().endcap() == 1)
+		//	S1 = true;
+	 
+	 	for(unsigned int i2=i1+1;i2<out.size();i2++){
+	 
+	 		if(i1 == i2) continue;
+			
+			if(out[i1].detId<CSCDetId>().station() == out[i2].detId<CSCDetId>().station() &&
+				out[i1].detId<CSCDetId>().endcap() == out[i2].detId<CSCDetId>().endcap() &&
+				out[i1].detId<CSCDetId>().triggerSector() == out[i2].detId<CSCDetId>().triggerSector() &&
+				out[i1].detId<CSCDetId>().ring() == out[i2].detId<CSCDetId>().ring() &&
+				out[i1].detId<CSCDetId>().chamber() == out[i2].detId<CSCDetId>().chamber() &&
+				out[i1].Id() == out[i2].Id()){ 
+						
+						TriggerPrimitive NewWire1(out[i1],out[i2]);
+						TriggerPrimitive NewWire2(out[i2],out[i1]);
+						tester.push_back(NewWire1);
+						tester.push_back(NewWire2);
+						
+				}
+	 
+	 	}
+	 }
+	 
+	 
+	 //if(S1)
+	 //	std::cout<<"12345\n12345\n12345\n12345\n12345\n12345\n12345\n12345\n12345\n12345\n";
+	 
+	 
    //}
   std::vector<ConvertedHit> CHits[NUM_SECTORS];
   //MatchingOutput MO[NUM_SECTORS];
@@ -237,9 +274,9 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   std::vector<PatternOutput> Pout = Patterns(Zout);
   std::vector<PatternOutput> Pout_Hold = Pout;
 
-  PatternOutput Test = DeleteDuplicatePatterns(Pout);
+  //PatternOutput Test = DeleteDuplicatePatterns(Pout);
 
-  PrintQuality(Test.detected);
+  //PrintQuality(Test.detected);
 
 
   ///////////////////////////////
@@ -247,7 +284,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   ///////Finding 3 Best Pattern//
   ///////////////////////////////
 
-  SortingOutput Sout = SortSect(Test);
+  //SortingOutput Sout = SortSect(Test);
   
   std::vector<SortingOutput> Sout_Hold = SortSect_Hold(Pout_Hold);
 
@@ -257,7 +294,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   ////// to segment inputs ///////// and matches the associated full precision triggerprimitives to the detected pattern.
   //////////////////////////////////
   
-  MatchingOutput Mout = PhiMatching(Sout);
+  //MatchingOutput Mout = PhiMatching(Sout);
   
   std::vector<MatchingOutput> Mout_Hold = PhiMatching_Hold(Sout_Hold);
   
@@ -268,11 +305,9 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   ////////    ph and th    //////// stations present.
   /////////////////////////////////
 
- std::vector<std::vector<DeltaOutput>> Dout = CalcDeltas(Mout);////
+ //std::vector<std::vector<DeltaOutput>> Dout = CalcDeltas(Mout);////
  
  std::vector<std::vector<std::vector<DeltaOutput>>> Dout_Hold = CalcDeltas_Hold(Mout_Hold);
- 
- //std::vector<std::vector<DeltaOutput>> Dout_Final = DeleteDuplicatePatterns_Hold(Dout_Hold);
 
 
   /////////////////////////////////
@@ -280,31 +315,40 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   ////// Best 3 tracks/sector /////  Here ghost busting is done to delete tracks which are comprised of the same associated stubs.
   /////////////////////////////////
 
-  std::vector<BTrack> Bout = BestTracks(Dout);
-   PTracks[SectIndex] = Bout;
+ // std::vector<BTrack> Bout = BestTracks(Dout);
+  
+  std::vector<std::vector<BTrack>> Bout_Hold = BestTracks_Hold(Dout_Hold);
+  
+  // PTracks[SectIndex] = Bout;
+   for(int bx=0;bx<3;bx++){
+   		PTracks_BX[SectIndex][bx] = Bout_Hold[bx];
+	}
 
    
  } // End loop: for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++)
 
 
  ///////////////////////////////////////
- /// Collect Muons from all sectors ////
- ///////////////////////////////////////
-
+ /// Collect Muons from all sectors //// and BX windows and cancel across BXs even though not yet in FW
+ /////////////////////////////////////// to see if sub percent kind of effect. If more then I can try to 
+										//FW exactly but it will take a lot more thinking.
  std::vector<BTrack> PTemp[NUM_SECTORS];
- std::vector<BTrack> AllTracks;
+ std::vector<BTrack> AllTracks, ATH;
  for (int i=0; i<NUM_SECTORS; i++) PTemp[i] = PTracks[i];
 
-
+for(int bx=0;bx<3;bx++){
  	for(int j=0;j<36;j++){
 
 
-			if(PTemp[j/3][j%3].phi)//no track
-				AllTracks.push_back(PTemp[j/3][j%3]);
-
-		
-
+			//if(PTemp[j/3][j%3].phi)//no track
+			//	AllTracks.push_back(PTemp[j/3][j%3]);
+			
+			if(PTracks_BX[j/3][bx][j%3].phi)//no track
+				AllTracks.push_back(PTracks_BX[j/3][bx][j%3]);
+				
  	}
+}
+
 
   ///////////////////////////////////
   /// Make Internal track if ////////
@@ -312,7 +356,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
   /////////////////////////////////// 
   
   std::vector<l1t::RegionalMuonCand> tester1;
-  std::vector<std::pair<int,l1t::RegionalMuonCand>> holder;
+  std::vector<std::pair<int,l1t::RegionalMuonCand>> holder, holder2;
 
   for(unsigned int fbest=0;fbest<AllTracks.size();fbest++){
 
@@ -347,6 +391,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		int me1address = 0, me2address = 0, CombAddress = 0, mode_uncorr = 0;
 		int ebx = 20, sebx = 20;
 		int phis[4] = {-99,-99,-99,-99};
+
 
 		for(std::vector<ConvertedHit>::iterator A = AllTracks[fbest].AHits.begin();A != AllTracks[fbest].AHits.end();A++){
 
@@ -454,6 +499,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		
 		// After Mulhearn cleanup, May 11
 		unsigned long xmlpt_address = ptAssignment_.calculateAddress(tempTrack, es, mode);
+		//std::cout<<"address = "<<xmlpt_address<<"\n";
 		float xmlpt = ptAssignment_.calculatePt(xmlpt_address);
 
 		tempTrack.pt = xmlpt*1.4;
@@ -506,16 +552,16 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 		if(!ME13 && fabs(eta) > 1.1) {
 		  // // Extra debugging output - AWB 29.03.16
-		   std::cout << "Input: eBX = " << ebx << ", seBX = " << sebx << ", pt = " << xmlpt*1.4 
-		    	  << ", phi = " << AllTracks[fbest].phi << ", eta = " << eta 
-		    	  << ", theta = " << AllTracks[fbest].theta << ", sign = " << 1 
-		    	  << ", quality = " << mode << ", trackaddress = " << 1 
-		    	  << ", sector = " << sector << std::endl;
-		   std::cout << "Output: BX = " << ebx << ", hwPt = " << outCand.hwPt() << ", hwPhi = " << outCand.hwPhi() 
-		    	  << ", hwEta = " << outCand.hwEta() << ", hwSign = " << outCand.hwSign() 
-		    	  << ", hwQual = " << outCand.hwQual() << ", link = " << outCand.link()
-		    	  << ", processor = " << outCand.processor() 
-		    	  << ", trackFinderType = " << outCand.trackFinderType() << std::endl;
+		  // std::cout << "Input: eBX = " << ebx << ", seBX = " << sebx << ", pt = " << xmlpt*1.4 
+		  //  	  << ", phi = " << AllTracks[fbest].phi << ", eta = " << eta 
+		  //  	  << ", theta = " << AllTracks[fbest].theta << ", sign = " << 1 
+		  //  	  << ", quality = " << mode << ", trackaddress = " << 1 
+		  //  	  << ", sector = " << sector << std::endl;
+		  // std::cout << "Output: BX = " << ebx << ", hwPt = " << outCand.hwPt() << ", hwPhi = " << outCand.hwPhi() 
+		  //  	  << ", hwEta = " << outCand.hwEta() << ", hwSign = " << outCand.hwSign() 
+		  //  	  << ", hwQual = " << outCand.hwQual() << ", link = " << outCand.link()
+		  //  	  << ", processor = " << outCand.processor() 
+		  //  	  << ", trackFinderType = " << outCand.trackFinderType() << std::endl;
 			holder.push_back(outPair);
 			thisTrack.set_isGMT( 1 );
 		}
@@ -523,6 +569,37 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 		OutTracks->push_back( thisTrack.CreateEMTFTrack() );
 	}
   }
+  
+  
+for(unsigned int h1=0;h1<holder.size();h1++){
+
+	bool dup = false;
+	
+	for(unsigned int h2=h1+1;h2<holder.size();h2++){///also check to see if lower rank...well actually at this stage there is only GMT quality which is not as likely to be different?
+
+		if(holder[h1].first == holder[h2].first && 
+			holder[h1].second.hwEta() == holder[h2].second.hwEta() &&
+			holder[h1].second.hwQual() == holder[h2].second.hwQual() &&
+			holder[h1].second.hwPhi() == holder[h2].second.hwPhi() &&
+			holder[h1].second.hwPt() == holder[h2].second.hwPt() &&
+			holder[h1].second.processor() == holder[h2].second.processor()){
+			
+			
+			dup = true;
+		}
+
+	}
+	
+	
+	if(!dup){
+		holder2.push_back(holder[h1]);
+		std::cout << "Output: BX = " << holder[h1].first << ", hwPt = " << holder[h1].second.hwPt() << ", hwPhi = " << holder[h1].second.hwPhi()
+			 << ", hwEta = " << holder[h1].second.hwEta() << ", hwSign = " << holder[h1].second.hwSign() 
+			 << ", hwQual = " << holder[h1].second.hwQual() << ", link = " << holder[h1].second.link()
+			 << ", processor = " << holder[h1].second.processor() 
+			 << ", trackFinderType = " << holder[h1].second.trackFinderType() << std::endl;
+	}
+}  
   
 OutputCands->setBXRange(-2,2);
 
@@ -553,9 +630,11 @@ ev.put( OutputCands, "EMTF");
 
 void L1TMuonEndCapTrackProducer::beginJob()
 {
+
 }
 void L1TMuonEndCapTrackProducer::endJob()
 {
+
 }
 #include "FWCore/Framework/interface/MakerMacros.h"
 DEFINE_FWK_MODULE(L1TMuonEndCapTrackProducer);

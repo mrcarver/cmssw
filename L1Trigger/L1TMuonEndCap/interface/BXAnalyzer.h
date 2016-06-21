@@ -21,7 +21,7 @@ std::vector<std::vector<ConvertedHit>> GroupBX(std::vector<ConvertedHit> ConvHit
 	for(std::vector<ConvertedHit>::iterator i = ConvHits.begin();i != ConvHits.end();i++){
 	
 		int diff = i->BX() - CentralBX;
-		
+		  
 		if((diff > -3) && (diff < 1))
 			output[0].push_back(*i);
 		
@@ -41,11 +41,14 @@ std::vector<std::vector<ConvertedHit>> GroupBX(std::vector<ConvertedHit> ConvHit
 			
 				if(it == it2) continue;
 				
-				if(it->Station() == it2->Station() && it->Id() == it2->Id()){
+				if(it->Station() == it2->Station() && it->Id() == it2->Id() ){//add that phis have to be equal if assuming that a phi position can have only 2 possible thetas
 				
 					it->SetTheta2(it2->Theta());
 					it2->SetTheta2(it->Theta());
 					//std::cout<<"thetas = "<<it2->Theta()<<" and "<<it->Theta()<<"\n";
+					
+					it->AddTheta(it2->Theta());
+					it2->AddTheta(it->Theta());
 				}
 				
 			}
@@ -117,36 +120,4 @@ PatternOutput DeleteDuplicatePatterns(std::vector<PatternOutput> Pout){
 
 }
 
- std::vector<std::vector<DeltaOutput>> DeleteDuplicatePatterns_Hold( std::vector<std::vector<std::vector<DeltaOutput>>> Dout){
- 
- 
- 	DeltaOutput output;output.SetNull();
-	
-	std::vector<DeltaOutput> o (3,output);
-	std::vector<std::vector<DeltaOutput>> out (4,o);
-	
-	
-	for(int bx=0;bx<3;bx++){
-		for(int bx2=bx+1;bx2<3;bx++){
-	
-			for(int zone=0;zone<4;zone++){
-		
-				for(int win=0;win<3;win++){
-			
-				
-					if(Dout[bx][zone][win].GetMatchOut().Winners()[zone][win].Strip() == Dout[bx2][zone][win].GetMatchOut().Winners()[zone][win].Strip()){
-				
-						
-					
-					}
-				
-				}
-	
-			}
-		
-		}
-	}
- 
- 	return out;
- 
- }
+

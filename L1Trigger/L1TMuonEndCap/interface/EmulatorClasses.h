@@ -57,6 +57,8 @@ class ConvertedHit{
 		
 		void SetNeighbor(int neighbor){_isNeighbor = neighbor;};
 		
+		void AddTheta(int theta){_thetas.push_back(theta);};
+		
 		
 		int Phi(){return _ph;};
 		int Theta(){return _th;};
@@ -76,13 +78,14 @@ class ConvertedHit{
 		int IsNeighbor(){return _isNeighbor;};
 		TriggerPrimitive TP(){return _tp;};
 		std::vector<int> ZoneContribution(){return _zonecont;};
+		std::vector<int> AllThetas(){return _thetas;};
 		
 		
 	private:
 	
 		int _ph,_th, _th2,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor;
 		TriggerPrimitive _tp;
-		std::vector<int> _zonecont;
+		std::vector<int> _zonecont, _thetas;
 
 };
 

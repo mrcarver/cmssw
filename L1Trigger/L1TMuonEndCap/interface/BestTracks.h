@@ -12,7 +12,7 @@ Date: 7/29/13
 
 std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 
-	bool verbose = true;
+	bool verbose = false;
 
 	int larger[12][12] = {{0},{0}}, kill[12] = {0};
 	int exists[12] = {0};
@@ -187,10 +187,23 @@ std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 			
 				BTrack bests;
 				
-				if(verbose) std::cout<<"Best Rank "<<n<<" = "<<Dout[i%4][i/4].GetWinner().Rank()<<"\n\n";
+				
+				int mode = 0;
+				if(Dout[i%4][i/4].GetWinner().Rank() & 32)
+					mode |= 8;
+				if(Dout[i%4][i/4].GetWinner().Rank() & 8)
+					mode |= 4;
+				if(Dout[i%4][i/4].GetWinner().Rank() & 2)
+					mode |= 2;
+				if(Dout[i%4][i/4].GetWinner().Rank() & 1)
+					mode |= 1;
+				
+				if(verbose) std::cout<<"Best Rank "<<n<<" = "<<Dout[i%4][i/4].GetWinner().Rank()<<" and mode = "<<mode<<"\n\n";
 				if(verbose) std::cout<<"Phi = "<<Dout[i%4][i/4].Phi()<<" and Theta = "<<Dout[i%4][i/4].Theta()<<"\n\n";
-				if(verbose) std::cout<<"Ph Deltas: "<<Dout[i%4][i/4].Deltas()[0][0]<<" "<<Dout[i%4][i/4].Deltas()[0][1]<<"   Th Deltas: "<<Dout[i%4][i/4].Deltas()[1][0]
-																	 <<" "<<Dout[i%4][i/4].Deltas()[1][1]<<"\n\n";
+				if(verbose) std::cout<<"Ph Deltas: "<<Dout[i%4][i/4].Deltas()[0][0]<<" "<<Dout[i%4][i/4].Deltas()[0][1]<<" "<<Dout[i%4][i/4].Deltas()[0][2]<<" "<<Dout[i%4][i/4].Deltas()[0][3]
+										<<" "<<Dout[i%4][i/4].Deltas()[0][4]<<" "<<Dout[i%4][i/4].Deltas()[0][5]<<"   \nTh Deltas: "<<Dout[i%4][i/4].Deltas()[1][0]
+																	 <<" "<<Dout[i%4][i/4].Deltas()[1][1]<<" "<<Dout[i%4][i/4].Deltas()[1][2]<<" "<<Dout[i%4][i/4].Deltas()[1][3]
+																	 <<" "<<Dout[i%4][i/4].Deltas()[1][4]<<" "<<Dout[i%4][i/4].Deltas()[1][5]<<"\n\n";
 						
 				bests.winner = Dout[i%4][i/4].GetWinner();
 				bests.phi = Dout[i%4][i/4].Phi();
@@ -213,3 +226,25 @@ std::vector<BTrack> BestTracks(std::vector<std::vector<DeltaOutput>> Dout){
 
 
 }
+
+
+std::vector<std::vector<BTrack>> BestTracks_Hold(std::vector<std::vector<std::vector<DeltaOutput>>> Dout){
+
+	
+	BTrack tmp;
+	std::vector<BTrack> output (3,tmp);
+	std::vector<std::vector<BTrack>> full_output (3,output);
+
+	for(int bx=0;bx<3;bx++){
+	
+	
+		full_output[bx] = BestTracks(Dout[bx]);
+	
+	
+	}
+
+
+	return full_output;
+
+}
+
