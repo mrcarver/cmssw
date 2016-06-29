@@ -333,8 +333,9 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
  /////////////////////////////////////// 
 										
  std::vector<BTrack> PTemp[NUM_SECTORS];
- std::vector<BTrack> AllTracks, ATH;
+ std::vector<BTrack> AllTracks, AllTracks_PreDuplicationCancellation;
  for (int i=0; i<NUM_SECTORS; i++) PTemp[i] = PTracks[i];
+ 
 
 for(int bx=0;bx<3;bx++){
  	for(int j=0;j<36;j++){
@@ -344,11 +345,42 @@ for(int bx=0;bx<3;bx++){
 			//	AllTracks.push_back(PTemp[j/3][j%3]);
 			
 			if(PTracks_BX[j/3][bx][j%3].phi)//no track
-				AllTracks.push_back(PTracks_BX[j/3][bx][j%3]);
+				AllTracks_PreDuplicationCancellation.push_back(PTracks_BX[j/3][bx][j%3]);
 				
  	}
 }
 
+for(unsigned int i1=0;i1<AllTracks_PreDuplicationCancellation.size();i1++){
+
+	bool dup = false;
+	
+	int ebx = 20, sindex = -1;
+	for(std::vector<ConvertedHit>::iterator A = AllTracks_PreDuplicationCancellation[i1].AHits.begin();A != AllTracks_PreDuplicationCancellation[i1].AHits.end();A++){
+		if(A->TP().getCSCData().bx < ebx){
+			ebx = A->TP().getCSCData().bx;
+		}
+		sindex = A->SectorIndex();
+	}
+
+	for(unsigned int i2=i1+1;i2<AllTracks_PreDuplicationCancellation.size();i2++){
+		
+		int ebx2 = 20, sindex2 = -1;
+		for(std::vector<ConvertedHit>::iterator A2 = AllTracks_PreDuplicationCancellation[i1].AHits.begin();A2 != AllTracks_PreDuplicationCancellation[i1].AHits.end();A2++){
+			if(A2->TP().getCSCData().bx < ebx2){
+				ebx2 = A2->TP().getCSCData().bx;
+			}
+			sindex2 = A2->SectorIndex();
+		}
+		
+		if(ebx == ebx2 && AllTracks_PreDuplicationCancellation[i1].theta == AllTracks_PreDuplicationCancellation[i2].theta &&
+		   AllTracks_PreDuplicationCancellation[i1].phi == AllTracks_PreDuplicationCancellation[i2].phi && AllTracks_PreDuplicationCancellation[i1].winner.Rank() == AllTracks_PreDuplicationCancellation[i2].winner.Rank() &&
+		   sindex == sindex2 && sindex != -1 && sindex2 != -1){dup = true;}
+		
+	}
+	
+	if(!dup)
+		AllTracks.push_back(AllTracks_PreDuplicationCancellation[i1]);
+}
 
   ///////////////////////////////////
   /// Make Internal track if ////////
@@ -552,16 +584,16 @@ for(int bx=0;bx<3;bx++){
 
 		if(!ME13 && fabs(eta) > 1.1) {
 		  // // Extra debugging output - AWB 29.03.16
-		  // std::cout << "Input: eBX = " << ebx << ", seBX = " << sebx << ", pt = " << xmlpt*1.4 
-		  //  	  << ", phi = " << AllTracks[fbest].phi << ", eta = " << eta 
-		  //  	  << ", theta = " << AllTracks[fbest].theta << ", sign = " << 1 
-		  //  	  << ", quality = " << mode << ", trackaddress = " << 1 
-		  //  	  << ", sector = " << sector << std::endl;
-		  // std::cout << "Output: BX = " << ebx << ", hwPt = " << outCand.hwPt() << ", hwPhi = " << outCand.hwPhi() 
-		  //  	  << ", hwEta = " << outCand.hwEta() << ", hwSign = " << outCand.hwSign() 
-		  //  	  << ", hwQual = " << outCand.hwQual() << ", link = " << outCand.link()
-		  //  	  << ", processor = " << outCand.processor() 
-		  //  	  << ", trackFinderType = " << outCand.trackFinderType() << std::endl;
+		   std::cout << "Input: eBX = " << ebx << ", seBX = " << sebx << ", pt = " << xmlpt*1.4 
+		    	<< ", phi = " << AllTracks[fbest].phi << ", eta = " << eta 
+		    	<< ", theta = " << AllTracks[fbest].theta << ", sign = " << 1 
+		    	<< ", quality = " << mode << ", trackaddress = " << 1 
+		    	<< ", sector = " << sector << std::endl;
+		   std::cout << "Output: BX = " << ebx << ", hwPt = " << outCand.hwPt() << ", hwPhi = " << outCand.hwPhi() 
+		    	<< ", hwEta = " << outCand.hwEta() << ", hwSign = " << outCand.hwSign() 
+		    	<< ", hwQual = " << outCand.hwQual() << ", link = " << outCand.link()
+		    	<< ", processor = " << outCand.processor() 
+		    	<< ", trackFinderType = " << outCand.trackFinderType() << std::endl;
 			holder.push_back(outPair);
 			thisTrack.set_isGMT( 1 );
 		}
@@ -569,37 +601,6 @@ for(int bx=0;bx<3;bx++){
 		OutTracks->push_back( thisTrack.CreateEMTFTrack() );
 	}
   }
-  
-  
-for(unsigned int h1=0;h1<holder.size();h1++){
-
-	bool dup = false;
-	
-	for(unsigned int h2=h1+1;h2<holder.size();h2++){///also check to see if lower rank...well actually at this stage there is only GMT quality which is not as likely to be different?
-
-		if(holder[h1].first == holder[h2].first && 
-			holder[h1].second.hwEta() == holder[h2].second.hwEta() &&
-			holder[h1].second.hwQual() == holder[h2].second.hwQual() &&
-			holder[h1].second.hwPhi() == holder[h2].second.hwPhi() &&
-			holder[h1].second.hwPt() == holder[h2].second.hwPt() &&
-			holder[h1].second.processor() == holder[h2].second.processor()){
-			
-			
-			dup = true;
-		}
-
-	}
-	
-	
-	if(!dup){
-		holder2.push_back(holder[h1]);
-		std::cout << "Output: BX = " << holder[h1].first << ", hwPt = " << holder[h1].second.hwPt() << ", hwPhi = " << holder[h1].second.hwPhi()
-			 << ", hwEta = " << holder[h1].second.hwEta() << ", hwSign = " << holder[h1].second.hwSign() 
-			 << ", hwQual = " << holder[h1].second.hwQual() << ", link = " << holder[h1].second.link()
-			 << ", processor = " << holder[h1].second.processor() 
-			 << ", trackFinderType = " << holder[h1].second.trackFinderType() << std::endl;
-	}
-}  
   
 OutputCands->setBXRange(-2,2);
 

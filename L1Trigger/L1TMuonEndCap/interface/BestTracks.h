@@ -237,7 +237,7 @@ std::vector<std::vector<BTrack>> BestTracks_Hold(std::vector<std::vector<std::ve
 
 	for(int bx=0;bx<3;bx++){
 	
-	
+		//std::cout<<"Best tracks "<<bx<<"\n";
 		full_output[bx] = BestTracks(Dout[bx]);
 	
 	
