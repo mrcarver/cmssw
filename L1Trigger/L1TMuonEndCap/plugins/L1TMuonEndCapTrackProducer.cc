@@ -145,7 +145,7 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
 				out[i1].detId<CSCDetId>().triggerSector() == out[i2].detId<CSCDetId>().triggerSector() &&
 				out[i1].detId<CSCDetId>().ring() == out[i2].detId<CSCDetId>().ring() &&
 				out[i1].detId<CSCDetId>().chamber() == out[i2].detId<CSCDetId>().chamber() &&
-				out[i1].Id() == out[i2].Id()){ 
+				out[i1].Id() == out[i2].Id() && out[i1].getBX() == out[i2].getBX()){ 
 						
 						TriggerPrimitive NewWire1(out[i1],out[i2]);
 						TriggerPrimitive NewWire2(out[i2],out[i1]);
