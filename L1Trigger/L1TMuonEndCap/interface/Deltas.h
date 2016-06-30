@@ -186,8 +186,8 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		}
 		*/
 		//if(dtmp2[p] != -999){
-		//	std::cout<<"dtmp2["<<p<<"] = "<<dtmp2[p]<<" and dtmp = "<<dtmp[p]<<"\n";
-		//	std::cout<<"dtmp2_ths = "<<dtmp2_ths[p][0]<<" and "<<dtmp2_ths[p][1]<<"\n";
+		//  std::cout<<"dtmp2["<<p<<"] = "<<dtmp2[p]<<" and dtmp = "<<dtmp[p]<<"\n";
+		//  std::cout<<"dtmp2_ths = "<<dtmp2_ths[p][0]<<" and "<<dtmp2_ths[p][1]<<"\n";
 		//}
 		
 		
@@ -199,11 +199,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		} 
 	}
 	
-	//for(int q=0;q<3;q++){
-	  //if(vmask[q] && verbose)
-		 // std::cout<<"vmask["<<q<<"] = "<<vmask[q]<<std::endl;
-	//}
-	
+
 	
 	unsigned int vstat = vmask[0];
 	
@@ -215,7 +211,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 	if( !vstat || (vstat & vmask[2])){vstat |= vmask[2];}
 	
-	//if(vstat ){std::cout<<"vstat = "<<vstat<<std::endl;}//
+	///if(vstat ){std::cout<<"vstat = "<<vstat<<std::endl;}//
 	/*
 	//const unsigned int vstatindex[11] = {0xc,0xa,0x6,0xe,0x9,0x5,0xd,0x3,0xb,0x7,0xf};
 	/////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +251,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 	for(int i=0;i<6;i++){
 	
-		//if(dtmp[i] != -999) std::cout<<"dtmp["<<i<<"] = "<<dtmp2[i]<<"\n";
+		//if(dtmp2[i] != -999) std::cout<<"dtmp2["<<i<<"] = "<<dtmp2[i]<<"\n";
 		
 		deltas[0][i] = dphi[i];
 		deltas[1][i] = dtmp2[i];
@@ -264,49 +260,24 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	///////////Set Precise Phi&Theta//////////
 	int phi = 0, theta = 0;//, id = 0;
 	if(vstat & 2){//ME2 Present
-		
+	
 		//phi is simple, we have only one per station to choose from
 		phi = phmatch[zone][winner][1].Phi();
 		
 		//for theta, select delta to best station, use dtmpi as index
 		if(dtmp2[0] != -999){
-		
-			//std::cout<<"in here with dtmpi[0] = "<<dtmpi[0]<<"\n";
-		
-			//if(dtmpi[0] < 2)
-			//if(dtmpi[0]%2)
-			//	id = 1;
-			
-			
-			/*//std::cout<<"theta 0 = "<<thmatch[zone][winner][1][0].Theta()<<" and theta 1 = "<<thmatch[zone][winner][1][1].Theta()<<"\n";
-			
-			theta = thmatch[zone][winner][1][id].Theta();*/
-			
-			//std::cout<<"theta 0 = "<<t2[zone][winner][1][0]<<" and theta 1 = "<<t2[zone][winner][1][1]<<"\n";
 			
 			theta = dtmp2_ths[0][1];//t2[zone][winner][1][id];
 			
-			
 		}
-		else if(dtmp[3] != -999){
+		else if(dtmp2[3] != -999){
 		
-			//std::cout<<"in here with dtmpi[3] = "<<dtmpi[3]<<"\n";
 			
-			//if(dtmpi[3] > 1)
-			//	id = 1;
-			
-			//std::cout<<"theta 0 = "<<thmatch[zone][winner][1][0].Theta()<<" and theta 1 = "<<thmatch[zone][winner][1][1].Theta()<<"\n";
-			
-			//theta = thmatch[zone][winner][1][id].Theta();
 			theta = dtmp2_ths[3][0];//t2[zone][winner][1][id];
+			
 		}
-		else if(dtmp[4] != -999){
-			
-			//if(dtmpi[4] > 1)
-			//	id = 1;
-			
-			
-			//theta = thmatch[zone][winner][1][id].Theta();
+		else if(dtmp2[4] != -999){
+		
 			theta = dtmp2_ths[4][0];//t2[zone][winner][1][id];
 		}
 	
@@ -315,35 +286,20 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 	
 		phi = phmatch[zone][winner][2].Phi();
 		
-		if(dtmp[1] != -999){
+		if(dtmp2[1] != -999){
 		
-			//if(dtmpi[1]%2)
-			//	id = 1;
-			
-			
-			//theta = thmatch[zone][winner][2][id].Theta();
 			theta = dtmp2_ths[1][1];//t2[zone][winner][2][id];
 		}
-		else if(dtmp[5] != -999){
+		else if(dtmp2[5] != -999){
 			
-			//if(dtmpi[5] > 1)
-			//	id = 1;
-			
-			
-			//theta = thmatch[zone][winner][2][id].Theta();
 			theta = dtmp2_ths[5][0];//t2[zone][winner][2][id];
 		}
 	}
 	else if(vstat & 8){//ME4 Present but not ME2 or ME3
 	
 		phi = phmatch[zone][winner][3].Phi();
-		if(dtmp[2] != -999){
+		if(dtmp2[2] != -999){
 		
-			//if(dtmpi[2]%2)
-			//	id = 1;
-			
-			
-			//theta = thmatch[zone][winner][3][id].Theta();
 			theta = dtmp2_ths[2][1];//t2[zone][winner][3][id];
 		}
 	}
@@ -407,6 +363,8 @@ std::vector<std::vector<std::vector<DeltaOutput>>> CalcDeltas_Hold(std::vector<M
 	std::vector<std::vector<std::vector<DeltaOutput>>> Output (3,out);
 	
 	for(int bx=0;bx<3;bx++){
+	
+		//std::cout<<"deltas "<<bx<<"\n";
 	
 		for(int zone=0;zone<4;zone++){
 	
