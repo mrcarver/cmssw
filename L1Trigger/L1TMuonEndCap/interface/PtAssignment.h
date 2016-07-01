@@ -410,7 +410,8 @@ float getEta(float eta, int bits=5)
 
   if (bits>5) bits = 5;
   int shift = 5 - bits;
-  int etaInt = (fabs(eta) - 0.9)*(32.0/(1.6))-0.5;
+  if(fabs(eta) < 0.9) eta = 0.9;
+  int etaInt = (fabs(eta) - 0.9)*(32.0/(1.6));//-0.5;
   etaInt = (etaInt>>shift)<<shift;
 
   eta_ = 0.9 + (etaInt + 0.5)*(1.6/32.0);
@@ -427,7 +428,8 @@ int getEtaInt(float eta, int bits=5)
 
   if (bits>5) bits = 5;
   int shift = 5 - bits;
-  int etaInt = (fabs(eta) - 0.9)*(32.0/(1.6))-0.5;
+  if(fabs(eta) < 0.9) eta = 0.9;
+  int etaInt = (fabs(eta) - 0.9)*(32.0/(1.6));//-0.5;
   etaInt = (etaInt>>shift);
   if(etaInt > 31){etaInt = 31;}
   /* eta_ = 0.9 + (etaInt + 0.5)*(1.6/32.0); */
@@ -437,7 +439,7 @@ int getEtaInt(float eta, int bits=5)
 int getEtaIntFromTheta(int theta, int bits=5){
 
 
-	int Theta = theta & 124;
+	int Theta = theta & 127;
 	float theta_angle = (Theta*0.2874016 + 8.5)*(3.14159265359/180);
 	float eta = (-1)*log(tan(theta_angle/2));
 	
@@ -1744,10 +1746,15 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR2_ = FR2;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi12_ = abs(dPhi12_);	  
+	  dTheta12_ = abs(dTheta12_);
       
-      Address += ( dPhi12_ & ((1<<9)-1))    << (0);
+      //Address += ( abs(dPhi12_) & ((1<<9)-1))    << (0);
+	  Address += ( dPhi12_ & ((1<<9)-1))    << (0);
       Address += ( sign12_ & ((1<<1)-1))    << (0+9);
-      Address += ( dTheta12_ & ((1<<3)-1))  << (0+9+1);
+      //Address += ( abs(dTheta12_) & ((1<<3)-1))  << (0+9+1);
+	  Address += ( dTheta12_ & ((1<<3)-1))  << (0+9+1);
       Address += ( CLCT1_  & ((1<<2)-1))    << (0+9+1+3);
       Address += ( CLCT1Sign_ & ((1<<1)-1)) << (0+9+1+3+2);
       Address += ( CLCT2_  & ((1<<2)-1))    << (0+9+1+3+2+1);
@@ -1783,10 +1790,16 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR3_ = FR3;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi13_ = abs(dPhi13_);
+	  
+	  dTheta13_ = abs(dTheta13_);
       
-      Address += ( dPhi13_ & ((1<<9)-1))    << (0);
+      //Address += ( abs(dPhi13_) & ((1<<9)-1))    << (0);
+	  Address += ( dPhi13_ & ((1<<9)-1))    << (0);
       Address += ( sign13_ & ((1<<1)-1))    << (0+9);
-      Address += ( dTheta13_ & ((1<<3)-1))  << (0+9+1);
+      //Address += ( abs(dTheta13_) & ((1<<3)-1))  << (0+9+1);
+	  Address += ( dTheta13_ & ((1<<3)-1))  << (0+9+1);
       Address += ( CLCT1_  & ((1<<2)-1))    << (0+9+1+3);
       Address += ( CLCT1Sign_ & ((1<<1)-1)) << (0+9+1+3+2);
       Address += ( CLCT3_  & ((1<<2)-1))    << (0+9+1+3+2+1);
@@ -1824,10 +1837,16 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR4_ = FR4;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi14_ = abs(dPhi14_);
+	  
+	  dTheta14_ = abs(dTheta14_);
       
-      Address += ( dPhi14_ & ((1<<9)-1))    << (0);
+      //Address += ( abs(dPhi14_) & ((1<<9)-1))    << (0);
+	  Address += ( dPhi14_ & ((1<<9)-1))    << (0);
       Address += ( sign14_ & ((1<<1)-1))    << (0+9);
-      Address += ( dTheta14_ & ((1<<3)-1))  << (0+9+1);
+      //Address += ( abs(dTheta14_) & ((1<<3)-1))  << (0+9+1);
+	  Address += ( dTheta14_ & ((1<<3)-1))  << (0+9+1);
       Address += ( CLCT1_  & ((1<<2)-1))    << (0+9+1+3);
       Address += ( CLCT1Sign_ & ((1<<1)-1)) << (0+9+1+3+2);
       Address += ( CLCT4_  & ((1<<2)-1))    << (0+9+1+3+2+1);
@@ -1862,10 +1881,16 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR3_ = FR3;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi23_ = abs(dPhi23_);
+	  
+	  dTheta23_ = abs(dTheta23_);
       
-      Address += ( dPhi23_ & ((1<<9)-1))    << (0);
+      //Address += ( abs(dPhi23_) & ((1<<9)-1))    << (0);
+	  Address += ( dPhi23_ & ((1<<9)-1))    << (0);
       Address += ( sign23_ & ((1<<1)-1))    << (0+9);
-      Address += ( dTheta23_ & ((1<<3)-1))  << (0+9+1);
+      //Address += ( abs(dTheta23_) & ((1<<3)-1))  << (0+9+1);
+	  Address += ( dTheta23_ & ((1<<3)-1))  << (0+9+1);
       Address += ( CLCT2_  & ((1<<2)-1))    << (0+9+1+3);
       Address += ( CLCT2Sign_ & ((1<<1)-1)) << (0+9+1+3+2);
       Address += ( CLCT3_  & ((1<<2)-1))    << (0+9+1+3+2+1);
@@ -1900,10 +1925,16 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR4_ = FR4;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi24_ = abs(dPhi24_);
+	  
+	  dTheta24_ = abs(dTheta24_);
       
-      Address += ( dPhi24_ & ((1<<9)-1))    << (0);
+      //Address += ( abs(dPhi24_) & ((1<<9)-1))    << (0);
+	  Address += ( dPhi24_ & ((1<<9)-1))    << (0);
       Address += ( sign24_ & ((1<<1)-1))    << (0+9);
-      Address += ( dTheta24_ & ((1<<3)-1))  << (0+9+1);
+      //Address += ( abs(dTheta24_) & ((1<<3)-1))  << (0+9+1);
+	  Address += ( dTheta24_ & ((1<<3)-1))  << (0+9+1);
       Address += ( CLCT2_  & ((1<<2)-1))    << (0+9+1+3);
       Address += ( CLCT2Sign_ & ((1<<1)-1)) << (0+9+1+3+2);
       Address += ( CLCT4_  & ((1<<2)-1))    << (0+9+1+3+2+1);
@@ -1937,10 +1968,16 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR4_ = FR4;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi34_ = abs(dPhi34_);
+	  
+	  dTheta34_ = abs(dTheta34_);
       
-      Address += ( dPhi34_ & ((1<<9)-1))    << (0);
+     // Address += ( abs(dPhi34_) & ((1<<9)-1))    << (0);
+	  Address += ( dPhi34_ & ((1<<9)-1))    << (0);
       Address += ( sign34_ & ((1<<1)-1))    << (0+9);
-      Address += ( dTheta34_ & ((1<<3)-1))  << (0+9+1);
+      //Address += ( abs(dTheta34_) & ((1<<3)-1))  << (0+9+1);
+	  Address += ( dTheta34_ & ((1<<3)-1))  << (0+9+1);
       Address += ( CLCT3_  & ((1<<2)-1))    << (0+9+1+3);
       Address += ( CLCT3Sign_ & ((1<<1)-1)) << (0+9+1+3+2);
       Address += ( CLCT4_  & ((1<<2)-1))    << (0+9+1+3+2+1);
@@ -1976,12 +2013,20 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi12_ = abs(dPhi12_);
+	  dPhi23_ = abs(dPhi23_);
+	  
+	  dTheta13_ = abs(dTheta13_);
       
-      Address += ( dPhi12_ & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi12_) & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi23_) & ((1<<5)-1))    << (0+7);
+	  Address += ( dPhi12_ & ((1<<7)-1))    << (0);
       Address += ( dPhi23_ & ((1<<5)-1))    << (0+7);
       Address += ( sign12_  & ((1<<1)-1))   << (0+7+5);
       Address += ( sign23_  & ((1<<1)-1))   << (0+7+5+1);
-      Address += ( dTheta13_ & ((1<<3)-1))  << (0+7+5+1+1);
+      //Address += ( abs(dTheta13_) & ((1<<3)-1))  << (0+7+5+1+1);
+	  Address += ( dTheta13_ & ((1<<3)-1))  << (0+7+5+1+1);
       Address += ( CLCT1_  & ((1<<2)-1))    << (0+7+5+1+1+3);
       Address += ( CLCT1Sign_ & ((1<<1)-1)) << (0+7+5+1+1+3+2);
       Address += ( FR1_  & ((1<<1)-1))      << (0+7+5+1+1+3+2+1);
@@ -2011,12 +2056,20 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi12_ = abs(dPhi12_);
+	  dPhi24_ = abs(dPhi24_);
+	  
+	  dTheta14_ = abs(dTheta14_);
       
-      Address += ( dPhi12_ & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi12_) & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi24_) & ((1<<5)-1))    << (0+7);
+	  Address += ( dPhi12_ & ((1<<7)-1))    << (0);
       Address += ( dPhi24_ & ((1<<5)-1))    << (0+7);
       Address += ( sign12_ & ((1<<1)-1))    << (0+7+5);
       Address += ( sign24_ & ((1<<1)-1))    << (0+7+5+1);
-      Address += ( dTheta14_ & ((1<<3)-1))  << (0+7+5+1+1);
+      //Address += ( abs(dTheta14_) & ((1<<3)-1))  << (0+7+5+1+1);
+	  Address += ( dTheta14_ & ((1<<3)-1))  << (0+7+5+1+1);
       Address += ( CLCT1_  & ((1<<2)-1))    << (0+7+5+1+1+3);
       Address += ( CLCT1Sign_ & ((1<<1)-1)) << (0+7+5+1+1+3+2);
       Address += ( FR1_  & ((1<<1)-1))      << (0+7+5+1+1+3+2+1);
@@ -2045,12 +2098,20 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi13_ = abs(dPhi13_);
+	  dPhi34_ = abs(dPhi34_);
+	  
+	  dTheta14_ = abs(dTheta14_);
       
-      Address += ( dPhi13_ & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi13_) & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi34_) & ((1<<6)-1))    << (0+7);
+	  Address += ( dPhi13_ & ((1<<7)-1))    << (0);
       Address += ( dPhi34_ & ((1<<6)-1))    << (0+7);
       Address += ( sign13_  & ((1<<1)-1))   << (0+7+5);
       Address += ( sign34_  & ((1<<1)-1))   << (0+7+5+1);
-      Address += ( dTheta14_ & ((1<<3)-1))  << (0+7+5+1+1);
+      //Address += ( abs(dTheta14_) & ((1<<3)-1))  << (0+7+5+1+1);
+	  Address += ( dTheta14_ & ((1<<3)-1))  << (0+7+5+1+1);
       Address += ( CLCT1_  & ((1<<2)-1))    << (0+7+5+1+1+3);
       Address += ( CLCT1Sign_ & ((1<<1)-1)) << (0+7+5+1+1+3+2);
       Address += ( FR1_  & ((1<<1)-1))      << (0+7+5+1+1+3+2+1);
@@ -2081,12 +2142,20 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       CLCT2_ = abs(CLCT2_);
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
+	  
+	  dPhi23_ = abs(dPhi23_);
+	  dPhi34_ = abs(dPhi34_);
+	  
+	  dTheta24_ = abs(dTheta24_);
       
-      Address += ( dPhi23_ & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi23_) & ((1<<7)-1))    << (0);
+      //Address += ( abs(dPhi34_) & ((1<<6)-1))    << (0+7);
+	  Address += ( dPhi23_ & ((1<<7)-1))    << (0);
       Address += ( dPhi34_ & ((1<<6)-1))    << (0+7);
       Address += ( sign23_ & ((1<<1)-1))    << (0+7+6);
       Address += ( sign34_ & ((1<<1)-1))    << (0+7+6+1);
-      Address += ( dTheta24_ & ((1<<3)-1))  << (0+7+6+1+1);
+     // Address += ( abs(dTheta24_) & ((1<<3)-1))  << (0+7+6+1+1);
+	  Address += ( dTheta24_ & ((1<<3)-1))  << (0+7+6+1+1);
       Address += ( CLCT2_  & ((1<<2)-1))    << (0+7+6+1+1+3);
       Address += ( CLCT2Sign_ & ((1<<1)-1)) << (0+7+6+1+1+3+2);
       Address += ( eta_  & ((1<<5)-1))      << (0+7+6+1+1+3+2+1);
@@ -2122,11 +2191,20 @@ float CalculatePt(L1TMuon::InternalTrack track , const edm::EventSetup& es, int 
       int dPhi34_ = getNLBdPhiBin(dPhi34, 6, 256);
       int sign23_ = dPhi23Sign > 0 ? 1 : 0;
       int sign34_ = dPhi34Sign > 0 ? 1 : 0;
+	  //int sign23_ = dPhi23Sign > 0 ? 0 : 1;
+      //int sign34_ = dPhi34Sign > 0 ? 0 : 1;
       int FR1_ = FR1;
       int eta_ = getEtaInt(TrackEta, 5);
       int Mode_ = mode_inv;
       
-      Address += ( dPhi12_ & ((1<<7)-1)) << 0;
+	  dPhi12_ = abs(dPhi12_);
+	  dPhi23_ = abs(dPhi23_);
+	  dPhi34_ = abs(dPhi34_);
+	  
+      //Address += ( abs(dPhi12_) & ((1<<7)-1)) << 0;
+      //Address += ( abs(dPhi23_) & ((1<<5)-1)) << (0+7);
+      //Address += ( abs(dPhi34_) & ((1<<6)-1)) << (0+7+5);
+	  Address += ( dPhi12_ & ((1<<7)-1)) << 0;
       Address += ( dPhi23_ & ((1<<5)-1)) << (0+7);
       Address += ( dPhi34_ & ((1<<6)-1)) << (0+7+5);
       Address += ( sign23_ & ((1<<1)-1)) << (0+7+5+6);
