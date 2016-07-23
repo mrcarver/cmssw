@@ -73,10 +73,10 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 				for(unsigned int t2=0;t2<phmatch[zone][winner][s2].AllThetas().size();t2++){
 			
 					int dth_tmp = phmatch[zone][winner][s2].AllThetas()[t2] - phmatch[zone][winner][s1].AllThetas()[t1];
-					
+										
 					if(s1 == 0){
 					
-						if(dtmp2[s2-1] != -999){
+						if(dtmp2[s2-1] == -999){
 							dtmp2[s2-1] = dth_tmp;
 							dtmp2_ths[s2-1][0] = phmatch[zone][winner][s1].AllThetas()[t1];
 							dtmp2_ths[s2-1][1] = phmatch[zone][winner][s2].AllThetas()[t2];
@@ -92,7 +92,7 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 					else{
 					
 					
-						if(dtmp2[s2+s1] != -999){
+						if(dtmp2[s2+s1] == -999){
 							dtmp2[s2+s1] = dth_tmp;
 							dtmp2_ths[s1+s2][0] = phmatch[zone][winner][s1].AllThetas()[t1];
 							dtmp2_ths[s2+s1][1] = phmatch[zone][winner][s2].AllThetas()[t2];
@@ -182,12 +182,12 @@ DeltaOutput Deltas(MatchingOutput Mout, int zone, int winner){
 		}
 		*/
 		//if(dtmp2[p] != -999){
-		//  std::cout<<"dtmp2["<<p<<"] = "<<dtmp2[p]<<" and dtmp = "<<dtmp[p]<<"\n";
+		//  std::cout<<"dtmp2["<<p<<"] = "<<dtmp2[p]<<"\n";
 		//  std::cout<<"dtmp2_ths = "<<dtmp2_ths[p][0]<<" and "<<dtmp2_ths[p][1]<<"\n";
 		//}
 		
 		
-		if((abs(dtmp2[p]) <= 4) && (dtmp2[p] != -999)){//if dtheta is small enought and valid
+		if((abs(dtmp2[p]) <= 4) && (dtmp2[p] != -999)){///if dtheta is small enought and valid
 		
 			//std::cout<<"valid "<<p<<std::endl;
 		
