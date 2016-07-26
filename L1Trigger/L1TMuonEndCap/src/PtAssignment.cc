@@ -1481,7 +1481,7 @@ unsigned long EmtfPtAssignment::calculateAddress( L1TMuon::InternalTrack track, 
 	int Mode_ = mode_inv;
       
 	Address += ( dPhi13_ & ((1<<7)-1))    << (0);
-	Address += ( dPhi34_ & ((1<<6)-1))    << (0+7);
+	Address += ( dPhi34_ & ((1<<5)-1))    << (0+7);
 	Address += ( sign13_  & ((1<<1)-1))   << (0+7+5);
 	Address += ( sign34_  & ((1<<1)-1))   << (0+7+5+1);
 	Address += ( dTheta14_ & ((1<<3)-1))  << (0+7+5+1+1);
