@@ -32,6 +32,40 @@ std::vector<std::vector<ConvertedHit>> GroupBX(std::vector<ConvertedHit> ConvHit
 			output[1].push_back(*i);
 	}
 	
+	for(int i=1;i<3;i++){
+	
+		unsigned int HasAllInNext = 0;
+	
+		for(unsigned int it = 0;it != output[i-1].size();it++){
+			
+			bool InNext = false;
+			
+			for(unsigned int it2 = 0;it2 != output[i].size();it2++){
+		
+				if( output[i-1][it].Phi() == output[i][it2].Phi() &&
+					output[i-1][it].Theta() == output[i][it2].Theta() &&
+					output[i-1][it].Ph_hit() == output[i][it2].Ph_hit() &&
+					output[i-1][it].Phzvl() == output[i][it2].Phzvl() &&
+					output[i-1][it].Station() == output[i][it2].Station() &&
+					output[i-1][it].Sub() == output[i][it2].Sub() &&
+					output[i-1][it].Id() == output[i][it2].Id() &&
+					output[i-1][it].Quality() == output[i][it2].Quality() &&
+					output[i-1][it].Pattern() == output[i][it2].Pattern() &&
+					output[i-1][it].Wire() == output[i][it2].Wire() &&
+					output[i-1][it].Strip() == output[i][it2].Strip() &&
+					output[i-1][it].BX() == output[i][it2].BX()){InNext = true;}
+		
+			}
+			
+			if(InNext)
+				HasAllInNext++;
+		}
+		
+		if(HasAllInNext == output[i-1].size())
+			output[i-1].clear();
+		
+	}
+	
 	
 	
 	for(int i=0;i<3;i++){

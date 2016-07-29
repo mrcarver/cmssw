@@ -59,6 +59,10 @@ class ConvertedHit{
 		
 		void AddTheta(int theta){_thetas.push_back(theta);};
 		
+		void SetZonesVec(std::vector<std::pair<int,int>> zonesVec){_zonesVec = zonesVec;};
+		
+		
+		
 		
 		int Phi(){return _ph;};
 		int Theta(){return _th;};
@@ -80,14 +84,19 @@ class ConvertedHit{
 		std::vector<int> ZoneContribution(){return _zonecont;};
 		std::vector<int> AllThetas(){return _thetas;};
 		
+		std::vector<std::pair<int,int>> ZonesVec(){return _zonesVec;};
+		
 		
 	private:
 	
 		int _ph,_th, _th2,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor;
 		TriggerPrimitive _tp;
 		std::vector<int> _zonecont, _thetas;
+		std::vector<std::pair<int,int>> _zonesVec;//first = zone, second = place in zone
 
 };
+
+
 
 struct ZonesOutput{
 

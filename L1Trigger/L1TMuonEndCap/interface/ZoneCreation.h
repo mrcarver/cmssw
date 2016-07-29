@@ -18,14 +18,23 @@ ZonesOutput zonemaker(std::vector<ConvertedHit> ConvHits){
 
 	for(std::vector<ConvertedHit>::iterator h = ConvHits.begin();h != ConvHits.end();h++){											
 		
-	  std::vector<int> zc=h->ZoneContribution();
+	 // std::vector<int> zc=h->ZoneContribution();
+	  std::vector<std::pair<int,int>> ZoneVec = h->ZonesVec();
 
-	  for(std::vector<int>::iterator in_this_zone = zc.begin();in_this_zone != zc.end();in_this_zone++){
+	  /*for(std::vector<int>::iterator in_this_zone = zc.begin();in_this_zone != zc.end();in_this_zone++){
 	    for(int zone = 0;zone<4;zone++){
 	      if(zone == *in_this_zone)
 		zones[zone].SetBit(h->Station(),(h->Zhit()+1));
 	    }	
+	  }*/
+	  
+	  for(std::vector<std::pair<int,int>>::iterator in_this_zone = ZoneVec.begin();in_this_zone != ZoneVec.end();in_this_zone++){
+	    for(int zone = 0;zone<4;zone++){
+	      if(zone == (*in_this_zone).first)
+		zones[zone].SetBit(h->Station(),( (*in_this_zone).second +1));
+	    }	
 	  }
+	  
 	}
 		
 	ZonesOutput output;
