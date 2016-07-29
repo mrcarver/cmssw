@@ -22,35 +22,31 @@
 
 using namespace std;
 
-int ph_offsets_neighbor[5][10][3] = {{{39,39,-99}  ,{57,57,-99}   ,{76,76,-99}   ,{39,-99,-99} ,{58,-99,-99}  ,{76,-99,-99}  ,{41,-99,-99} ,{60,-99,-99}   ,{79,-99,-99}     ,{21,21,23}  },//not sure if 23 is done right yet
-			   						 {{95,95,-99}  ,{114,114,-99} ,{132,132,-99} ,{95,-99,-99} ,{114,-99,-99} ,{133,-99,-99} ,{98,-99,-99} ,{116,-99,-99}  ,{135,-99,-99}    ,{21,21,23}  },//not sure if 23 is done right yet
-			   						 {{38,38,-99}  ,{76,76,-99}   ,{113,113,-99} ,{39,39,-99}  ,{58,58,-99}   ,{76,76,-99}   ,{95,95,-99}  ,{114,114,-99}  ,{132,132,-99}    ,{1,1,21}    },//{1,21,21} is original
-			   						 {{38,-99,-99} ,{76,-99,-99}  ,{113,-99,-99} ,{39,39,39}   ,{58,58,58}    ,{76,76,76}    ,{95,95,95}   ,{114,114,114}  ,{132,132,132}    ,{1,21,21}   },
-			   						 {{38,-99,-99} ,{76,-99,-99}  ,{113,-99,-99} ,{38,38,-99}  ,{57,57,-99}   ,{76,76,-99}   ,{95,95,-99}  ,{113,113,-99}  ,{132,132,-99}    ,{1,20,20}   }};//[station][id][pz] look up #(-99 indicates invaled entry)]
-
-int ph_offsets_zone0[5][7] = {{39,57,76,-999,-999,-999,21},
+int ph_offsets[4][5][7] = {
+							  {{39,57,76,-999,-999,-999,21},
 							  {95,114,132,-999,-999,-999,21},
 							  {38,76,113,-999,-999,-999,1},
 							  {38,76,113,-999,-999,-999,1},
-							  {38,76,113,-999,-999,-999,1}};
+							  {38,76,113,-999,-999,-999,1}},
 							  
-int ph_offsets_zone1[5][7] = {{39,57,76,-999,-999,-999,21},
+							  {{39,57,76,-999,-999,-999,21},
 							  {95,114,132,-999,-999,-999,21},
 							  {38,76,113,-999,-999,-999,1},
 							  {39,58,76,95,114,132,21},
-							  {38,57,76,95,113,132,20}};
+							  {38,57,76,95,113,132,20}},
 							  
-int ph_offsets_zone2[5][7] = {{39,58,76,-999,-999,-999,21},
+	                          {{39,58,76,-999,-999,-999,21},
 							  {95,114,133,-999,-999,-999,21},
 							  {39,58,76,95,114,132,21},
 							  {39,58,76,95,114,132,21},
-							  {39,58,76,95,114,132,20}};
+							  {39,58,76,95,114,132,20}},
 							  
-int ph_offsets_zone3[5][7] = {{41,60,79,-999,-999,-999,23},
+	                          {{41,60,79,-999,-999,-999,23},
 							  {98,116,135,-999,-999,-999,23},
 							  {39,58,76,95,114,132,21},
 							  {39,58,76,95,114,132,21},
-							  {-999,-999,-999,-999,-999,-999,-999}};
+							  {-999,-999,-999,-999,-999,-999,-999}}
+						};
 
 
 bool neighbor(int endcap,int sector,int SectIndex,int id,int sub,int station){
@@ -509,7 +505,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 			sindex = station;
 		
 		//std::cout<<"offset = "<<ph_offsets_zone0[sindex][zindex]<<" and zhit = "<<ph_offsets_zone0[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(0,ph_offsets_zone0[sindex][zindex] + ph_hit));
+		zoneVec.push_back(std::pair<int,int>(0,ph_offsets[0][sindex][zindex] + ph_hit));
 	}
 	////////// 
 	//zone 1//
@@ -529,7 +525,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 			sindex = station;
 		
 		//std::cout<<"offset = "<<ph_offsets_zone1[sindex][zindex]<<" and zhit = "<<ph_offsets_zone1[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(1,ph_offsets_zone1[sindex][zindex] + ph_hit));
+		zoneVec.push_back(std::pair<int,int>(1,ph_offsets[1][sindex][zindex] + ph_hit));
 	
 	}
 	//if((phzvl & 2) && (Id < 4) && (station < 3)){pz=1;zonecontribution.push_back(1);}
@@ -552,7 +548,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 			sindex = station;
 			
 		//std::cout<<"offset = "<<ph_offsets_zone2[sindex][zindex]<<" and zhit = "<<ph_offsets_zone2[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(2,ph_offsets_zone2[sindex][zindex] + ph_hit));
+		zoneVec.push_back(std::pair<int,int>(2,ph_offsets[2][sindex][zindex] + ph_hit));
 	}
 	//if((phzvl & 1) && (Id > 3) && (Id < 7) && (station == 1)){pz=0;zonecontribution.push_back(2);}
 	//if((phzvl & 1) && (Id > 3) && (station == 2)){pz=0;zonecontribution.push_back(2);}
@@ -578,7 +574,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	
 	
 		//std::cout<<"offset = "<<ph_offsets_zone3[sindex][zindex]<<" and zhit = "<<ph_offsets_zone3[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(3,ph_offsets_zone3[sindex][zindex] + ph_hit));
+		zoneVec.push_back(std::pair<int,int>(3,ph_offsets[3][sindex][zindex] + ph_hit));
 	}
 	
 	//if((station == 1) && (Id > 6)){pz=1;zonecontribution.push_back(3);}
@@ -614,12 +610,12 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	//if(SectIndex == 5){
 		std::cout<<"phi = "<<fph<<", theta = "<<th<<", GMT_eta = "<<GetPackedEta(th,SectIndex)<<", bx = "<<BX<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	
-	if(!IsNeighbor){
+	/*if(!IsNeighbor){
 	  if(C3.Id() > 9)
 		  std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id() - 9<<" 0 "<<strip<<"\n";
 	  else
 		  std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
-	}
+	}*/
 	//}
 	
 	/* if(station != 1) */
