@@ -53,13 +53,11 @@ class ConvertedHit{
 		
 		void SetSectorIndex(int sectorIndex){_sectorIndex = sectorIndex;};
 		
-		void SetZoneContribution(std::vector<int> zonecontribution){_zonecont = zonecontribution;};
-		
 		void SetNeighbor(int neighbor){_isNeighbor = neighbor;};
 		
 		void AddTheta(int theta){_thetas.push_back(theta);};
 		
-		void SetZonesVec(std::vector<std::pair<int,int>> zonesVec){_zonesVec = zonesVec;};
+		void SetZoneWord(int zword){_ZoneWord = zword;};
 		
 		
 		
@@ -81,18 +79,15 @@ class ConvertedHit{
 		int SectorIndex(){return _sectorIndex;};
 		int IsNeighbor(){return _isNeighbor;};
 		TriggerPrimitive TP(){return _tp;};
-		std::vector<int> ZoneContribution(){return _zonecont;};
 		std::vector<int> AllThetas(){return _thetas;};
-		
-		std::vector<std::pair<int,int>> ZonesVec(){return _zonesVec;};
+		int ZoneWord(){return _ZoneWord;};
 		
 		
 	private:
 	
-		int _ph,_th, _th2,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor;
+		int _ph,_th, _th2,_phit,_phzvl,_sta,_sub,_id,_qual,_patt,_wire,_strip,_zhit,_bx, _sectorIndex, _isNeighbor, _ZoneWord;
 		TriggerPrimitive _tp;
-		std::vector<int> _zonecont, _thetas;
-		std::vector<std::pair<int,int>> _zonesVec;//first = zone, second = place in zone
+		std::vector<int> _thetas;
 
 };
 

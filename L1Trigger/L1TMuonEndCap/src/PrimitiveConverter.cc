@@ -22,31 +22,42 @@
 
 using namespace std;
 
-int ph_offsets[4][5][7] = {
-							  {{39,57,76,-999,-999,-999,21},
+/*int ph_offsets_neighbor[5][10][3] = {{{39,39,-99}  ,{57,57,-99}   ,{76,76,-99}   ,{39,-99,-99} ,{58,-99,-99}  ,{76,-99,-99}  ,{41,-99,-99} ,{60,-99,-99}   ,{79,-99,-99}     ,{21,21,23}  },//not sure if 23 is done right yet
+			   						 {{95,95,-99}  ,{114,114,-99} ,{132,132,-99} ,{95,-99,-99} ,{114,-99,-99} ,{133,-99,-99} ,{98,-99,-99} ,{116,-99,-99}  ,{135,-99,-99}    ,{21,21,23}  },//not sure if 23 is done right yet
+			   						 {{38,38,-99}  ,{76,76,-99}   ,{113,113,-99} ,{39,39,-99}  ,{58,58,-99}   ,{76,76,-99}   ,{95,95,-99}  ,{114,114,-99}  ,{132,132,-99}    ,{1,1,21}    },//{1,21,21} is original
+			   						 {{38,-99,-99} ,{76,-99,-99}  ,{113,-99,-99} ,{39,39,39}   ,{58,58,58}    ,{76,76,76}    ,{95,95,95}   ,{114,114,114}  ,{132,132,132}    ,{1,21,21}   },
+			   						 {{38,-99,-99} ,{76,-99,-99}  ,{113,-99,-99} ,{38,38,-99}  ,{57,57,-99}   ,{76,76,-99}   ,{95,95,-99}  ,{113,113,-99}  ,{132,132,-99}    ,{1,20,20}   }};//[station][id][pz] look up #(-99 indicates invaled entry)]
+
+int ph_offsets_zone0[5][7] = {{39,57,76,-999,-999,-999,21},
 							  {95,114,132,-999,-999,-999,21},
 							  {38,76,113,-999,-999,-999,1},
 							  {38,76,113,-999,-999,-999,1},
-							  {38,76,113,-999,-999,-999,1}},
+							  {38,76,113,-999,-999,-999,1}};
 							  
-							  {{39,57,76,-999,-999,-999,21},
+int ph_offsets_zone1[5][7] = {{39,57,76,-999,-999,-999,21},
 							  {95,114,132,-999,-999,-999,21},
 							  {38,76,113,-999,-999,-999,1},
 							  {39,58,76,95,114,132,21},
-							  {38,57,76,95,113,132,20}},
+							  {38,57,76,95,113,132,20}};
 							  
-	                          {{39,58,76,-999,-999,-999,21},
+int ph_offsets_zone2[5][7] = {{39,58,76,-999,-999,-999,21},
 							  {95,114,133,-999,-999,-999,21},
 							  {39,58,76,95,114,132,21},
 							  {39,58,76,95,114,132,21},
-							  {39,58,76,95,114,132,20}},
+							  {39,58,76,95,114,132,20}};
 							  
-	                          {{41,60,79,-999,-999,-999,23},
+int ph_offsets_zone3[5][7] = {{41,60,79,-999,-999,-999,23},
 							  {98,116,135,-999,-999,-999,23},
 							  {39,58,76,95,114,132,21},
 							  {39,58,76,95,114,132,21},
-							  {-999,-999,-999,-999,-999,-999,-999}}
-						};
+							  {-999,-999,-999,-999,-999,-999,-999}};*/
+							  
+int ph_offsets[6][9] = {{39,57,76,39,58,76,41,60,79},
+						{95,114,132,95,113,132,98,116,135},
+						{38,76,113,39,58,76,95,114,132},
+						{38,76,113,39,58,76,95,114,132},
+						{38,76,113,38,57,76,95,113,132},
+						{21,21,23,1,21,1,21,1,20}};
 
 
 bool neighbor(int endcap,int sector,int SectIndex,int id,int sub,int station){
@@ -472,12 +483,6 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	/////    Before the zone creation so it can    /////
 	/////  Be an artifact of Converted Hit Class   /////
 	////////////////////////////////////////////////////
-	
-	
-	
-	//int zhit = -99, pz = -99;
-	//std::vector<int> zonecontribution; //Each hit could go in more than one zone so we make a vector which stores all the zones for which this hit will contribute
-	std::vector<std::pair<int,int>> zoneVec;
 
 	if(ring == 4){
 		Id -= 9;
@@ -487,119 +492,35 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	}
 	
 	//determination of zone contribution
-	int zindex = 0, sindex = 0;
-	//////////
-	//zone 0//
-	//////////
-	if((phzvl & 1) && (Id < 4)){
-		//pz=0;
-		//zonecontribution.push_back(0);
-		if(IsNeighbor)
-			zindex = 3;
-		else
-			zindex = Id - 1;
-			
-		if(sub == 1)
-			sindex = 0;
-		else
-			sindex = station;
-		
-		//std::cout<<"offset = "<<ph_offsets_zone0[sindex][zindex]<<" and zhit = "<<ph_offsets_zone0[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(0,ph_offsets[0][sindex][zindex] + ph_hit));
-	}
-	////////// 
-	//zone 1//
-	//////////
-	if(((phzvl & 2) && (Id < 4) && (station < 3)) || ((phzvl & 1) && (Id > 3) && (station > 2))){
+	int zoneword = 0, zhit = -99, zmask[4] = {1,2,4,8};
+	bool zoneConditions[4] {((phzvl & 1) && (Id < 4)),
+							(((phzvl & 2) && (Id < 4) && (station < 3)) || ((phzvl & 1) && (Id > 3) && (station > 2))),
+							(((phzvl & 1) && (Id > 3) && (Id < 7) && (station == 1)) || ((phzvl & 1) && (Id > 3) && (station == 2)) || ((phzvl & 2) && (Id > 3) && (station > 2))),
+							( ((station == 1) && (Id > 6)) || ((phzvl & 2) && (Id > 3) && (station == 2)) || ((phzvl & 4) && (station == 3) && (Id > 3)) )};
 	
-		if(IsNeighbor)
-			zindex = 6;
-		else if(Id > 3)
-			zindex = Id - 4;
-		else
-			zindex = Id - 1;
-		
-		if(sub == 1)
-			sindex = 0;
-		else
-			sindex = station;
-		
-		//std::cout<<"offset = "<<ph_offsets_zone1[sindex][zindex]<<" and zhit = "<<ph_offsets_zone1[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(1,ph_offsets[1][sindex][zindex] + ph_hit));
+	for(int z=0;z<4;z++){
+	
+		if(zoneConditions[z])
+			zoneword |= zmask[z];
 	
 	}
-	//if((phzvl & 2) && (Id < 4) && (station < 3)){pz=1;zonecontribution.push_back(1);}
-	//if((phzvl & 1) && (Id > 3) && (station > 2)){pz=0;zonecontribution.push_back(1);}
-	//////////
-	//zone 2//
-	//////////	
-	if(((phzvl & 1) && (Id > 3) && (Id < 7) && (station == 1)) ||
-	   ((phzvl & 1) && (Id > 3) && (station == 2)) ||
-	   ((phzvl & 2) && (Id > 3) && (station > 2)) ){
-		
-		if(IsNeighbor)
-			zindex = 6;
-		else
-			zindex = Id - 4;
-		
-		if(sub == 1)
-			sindex = 0;
-		else
-			sindex = station;
-			
-		//std::cout<<"offset = "<<ph_offsets_zone2[sindex][zindex]<<" and zhit = "<<ph_offsets_zone2[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(2,ph_offsets[2][sindex][zindex] + ph_hit));
-	}
-	//if((phzvl & 1) && (Id > 3) && (Id < 7) && (station == 1)){pz=0;zonecontribution.push_back(2);}
-	//if((phzvl & 1) && (Id > 3) && (station == 2)){pz=0;zonecontribution.push_back(2);}
-	//if((phzvl & 2) && (Id > 3) && (station > 2)){pz=1;zonecontribution.push_back(2);}
-	//////////
-	//zone 3//
-	//////////
-	if( ((station == 1) && (Id > 6)) ||
-		((phzvl & 2) && (Id > 3) && (station == 2)) ||
-		((phzvl & 4) && (station == 3) && (Id > 3)) ){
-		
-		if(sub == 1)
-			sindex = 0;
-		else
-			sindex = station;
-			
-		if(IsNeighbor)
-			zindex = 6;
-		else if(station == 1)
-			zindex = Id - 7;
-		else
-			zindex = Id - 1;
 	
+	int cindex = Id - 1;
+	int sindex = station;
+	if(sub == 1)
+		sindex--;
 	
-		//std::cout<<"offset = "<<ph_offsets_zone3[sindex][zindex]<<" and zhit = "<<ph_offsets_zone3[sindex][zindex] + ph_hit<<"\n";
-		zoneVec.push_back(std::pair<int,int>(3,ph_offsets[3][sindex][zindex] + ph_hit));
+	if(IsNeighbor){
+	
+		sindex = 5;
+		if(station == 1)
+			cindex = Id/3 - 1;
+		else
+			cindex = (station - 1)*2 + (Id > 6) ? 2:1;
+	
 	}
 	
-	//if((station == 1) && (Id > 6)){pz=1;zonecontribution.push_back(3);}
-	//if((phzvl & 2) && (Id > 3) && (station == 2)){pz=1;zonecontribution.push_back(3);}
-	//if((phzvl & 4) && (station == 3) && (Id > 3)){pz=2;zonecontribution.push_back(3);}
-	
-	/*
-	int phOffIndex = Id;
-	if(IsNeighbor)
-		phOffIndex = 10;
-	
-	//applying ph_offsets
-	if(sub == 1){
-		zhit = ph_hit + ph_offsets_neighbor[station-1][phOffIndex-1][pz];
-		if(SectIndex == 5) std::cout<<"ph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station-1<<"]["<<phOffIndex-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station-1][phOffIndex-1][pz]<<"\n";
-	}
-	else{
-			
-		zhit = ph_hit + ph_offsets_neighbor[station][phOffIndex-1][pz];
-		if(SectIndex == 5) std::cout<<"ph_hit = "<<ph_hit<<" and ph_offsets_neighbor["<<station<<"]["<<phOffIndex-1<<"]["<<pz<<"] = "<<ph_offsets_neighbor[station][phOffIndex-1][pz]<<"\n";
-	}
-	
-	*/
-		
-	
+	zhit = ph_hit + ph_offsets[sindex][cindex];
 		
 	///////////////////////////////////////////////////////
 	//////// set vector of ConvertedHits to move //////////
@@ -607,23 +528,16 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	///////////////////////////////////////////////////////
 	
 	
-	//if(SectIndex == 5){
+	/*if(SectIndex == 4){
 		std::cout<<"phi = "<<fph<<", theta = "<<th<<", GMT_eta = "<<GetPackedEta(th,SectIndex)<<", bx = "<<BX<<", ph_hit = "<<ph_hit<<", station = "<<station<<", ring = "<<ring<<", id = "<<Id<<", sector "<<SectIndex<<",sub = "<<sub<<", strip = "<<strip<<", wire = "<<wire<<", IsNeighbor = "<<IsNeighbor<<"\n";
 	
-	/*if(!IsNeighbor){
+	if(!IsNeighbor){
 	  if(C3.Id() > 9)
 		  std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id() - 9<<" 0 "<<strip<<"\n";
 	  else
 		  std::cout<<BX-3<<" "<<endcap<<" "<<sector<<" "<<sub<<" "<<station<<" 1 "<<quality<<" "<<pattern<<" "<<wire<<" "<<C3.Id()<<" 0 "<<strip<<"\n";
+	}
 	}*/
-	//}
-	
-	/* if(station != 1) */
-	/* 	sub = 1; */
-	/* std::cout<<"proper FR[0] = "<<FRLUT[endcap-1][sector-1][station-1][sub-1][Id-1]<<"\n"; */
-	/* if(station != 1) */
-	/* 	sub = 0; */
-
 	
 	ConvertedHit Hit;
 	
@@ -634,11 +548,10 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 	Hit.SetValues(fph,th,ph_hit,phzvl,station,sub,Id,quality,pattern,wire,strip,BX);
 	Hit.AddTheta(th);
 	Hit.SetTP(C3);
-	//Hit.SetZhit(zhit);
-	//Hit.SetZoneContribution(zonecontribution);
+	Hit.SetZhit(zhit);
 	Hit.SetSectorIndex(SectIndex);
 	Hit.SetNeighbor(in);
-	Hit.SetZonesVec(zoneVec);
+	Hit.SetZoneWord(zoneword);
 
 	if(Hit.Theta() != -999 && Hit.Phi() > 0 ){//if theta is valid
 		ConvHits.push_back(Hit);
