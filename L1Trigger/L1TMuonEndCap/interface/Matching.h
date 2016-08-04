@@ -5,13 +5,13 @@
 //////
 //////
 
-#include "L1Trigger/L1TMuonEndCap/interface/EmulatorClasses.h"
+#include "L1Trigger/L1TMuonEndCap/interface/EmulatorClasses.h"////
 #include "L1Trigger/L1TMuonEndCap/interface/PhiMemoryImage.h"
 
 
 MatchingOutput PhiMatching(SortingOutput Sout){
 
-	bool verbose = false;
+	bool verbose = true;
 
 	std::vector<ConvertedHit> Thits = Sout.Hits();
 	std::vector<std::vector<Winner>> Winners = Sout.Winners();
@@ -58,11 +58,10 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 					if(verbose) std::cout<<"station = "<<Thits[i].Station()<<", strip = "<<Thits[i].Strip()<<", keywire = "<<Thits[i].Wire()<<" and zhit-"<<Thits[i].Zhit()<<", bx = "<<Thits[i].BX()<<", phi>>5 = "<<(Thits[i].Phi()>>5)<<"\n";
 
 					// Unused variable
-					/* bool inzone = 0;///Is the converted hit in the zone we're looking at now? 
-					 for(std::vector<int>::iterator znc = Thits[i].ZoneContribution().begin();znc != Thits[i].ZoneContribution().end();znc++){ 
-					  if((*znc) == z) 
-						  inzone = 1;//yes 
-					 } */
+					int zmask[4] {1,2,4,8};
+					 bool inzone = false;///Is the converted hit in the zone we're looking at now? 
+					 if(Thits[i].ZoneWord() & zmask[z])
+					 	inzone = true;
 					
 					bool inBXgroup = false;
 					
@@ -92,7 +91,7 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 					//	std::cout<<"Winners[z][w].Strip(): "<<Winners[z][w].Strip()<<" + 1 - Thits[i].Zhit():"<<Thits[i].Zhit()<<" = "<<(Winners[z][w].Strip() + 1) - Thits[i].Zhit()<<". Thits[i].Phi()>>5 = "<<(Thits[i].Phi() >> 5)<<"\n";
 					//}
 					
-					if((fabs(Winners[z][w].Strip() - (Thits[i].Phi()>>5)) <= phdiff[setstation]) && inBXgroup /*&& inzone*/){//is close to winner keystrip and in same zone?
+					if((fabs(Winners[z][w].Strip() - (Thits[i].Phi()>>5)) <= phdiff[setstation]) && inBXgroup && inzone){//is close to winner keystrip and in same zone?
 					
 						if(ph_output[z][w][setstation].Phi() == -999){//has this already been set? no
 						
@@ -119,6 +118,20 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 								ph_output[z][w][setstation] = (Thits[i]);
 								
 								setphi = true;
+							
+							}
+							
+							if(d2 == d1){
+							
+								if(verbose) std::cout<<"Strips are same distance away: Choose one with larger phi.\n";
+								
+								if(Thits[i].Phi() > ph_output[z][w][setstation].Phi()){
+									ph_output[z][w][setstation] = (Thits[i]);
+									if(verbose) std::cout<<"set with strip "<<Thits[i].Strip()<<" and wire "<<Thits[i].Wire()<<"\n";
+								}
+								else{
+									if(verbose) std::cout<<"original phi larger so keep\n";
+								}
 							
 							}
 							
