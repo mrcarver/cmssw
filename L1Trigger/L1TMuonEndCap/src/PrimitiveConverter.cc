@@ -486,7 +486,7 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 		if(station == 1)
 			cindex = Id/3 - 1;
 		else
-			cindex = (station - 1)*2 + (Id > 6) ? 2:1;
+			cindex = (station - 1)*2 + ((Id > 6) ? 2:1);
 	
 	}
 	
