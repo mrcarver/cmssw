@@ -50,8 +50,8 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 				if(verbose) std::cout<<"Number of possible hits to match = "<<Thits.size()<<"\n";			
 				
 				//for(std::vector<ConvertedHit>::iterator i = Thits.begin();i != Thits.end();i++){//Possible associated hits
-				for(int i = Thits.size() - 1;i > -1;i--){//Possible associated hits
-				//for(unsigned int i=0;i<Thits.size();i++){//Possible associated hits
+				//for(int i = Thits.size() - 1;i > -1;i--){//Possible associated hits
+				for(unsigned int i=0;i<Thits.size();i++){//Possible associated hits
 				
 					//int id = Thits[i].Id();
 					
@@ -123,14 +123,33 @@ MatchingOutput PhiMatching(SortingOutput Sout){
 							
 							if(d2 == d1){
 							
-								if(verbose) std::cout<<"Strips are same distance away: Choose one with larger phi.\n";
+								if(verbose) std::cout<<"Strips are same distance away: Choose one with earlier BX, then neighbor, then low chamber ID, then first in line\n";
 								
-								if(Thits[i].Phi() > ph_output[z][w][setstation].Phi()){
+								/*if(Thits[i].Phi() > ph_output[z][w][setstation].Phi()){
 									ph_output[z][w][setstation] = (Thits[i]);
 									if(verbose) std::cout<<"set with strip "<<Thits[i].Strip()<<" and wire "<<Thits[i].Wire()<<"\n";
 								}
 								else{
 									if(verbose) std::cout<<"original phi larger so keep\n";
+								}*/
+								
+								if(Thits[i].BX() < ph_output[z][w][setstation].BX()){
+									ph_output[z][w][setstation] = (Thits[i]);
+									setphi = true;
+									if(verbose) std::cout<<"set with strip "<<Thits[i].Strip()<<" and wire "<<Thits[i].Wire()<<" because earlier BX\n";
+								}
+								else if(Thits[i].IsNeighbor() && !ph_output[z][w][setstation].IsNeighbor()){
+									ph_output[z][w][setstation] = (Thits[i]);
+									setphi = true;
+									if(verbose) std::cout<<"set with strip "<<Thits[i].Strip()<<" and wire "<<Thits[i].Wire()<<" because neighbor and first isn't\n";
+								}
+								else if((Thits[i].IsNeighbor() == ph_output[z][w][setstation].IsNeighbor()) && (Thits[i].Id() < ph_output[z][w][setstation].Id())){
+									ph_output[z][w][setstation] = (Thits[i]);
+									setphi = true;
+									if(verbose) std::cout<<"set with strip "<<Thits[i].Strip()<<" and wire "<<Thits[i].Wire()<<" because lower ID\n";
+								}
+								else{
+									if(verbose) std::cout<<"original hit in same BX, same(or larger) chamber, and first in line so keep\n";
 								}
 							
 							}

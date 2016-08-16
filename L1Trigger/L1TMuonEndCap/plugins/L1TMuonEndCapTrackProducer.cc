@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
+#include <fstream>
 
 #include "L1Trigger/L1TMuonEndCap/interface/BXAnalyzer.h"
 #include "L1Trigger/L1TMuonEndCap/interface/ZoneCreation.h"
@@ -40,6 +42,8 @@ using namespace L1TMuon;
 L1TMuonEndCapTrackProducer::L1TMuonEndCapTrackProducer(const PSet& p) {
 
   inputTokenCSC = consumes<CSCCorrelatedLCTDigiCollection>(p.getParameter<edm::InputTag>("CSCInput"));
+  inputTokenGen = consumes<std::vector<reco::GenParticle>>(p.getParameter<edm::InputTag>("GenInput"));
+  inputTokenGMT = consumes<L1MuGMTReadoutCollection>(p.getParameter<edm::InputTag>("GMTInput"));
   
   produces<l1t::RegionalMuonCandBxCollection >("EMTF");
   produces< l1t::EMTFTrackCollection >("EMTF");
@@ -54,9 +58,13 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
 			       const edm::EventSetup& es) {
 
   //bool verbose = false;
+  
+  
+  //std::cout<<"1047794192 = "<<ptAssignment_.calculatePt(1047794192)*2.8 + 1<<", and 1022628368 = "<<ptAssignment_.calculatePt(1022628368)*2.8 + 1<<", and 1049891344 = "<<ptAssignment_.calculatePt(1049891344)*2.8 + 1<<".\n";
 
   //fprintf (write,"12345\n"); //<-- part of printing text file to send verilog code, not needed if George's package is included
 
+	//std::cout<<"12345\n12345\n12345\n12345\n12345\n12345\n";
 
   //std::auto_ptr<L1TMuon::InternalTrackCollection> FoundTracks (new L1TMuon::InternalTrackCollection);
   std::auto_ptr<l1t::RegionalMuonCandBxCollection > OutputCands (new l1t::RegionalMuonCandBxCollection);
@@ -71,6 +79,117 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
   std::vector<TriggerPrimitive> tester;
   //std::vector<InternalTrack> FoundTracks;
   
+  _nUpgradedTracks = 0;
+	_nLegacyTracks = 0;
+	_nGenMuons = 0;
+	
+	for(int i=0;i<30;i++){
+	
+		_genCharge[i]= 0;
+		_LegacyCharge[i] = 0;
+		_UpgradedPt[i] = 0;
+		_UpgradedPt2[i] = 0;
+		_LegacyPt[i] = 0;
+		_LegacyQual[i] = 0;
+		
+		_UpgradedMode[i] = 0;
+		_UpgradedMode2[i] = 0;
+		_LegacyMode[i] = 0;
+		
+		_UpgradedRank[i] = -1;
+		_UpgradedBX[i] = 20;
+		for(int j=0;j<4;j++){
+			_UpgradedQual[i][j] = -1;
+			_UpgradedPatt[i][j] = -1;
+			_UpgradedBX_station[i][j] = 20;
+		}	
+		
+		_genPt[i] = 0;
+		
+		_GMTPt[i] = 0;
+		_GMTRank[i] = 0;
+		_GMTQual[i] = 0;
+		_GMTCSC[i] = 0;
+		_GMTBx[i] = -999;
+		
+	
+	}
+	
+	float genPt = 0, genPhi = -5, genEta = -5;
+  
+ // if(!isData){
+ 
+  edm::Handle<std::vector<reco::GenParticle>> genMuons;
+  ev.getByToken(inputTokenGen,genMuons);
+  
+  
+  for(std::vector<reco::GenParticle>::const_iterator gmi = genMuons->begin();gmi != genMuons->end();gmi++){
+  
+  		//std::cout<<"gen pt = "<<gmi->pt()<<", phi = "<<gmi->phi()<<" and eta = "<<gmi->eta()<<"\n";
+  
+  		if(fabs(gmi->pdgId()) == 13){
+  		genPt = gmi->pt();
+ 		genEta = gmi->eta();
+  		genPhi = gmi->phi();
+		
+		
+		//std::cout<<"gen pt/eta/phi = "<<gm->pt()<<"/"<<gm->eta()<<"/"<<gm->phi()<<"\n";
+			_genPt[_nGenMuons] = gmi->pt();
+ 			_genEta[_nGenMuons] = gmi->eta();
+  			_genPhi[_nGenMuons] = gmi->phi();
+			_genCharge[_nGenMuons] = gmi->pdgId();
+			
+			_nGenMuons++;
+		
+  	}
+  }
+  ///////////////////////////
+  ////// Get GMT Muons ///////
+  ////////////////////////////
+  
+  edm::Handle<L1MuGMTReadoutCollection> GMTRC;
+  ev.getByToken(inputTokenGMT,GMTRC);
+	
+	
+	_nGMTTracks = 0;
+	
+	std::vector<L1MuGMTReadoutRecord> gmt_records = GMTRC->getRecords();
+   // std::cout<<"gmtrecords size = "<<gmt_records.size()<<"\n";//
+	std::vector<L1MuGMTReadoutRecord>::const_iterator igmtrr;
+  	for(igmtrr=gmt_records.begin(); igmtrr!=gmt_records.end(); igmtrr++) {
+	
+	
+		std::vector<L1MuGMTExtendedCand>::const_iterator gmt_iter;
+ 	 	std::vector<L1MuGMTExtendedCand> exc = igmtrr->getGMTCands();
+  		for(gmt_iter=exc.begin(); gmt_iter!=exc.end(); gmt_iter++) {
+    		if ( _nGMTTracks < 10 && !(*gmt_iter).empty() ) {
+			
+			
+				float phi = (*gmt_iter).phiValue();
+				if(phi > 3.14159)
+					phi -= 6.28318;
+			
+				_GMTPt[_nGMTTracks] = (*gmt_iter).ptValue();
+				//std::cout<<"gmt pt = "<<(*gmt_iter).ptValue()<<", eta = "<<(*gmt_iter).etaValue()<<" and phi = "<<phi<<"\n";
+				_GMTEta[_nGMTTracks] = (*gmt_iter).etaValue();
+				_GMTPhi[_nGMTTracks] = phi;
+				_GMTQual[_nGMTTracks] = (*gmt_iter).quality();
+				_GMTRank[_nGMTTracks] = (*gmt_iter).rank();
+				_GMTBx[_nGMTTracks] = (*gmt_iter).bx();
+				
+				if((*gmt_iter).detector() == 4)
+					_GMTCSC[_nGMTTracks] = 1;
+				else
+					_GMTCSC[_nGMTTracks] = 0;
+				
+				_nGMTTracks++;
+			
+			}
+			
+		}
+	
+	
+	}
   
   //////////////////////////////////////////////
   ///////// Make Trigger Primitives ////////////
@@ -129,6 +248,8 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
 
      }
 	 
+	 //bool good = false;
+	 
 	 for(unsigned int i1=0;i1<out.size();i1++){
 	 
 	 	tester.push_back(out[i1]);
@@ -146,7 +267,21 @@ void L1TMuonEndCapTrackProducer::produce(edm::Event& ev,
 				out[i1].detId<CSCDetId>().ring() == out[i2].detId<CSCDetId>().ring() &&
 				out[i1].detId<CSCDetId>().chamber() == out[i2].detId<CSCDetId>().chamber() &&
 				out[i1].Id() == out[i2].Id() && out[i1].getBX() == out[i2].getBX()){ 
+					/*
+						bool ok = false;
 						
+						if( (out[i1].getCSCData().strip < 127 && out[i2].getCSCData().strip > 127) || (out[i2].getCSCData().strip < 127 && out[i1].getCSCData().strip > 127) )
+							ok = true;
+				
+						if(out[i1].detId<CSCDetId>().station() == 1 && out[i1].detId<CSCDetId>().ring() == 1 && ok){
+							std::cout<<"2 TPs in same chamber, station "<<out[i1].detId<CSCDetId>().station()<<", ring "<<out[i1].detId<CSCDetId>().ring()<<": Event "<<ev.id().event()<<"\n";
+							good = true;
+						}
+						
+						if(good)
+							std::cout<<"2 TPs in same chamber, station "<<out[i1].detId<CSCDetId>().station()<<", ring "<<out[i1].detId<CSCDetId>().ring()<<": Event "<<ev.id().event()<<"\n";
+						
+						*/	
 						TriggerPrimitive NewWire1(out[i1],out[i2]);
 						TriggerPrimitive NewWire2(out[i2],out[i1]);
 						tester.push_back(NewWire1);
@@ -180,6 +315,11 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 
 	// Fill OutputHits with ConvertedHit information
 	for (uint iCHit = 0; iCHit < ConvHits.size(); iCHit++) {
+	
+		FullPhi->Fill(ConvHits[iCHit].Phi());
+		FullTheta->Fill(ConvHits[iCHit].Theta());
+		CLCT->Fill(ConvHits[iCHit].Pattern());
+		FullZ->Fill(ConvHits[iCHit].Zhit());
 	  // bool isMatched = false;
 
 	  for (uint iHit = 0; iHit < OutputHits->size(); iHit++) {
@@ -201,7 +341,7 @@ for(int SectIndex=0;SectIndex<NUM_SECTORS;SectIndex++){//perform TF on all 12 se
 	      OutputHits->at(iHit).set_phi_loc_int ( ConvHits.at(iCHit).Phi()    );
 	      OutputHits->at(iHit).set_theta_int   ( ConvHits.at(iCHit).Theta()  );
 
-	      OutputHits->at(iHit).SetZoneContribution ( ConvHits.at(iCHit).ZoneContribution() );
+	      //OutputHits->at(iHit).SetZoneContribution ( ConvHits.at(iCHit).ZoneContribution() );
 	      OutputHits->at(iHit).set_phi_loc_deg  ( l1t::calc_phi_loc_deg( OutputHits->at(iHit).Phi_loc_int() ) );
 	      OutputHits->at(iHit).set_phi_loc_rad  ( l1t::calc_phi_loc_rad( OutputHits->at(iHit).Phi_loc_int() ) );
 	      OutputHits->at(iHit).set_phi_glob_deg ( l1t::calc_phi_glob_deg_hit( OutputHits->at(iHit).Phi_loc_deg(), OutputHits->at(iHit).Sector_index() ) );
@@ -478,6 +618,10 @@ for(unsigned int i1=0;i1<AllTracks_PreDuplicationCancellation.size();i1++){
 					case 4: mode_uncorr |= 1;break;
 					default: mode_uncorr |= 0;
 				}
+				
+				_UpgradedQual[_nUpgradedTracks][station-1] = A->Quality();
+				_UpgradedPatt[_nUpgradedTracks][station-1] = A->Pattern();
+				_UpgradedBX_station[_nUpgradedTracks][station-1] = A->TP().getCSCData().bx;
 
 
 				if(A->TP().detId<CSCDetId>().station() == 1 && A->TP().detId<CSCDetId>().ring() == 3)
@@ -532,7 +676,12 @@ for(unsigned int i1=0;i1<AllTracks_PreDuplicationCancellation.size();i1++){
 		// After Mulhearn cleanup, May 11
 		unsigned long xmlpt_address = ptAssignment_.calculateAddress(tempTrack, es, mode);
 		//std::cout<<"address = "<<xmlpt_address<<"\n";
+		
+		
 		float xmlpt = ptAssignment_.calculatePt(xmlpt_address);
+		
+		
+		
 
 		tempTrack.pt = xmlpt*1.4;
 		//FoundTracks->push_back(tempTrack);
@@ -540,12 +689,29 @@ for(unsigned int i1=0;i1<AllTracks_PreDuplicationCancellation.size();i1++){
 		CombAddress = (me2address<<4) | me1address;
 
 		int charge = getCharge(phis[0],phis[1],phis[2],phis[3],mode);
+		
+		
 
 		l1t::RegionalMuonCand outCand = MakeRegionalCand(xmlpt*1.4,AllTracks[fbest].phi,AllTracks[fbest].theta,
 								 charge,mode,CombAddress,sector);
+								 
+		bool readFromLUT = true;
+		unsigned long FW_address = 0;
+		if(readFromLUT){
+			
+			FW_address = ptAssignment_.calculateAddress_FW(tempTrack,es,mode);
+			tempTrack.pt = dPtLUT[FW_address];
+			//std::cout<<"pt = "<<dPtLUT[FW_address]<<"\n";
+			
+			outCand = MakeRegionalCand(tempTrack.pt,AllTracks[fbest].phi,AllTracks[fbest].theta,
+								 charge,mode,CombAddress,sector);
+			
+		}						 
 
 		float theta_angle = l1t::calc_theta_rad_from_int( AllTracks[fbest].theta ); 
 		float eta = l1t::calc_eta_from_theta_rad( theta_angle );
+		if(sector > 5)
+			eta *= -1;
 		
 
 		thisTrack.set_phi_loc_deg  ( l1t::calc_phi_loc_deg( thisTrack.Phi_loc_int() ) );
@@ -584,18 +750,34 @@ for(unsigned int i1=0;i1<AllTracks_PreDuplicationCancellation.size();i1++){
 
 		if(!ME13 && fabs(eta) > 1.1) {
 		  // // Extra debugging output - AWB 29.03.16
-		  std::cout << "Input: eBX = " << ebx << ", seBX = " << sebx << ", pt = " << xmlpt*1.4 
-		 	 << ", phi = " << AllTracks[fbest].phi << ", eta = " << eta 
-		 	 << ", theta = " << AllTracks[fbest].theta << ", sign = " << 1 
-		 	 << ", quality = " << mode << ", trackaddress = " << 1 
-		 	 << ", sector = " << sector << std::endl;
-		  std::cout << "Output: BX = " << ebx << ", hwPt = " << outCand.hwPt() << ", hwPhi = " << outCand.hwPhi() 
-		 	 << ", hwEta = " << outCand.hwEta() << ", hwSign = " << outCand.hwSign() 
-		 	 << ", hwQual = " << outCand.hwQual() << ", link = " << outCand.link()
-		 	 << ", processor = " << outCand.processor() 
-		 	 << ", trackFinderType = " << outCand.trackFinderType() << std::endl;
+		  //std::cout << "Input: eBX = " << ebx << ", seBX = " << sebx << ", pt = " << xmlpt*1.4 
+		 //	 << ", phi = " << AllTracks[fbest].phi << ", eta = " << eta 
+		 //	 << ", theta = " << AllTracks[fbest].theta << ", sign = " << 1 
+		 //	 << ", quality = " << mode << ", trackaddress = " << 1 
+		 //	 << ", sector = " << sector << std::endl;
+		 // std::cout << "Output: BX = " << ebx << ", hwPt = " << outCand.hwPt() << ", hwPhi = " << outCand.hwPhi() 
+		 //	 << ", hwEta = " << outCand.hwEta() << ", hwSign = " << outCand.hwSign() 
+		 //	 << ", hwQual = " << outCand.hwQual() << ", link = " << outCand.link()
+		 //	 << ", processor = " << outCand.processor() 
+		 //	 << ", trackFinderType = " << outCand.trackFinderType() << std::endl;
 			holder.push_back(outPair);
 			thisTrack.set_isGMT( 1 );
+			
+			float gpd = (AllTracks[fbest].phi*107.01/4096) + sector*60 + 13.0;
+			float gpr = gpd*(3.14159265359/180.0);
+			if(gpr > 3.14159)
+				gpr -= 6.28318;
+		
+		
+			_UpgradedPt[_nUpgradedTracks] = xmlpt*1.4;
+			_UpgradedPt2[_nUpgradedTracks] = tempTrack.pt;
+			//std::cout<<"Up pT = "<<tempTrack.pt<<", eta = "<<eta<<" and phi = "<<gpr<<"\n";
+			_UpgradedEta[_nUpgradedTracks] = eta;
+			_UpgradedPhi[_nUpgradedTracks] = gpr;
+			_UpgradedMode[_nUpgradedTracks] = mode;
+			_UpgradedMode2[_nUpgradedTracks] = mode;
+			_UpgradedRank[_nUpgradedTracks] = tempTrack.rank;
+			_nUpgradedTracks++;
 			
 			if(outCand.hwEta() == -240 || outCand.hwEta() == 239)
 				std::cout<<"interesting event "<<ev.id().event()<<"\n";
@@ -628,12 +810,95 @@ for(int sect=0;sect<12;sect++){
 ev.put( OutputCands, "EMTF");
  ev.put( OutputHits, "EMTF"); 
  ev.put( OutputTracks, "EMTF");
+  outputTree->Fill();
   //std::cout<<"End Upgraded Track Finder Prducer:::::::::::::::::::::::::::\n:::::::::::::::::::::::::::::::::::::::::::::::::\n\n";
 
 }//analyzer
 
 void L1TMuonEndCapTrackProducer::beginJob()
 {
+
+	std::ifstream PtLUT("LUT_AndrewFix_25July16.dat");
+
+  ULong64_t FullWord = 0;
+  ULong64_t SubWord[4] = {0, 0, 0, 0};
+
+  int Address;
+  //int MaxAddress = 1<<30;
+  int MaxAdd4 = (1<<30)/4 ; 
+
+
+  // loop over LUT address space, 4 addresses at a time
+  for (int add4=0; add4<MaxAdd4; add4++) {
+    
+    PtLUT.read(reinterpret_cast<char*>(&FullWord), sizeof(ULong64_t));
+
+    SubWord [0] = FullWord & 0x1FF;
+    SubWord [1] = (FullWord>>9) & 0x1FF;
+    SubWord [2] = (FullWord>>32) & 0x1FF;
+    SubWord [3] = (FullWord>>(32+9)) & 0x1FF;
+
+    for (int i=0; i<4; i++) {
+      Address = add4*4 + i;
+
+      // Store LUT in memory
+      dPtLUT[Address] = SubWord[i];
+
+    }
+
+  }
+
+	FullPhi = fs->make<TH1F>("FullPhi","",6000,-500,5500);
+	FullTheta = fs->make<TH1F>("FullTheta","",150,0,150);
+	CLCT = fs->make<TH1F>("CLCT","",20,-10,10);
+	FullZ = fs->make<TH1F>("FullZ","",200,0,200);
+	
+	outputTree = fs->make<TTree>("EmuTree","EmuTree");
+	
+	outputTree->Branch("_triggerSector", &_triggerSector, "_triggerSector[30]/I");
+	
+	outputTree->Branch("_nPU", &_nPU, "_nPU/I");
+	
+	outputTree->Branch("_nGenMuons", &_nGenMuons, "_nGenMuons/I");
+	outputTree->Branch("_genPt", &_genPt, "_genPt[30]/D");
+	outputTree->Branch("_genEta", &_genEta, "_genEta[30]/D");
+	outputTree->Branch("_genPhi", &_genPhi, "_genPhi[30]/D");
+	outputTree->Branch("_genCharge", &_genCharge, "_genCharge[30]/I");
+	
+	outputTree->Branch("_nUpgradedTracks", &_nUpgradedTracks, "_nUpgradedTracks/I");
+	outputTree->Branch("_UpgradedPt", &_UpgradedPt, "_UpgradedPt[30]/D");
+	outputTree->Branch("_UpgradedPt2", &_UpgradedPt2, "_UpgradedPt2[30]/D");
+	outputTree->Branch("_UpgradedEta", &_UpgradedEta, "_UpgradedEta[30]/D");
+	outputTree->Branch("_UpgradedPhi", &_UpgradedPhi, "_UpgradedPhi[30]/D");
+	outputTree->Branch("_UpgradedMode", &_UpgradedMode, "_UpgradedMode[30]/I");
+	outputTree->Branch("_UpgradedMode2", &_UpgradedMode2, "_UpgradedMode2[30]/I");
+	outputTree->Branch("_UpgradedPatt", &_UpgradedPatt, "_UpgradedPatt[30][4]/I");
+	outputTree->Branch("_UpgradedQual", &_UpgradedQual, "_UpgradedQual[30][4]/I");
+	outputTree->Branch("_UpgradedRank", &_UpgradedRank, "_UpgradedRank[30]/I");
+	outputTree->Branch("_UpgradedBX", &_UpgradedBX, "_UpgradedBX[30]/I");
+	outputTree->Branch("_UpgradedBX_station", &_UpgradedBX_station, "_UpgradedBX_station[30][4]/I");
+	outputTree->Branch("_dPhi12", &_dPhi12, "_dPhi12[30]/I");
+	outputTree->Branch("_dPhi13", &_dPhi13, "_dPhi13[30]/I");
+	outputTree->Branch("_dPhi14", &_dPhi14, "_dPhi14[30]/I");
+	outputTree->Branch("_dPhi23", &_dPhi23, "_dPhi23[30]/I");
+	outputTree->Branch("_dPhi24", &_dPhi24, "_dPhi24[30]/I");
+	outputTree->Branch("_dPhi34", &_dPhi34, "_dPhi34[30]/I");
+	
+	outputTree->Branch("_nLegacyTracks", &_nLegacyTracks, "_nLegacyTracks/I");
+	outputTree->Branch("_LegacyPt", &_LegacyPt, "_LegacyPt[30]/D");
+	outputTree->Branch("_LegacyEta", &_LegacyEta, "_LegacyEta[30]/D");
+	outputTree->Branch("_LegacyPhi", &_LegacyPhi, "_LegacyPhi[30]/D");
+	outputTree->Branch("_LegacyMode", &_LegacyMode, "_LegacyMode[30]/I");
+	outputTree->Branch("_LegacyCharge", &_LegacyCharge, "_LegacyCharge[30]/I");
+	
+	outputTree->Branch("_nGMTTracks", &_nGMTTracks, "_nGMTTracks/I");
+	outputTree->Branch("_GMTPt", &_GMTPt, "_GMTPt[30]/D");
+	outputTree->Branch("_GMTEta", &_GMTEta, "_GMTEta[30]/D");
+	outputTree->Branch("_GMTPhi", &_GMTPhi, "_GMTPhi[30]/D");
+	outputTree->Branch("_GMTQual", &_GMTQual, "_GMTQual[30]/I");
+	outputTree->Branch("_GMTRank", &_GMTRank, "_GMTRank[30]/I");
+	outputTree->Branch("_GMTBx", &_GMTBx, "_GMTBx[30]/I");
+	outputTree->Branch("_GMTCSC", &_GMTCSC, "_GMTCSC[30]/I");
 
 }
 void L1TMuonEndCapTrackProducer::endJob()

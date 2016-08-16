@@ -23,7 +23,7 @@
 using namespace std;
 
 int ph_offsets[6][9] = {{39,57,76,39,58,76,41,60,79},
-						{95,114,132,95,113,132,98,116,135},
+						{95,114,132,95,114,133,98,116,135},
 						{38,76,113,39,58,76,95,114,132},
 						{38,76,113,39,58,76,95,114,132},
 						{38,76,113,38,57,76,95,113,132},
@@ -190,8 +190,8 @@ std::vector<ConvertedHit> PrimitiveConverter::convert(std::vector<TriggerPrimiti
 		if(station < 2){
 		
 			nId = 12 + Id/3;
-			if(ring == 4)
-				nId ++;
+			//if(ring == 4)
+			//	nId ++;
 		
 		}
 		else{
